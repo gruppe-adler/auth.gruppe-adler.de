@@ -41,7 +41,7 @@ GroupRouter.post('/', GroupRules['create'], wrapAsync(async(req: Request, res: R
     let group: Group = new Group(payload);
     await group.save();
 
-    res.status(200).json(group);
+    res.status(201).json(group);
 }));
 
 // PUT update a group

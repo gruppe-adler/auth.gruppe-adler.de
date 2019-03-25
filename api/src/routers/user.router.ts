@@ -41,7 +41,7 @@ UserRouter.post('/', UserRules['create'], wrapAsync(async(req: Request, res: Res
     let user: User = new User(payload);
     await user.save();
 
-    res.status(200).json(user);
+    res.status(201).json(user);
 }));
 
 // PUT update a user
