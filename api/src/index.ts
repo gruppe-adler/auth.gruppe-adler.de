@@ -7,6 +7,7 @@ import { Group } from './models/group.model';
 
 import { UserRouter } from './routers/user.router';
 import { GroupRouter } from './routers/group.router';
+import { AuthRouter } from './routers/auth.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
@@ -28,6 +29,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/user', UserRouter);
 app.use('/group', GroupRouter);
+app.use('', AuthRouter);
 
 app.listen(PORT, () => {
     console.log('server started at http://localhost:'+PORT);
