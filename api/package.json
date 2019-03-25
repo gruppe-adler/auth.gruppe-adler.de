@@ -1,0 +1,31 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "serve": "webpack --mode development",
+    "build": "webpack --mode production"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^5.1.1",
+    "sqlite3": "^4.0.6",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.1",
+    "nodemon": "^1.18.10",
+    "sequelize-typescript": "^1.0.0-alpha.9",
+    "ts-loader": "^5.3.3",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.3.4000",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-shell-plugin": "^0.5.0"
+  }
+}
