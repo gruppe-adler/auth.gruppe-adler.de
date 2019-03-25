@@ -27,14 +27,12 @@ export const UserRules = {
         // there has to be at least one value which should be updated
         oneOf([
             body('username').exists(),
-            body('email').exists(),
+            body('email').exists().isEmail(),
             body('password').exists(),
             body('avatar').exists(),
             body('admin').exists(),
             body('group').exists()
-        ]),
-        body('email')
-            .isEmail()
+        ])
     ],
     delete: [
         // id of group to edit must be in param or in body
