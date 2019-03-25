@@ -10,7 +10,7 @@ export const UserRules = {
         body('email')
             .exists().withMessage('Field \'email\' is required')
             .isEmail().withMessage('Invalid format for field \'email\'')
-            .custom(email => User.findOne({ where: { email } }).then(u => !!!u)).withMessage('Email exists'),
+            .custom(email => User.findOne({ where: { email } }).then(u => !!!u)).withMessage('Email already exists'),
         body('password')
             .exists().withMessage('Field \'password\' is required'),
         body('avatar')

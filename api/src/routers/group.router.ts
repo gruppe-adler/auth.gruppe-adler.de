@@ -1,9 +1,11 @@
-import { validationResult } from 'express-validator/check';
-import { GroupRules } from '../rules/group.rules'
 import { Router, Request, Response } from 'express';
-import { Group } from '../models/group.model';
-import * as bodyParser from 'body-parser';
+import { validationResult } from 'express-validator/check';
 import { matchedData } from 'express-validator/filter';
+import * as bodyParser from 'body-parser';
+
+import { Group } from '../models/group.model';
+import { GroupRules } from '../rules/group.rules';
+
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
 
