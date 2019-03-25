@@ -12,11 +12,10 @@ export const UserRules = {
             .isEmail().withMessage('Invalid format for field \'email\'')
             .custom(email => User.findOne({ where: { email } }).then(u => !!!u)).withMessage('Email already exists'),
         body('password')
-            .exists().withMessage('Field \'password\' is required'),
+            .exists().withMessage('Field \'password\' is required')
+            .not().isEmpty().withMessage('Field \'password\' is required'),
         body('avatar')
             .exists().withMessage('Field \'admin\' is required'),
-        body('admin')
-            .exists().withMessage('Field \'admin\' is required')
     ],
     update: [
         // id of group to edit must be in param or in body
