@@ -13,6 +13,8 @@ export const UserRules = {
             .custom(email => User.findOne({ where: { email } }).then(u => !!!u)).withMessage('Email exists'),
         body('password')
             .exists().withMessage('Field \'password\' is required'),
+        body('avatar')
+            .exists().withMessage('Field \'admin\' is required'),
         body('admin')
             .exists().withMessage('Field \'admin\' is required')
     ],
@@ -27,6 +29,7 @@ export const UserRules = {
             body('username').exists(),
             body('email').exists(),
             body('password').exists(),
+            body('avatar').exists(),
             body('admin').exists(),
             body('group').exists()
         ]),
