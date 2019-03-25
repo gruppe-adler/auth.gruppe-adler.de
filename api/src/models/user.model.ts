@@ -1,6 +1,10 @@
 import { Group } from './group.model';
-import { Table, Column, Model, ForeignKey, BelongsTo, DataType, Default, Unique } from 'sequelize-typescript';
+import { Table, Column, Model, ForeignKey, BelongsTo, DataType, Default, Unique, DefaultScope } from 'sequelize-typescript';
 
+@DefaultScope({
+    attributes: { exclude: [ 'password', 'groupId' ] },
+    include: [ () => Group ]
+})
 @Table
 export class User extends Model<User> {
     @Unique
