@@ -1,11 +1,13 @@
 import { Group } from './group.model';
-import { Table, Column, Model, ForeignKey, BelongsTo, DataType, Default } from 'sequelize-typescript';
+import { Table, Column, Model, ForeignKey, BelongsTo, DataType, Default, Unique } from 'sequelize-typescript';
 
 @Table
 export class User extends Model<User> {
+    @Unique
     @Column(DataType.TEXT)
     username: string;
 
+    @Unique
     @Column(DataType.TEXT)
     email: string;
     
