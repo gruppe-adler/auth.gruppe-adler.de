@@ -25,6 +25,7 @@ export const UserRules = {
         ]),
         // there has to be at least one value which should be updated
         oneOf([
+            body('groupId').exists(),
             body('username').exists(),
             body('email').exists().isEmail(),
             body('password').exists(),
