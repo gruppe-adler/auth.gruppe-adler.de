@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import { Sequelize } from 'sequelize-typescript';
 
@@ -19,6 +20,8 @@ sequelize.addModels([ User, Group ]);
 sequelize.sync({ force: true });
 
 const app = express();
+
+app.use(cookieParser());
 
 const bp = bodyParser.json();
 app.use(bp);
