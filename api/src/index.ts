@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 import { Request, Response } from 'express';
 import { Sequelize } from 'sequelize-typescript';
 
@@ -18,6 +19,10 @@ sequelize.addModels([ User, Group ]);
 sequelize.sync({ force: true });
 
 const app = express();
+
+const bp = bodyParser.json();
+app.use(bp);
+
 
 const {
     PORT = 3000,

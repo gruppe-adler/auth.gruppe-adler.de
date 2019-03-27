@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express'
 import { matchedData } from 'express-validator/filter';
 import { validationResult } from 'express-validator/check';
-import * as bodyParser from 'body-parser';
 
 import { User } from '../models/user.model'
 import { AuthRules } from '../rules/auth.rules';
@@ -11,9 +10,6 @@ import { globalErrorHandler } from '../utils/globalErrorHandler';
 import { TokenService } from '../utils/tokenService';
 
 export const AuthRouter = Router()
-
-const bp = bodyParser.json();
-AuthRouter.use(bp);
 
 AuthRouter.post('/login', AuthRules['login'], wrapAsync(async(req: Request, res: Response) => {
 

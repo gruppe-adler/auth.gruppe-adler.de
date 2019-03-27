@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express'
 import { validationResult } from 'express-validator/check';
 import { matchedData } from 'express-validator/filter';
-import * as bodyParser from 'body-parser';
 
 import { User } from '../models/user.model'
 import { UserRules } from '../rules/user.rules';
@@ -10,9 +9,6 @@ import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
 
 export const UserRouter = Router()
-
-const bp = bodyParser.json();
-UserRouter.use(bp);
 
 UserRouter.get('/', wrapAsync(async(req: Request, res: Response) => {
 

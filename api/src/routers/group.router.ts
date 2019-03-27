@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { validationResult } from 'express-validator/check';
 import { matchedData } from 'express-validator/filter';
-import * as bodyParser from 'body-parser';
 
 import { Group } from '../models/group.model';
 import { GroupRules } from '../rules/group.rules';
@@ -10,9 +9,6 @@ import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
 
 export const GroupRouter = Router();
-
-const bp = bodyParser.json();
-GroupRouter.use(bp);
 
 // GET all groups
 GroupRouter.get('/', wrapAsync(async(req: Request, res: Response) => {
