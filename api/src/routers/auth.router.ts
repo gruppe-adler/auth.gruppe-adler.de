@@ -7,7 +7,11 @@ import { AuthRules } from '../rules/auth.rules';
 
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
-import { TokenService } from '../utils/tokenService';
+import { JwtService } from '../utils/JwtService';
+import { UserRules } from '../rules/user.rules';
+
+// @ts-ignore
+import { config } from 'config';
 
 export const AuthRouter = Router()
 
@@ -21,14 +25,20 @@ AuthRouter.post('/login', AuthRules['login'], wrapAsync(async(req: Request, res:
 
     if (user === null) return res.status(401).end();
 
-    const token = TokenService.sign(user); 
+    const token = JwtService.sign(user); 
 
-    res.cookie('token', token, { 
-        domain: 'gruppe-adler.de',
+    res.cookie(config.cookie.name, token, { 
+        domain: config.cookie.domain,
         httpOnly: true,
-        secure: true,
-        maxAge: 3600000
-    }).status(200).json({ token });
+        secure: false,
+        maxAge: 36000000
+    })
+    
+    const resPayload = {};
+
+    resPayload[config.cookie.name] = token;
+
+    res.status(200).json(resPayload);
 }));
 
 AuthRouter.post('/authenticate', AuthRules['authenticate'], wrapAsync(async(req: Request, res: Response) => {
@@ -37,16 +47,29 @@ AuthRouter.post('/authenticate', AuthRules['authenticate'], wrapAsync(async(req:
     if (!errors.isEmpty()) return res.status(422).json(errors.array());
     const payload = matchedData(req);
 
-    const token = payload.token || payload.Authorization.replace(/^Bearer\s+/i, '');
+    const token = payload[config.cookie.name] || payload.Authorization.replace(/^Bearer\s+/i, '');
 
     let user;
     try {
-        user = TokenService.verify(token)
+        user = JwtService.verify(token)
     } catch (err) {
         return res.status(401).end();
     }
 
     res.status(200).json(user);
+}));
+
+// POST create a new user
+AuthRouter.post('/register', UserRules['create'], wrapAsync(async(req: Request, res: Response) => {
+    
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(422).json(errors.array());
+    const payload = matchedData(req);
+    
+    let user: User = new User(payload);
+    await user.save();
+
+    res.status(201).json(user);
 }));
 
 AuthRouter.use(globalErrorHandler);

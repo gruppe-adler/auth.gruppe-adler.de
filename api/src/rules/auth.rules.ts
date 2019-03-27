@@ -1,5 +1,9 @@
 import { body, oneOf, check, header } from 'express-validator/check'
 
+
+// @ts-ignore
+import { config } from 'config';
+
 export const AuthRules = {
     login: [
         oneOf([
@@ -10,7 +14,7 @@ export const AuthRules = {
     ],
     authenticate: [
         oneOf([
-            check('token')
+            check(config.cookie.name)
                 .exists(),
             header('Authorization')
                 .exists()

@@ -1,10 +1,12 @@
 import * as jwt from 'jsonwebtoken';
+import * as jwtExpress from 'express-jwt';
 
 // @ts-ignore
 import { config } from 'config';
 
 import { User } from "../models/user.model";
 import * as fs from 'fs';
+import { Request, Response, NextFunction } from 'express';
 
 export interface TokenPayload {
     username: string;
@@ -13,21 +15,21 @@ export interface TokenPayload {
     admin: boolean;
     group: object;
 }
+const _privateKey = fs.readFileSync('config/keys/private.key', 'utf8');
+const _publicKey = fs.readFileSync('config/keys/public.key', 'utf8');
+const _signOptions = {
+    expiresIn: '12h',
+    ...config.jwt,
+    algorithm: 'RS256'
+}
 
-export class TokenService {
-    private static readonly _privateKey = fs.readFileSync('config/keys/private.key', 'utf8');
-    private static readonly _publicKey = fs.readFileSync('config/keys/public.key', 'utf8');
-    private static readonly _signOptions = {
-        expiresIn: '12h',
-        ...config.jwt,
-        algorithm: 'RS256'
-    }
+const _verifyOptions = {
+    expiresIn: '12h',
+    ...config.jwt,
+    algorithm: ['RS256']
+}
 
-    private static readonly _verifyOptions = {
-        expiresIn: '12h',
-        ...config.jwt,
-        algorithm: ['RS256']
-    }
+export class JwtService {
 
     
     /**
@@ -46,7 +48,7 @@ export class TokenService {
             group: user.group
         };
 
-        return jwt.sign(payload, this._privateKey, { ...this._signOptions, subject: payload.email });
+        return jwt.sign(payload, _privateKey, { ..._signOptions, subject: payload.email });
     }
 
     /**
@@ -56,7 +58,7 @@ export class TokenService {
      * @returns ?
      */
     public static verify(token: string): TokenPayload {
-        return jwt.verify(token, this._publicKey, this._verifyOptions) as TokenPayload;
+        return jwt.verify(token, _publicKey, _verifyOptions) as TokenPayload;
     }
 
     /**
@@ -73,4 +75,12 @@ export class TokenService {
         return decoded as TokenPayload;
     }
 
+    /**
+     * @description Returns correctly configured Express-Jwt middleware
+     * @author DerZade
+     * @returns The ExpressJS Middleware
+     */
+    public static middleware(req: Request, res: Response, next: NextFunction) {
+        jwtExpress({ ..._verifyOptions, cookie: 'sso-token', secret: _publicKey})(req, res, next);
+    }
 }
