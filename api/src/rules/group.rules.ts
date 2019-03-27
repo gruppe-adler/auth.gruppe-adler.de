@@ -1,7 +1,9 @@
 import { body, oneOf, param } from 'express-validator/check'
+import { JwtService } from '../utils/JwtService';
 
 export const GroupRules = {
     create: [
+        JwtService.middleware,
         body('tag')
             .exists().withMessage('Field \'tag\' is required'),
         body('color')
@@ -9,6 +11,7 @@ export const GroupRules = {
             .custom((color => color.match(/^#([a-f0-9]{3}){1,2}$/i) !== null)).withMessage('Invalid format for field \'color\'')
     ],
     update: [
+        JwtService.middleware,
         // id of group to edit must be in param or in body
         oneOf([
             param('id').exists(),
@@ -21,6 +24,7 @@ export const GroupRules = {
         ]),
     ],
     delete: [
+        JwtService.middleware,
         // id of group to edit must be in param or in body
         oneOf([
             param('id').exists(),

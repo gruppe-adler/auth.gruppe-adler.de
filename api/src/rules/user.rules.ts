@@ -1,8 +1,11 @@
 import { body, oneOf, param } from 'express-validator/check'
 import { User } from '../models/user.model';
 
+import { JwtService } from '../utils/JwtService';
+
 export const UserRules = {
     create: [
+        JwtService.middleware,
         body('username')
             .exists().withMessage('Field \'username\' is required')
             .isLength({ min: 5 }).withMessage('Field \'username\' is too short')
@@ -18,6 +21,7 @@ export const UserRules = {
             .exists().withMessage('Field \'admin\' is required'),
     ],
     update: [
+        JwtService.middleware,
         // id of group to edit must be in param or in body
         oneOf([
             param('id').exists(),
@@ -35,6 +39,7 @@ export const UserRules = {
         ])
     ],
     delete: [
+        JwtService.middleware,
         // id of group to edit must be in param or in body
         oneOf([
             param('id').exists(),
