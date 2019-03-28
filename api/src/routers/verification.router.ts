@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express'
+import { Router, Request, Response } from 'express';
 import { matchedData } from 'express-validator/filter';
 import { validationResult } from 'express-validator/check';
 
@@ -10,10 +10,10 @@ import { globalErrorHandler } from '../utils/globalErrorHandler';
 // @ts-ignore
 import { Verification } from '../models/verification.model';
 
-export const VerificationRouter = Router()
+export const VerificationRouter = Router();
 
-// GET verifies user 
-VerificationRouter.get('/verify', VerificationRules['verify'], wrapAsync(async(req: Request, res: Response) => {
+// GET verifies user
+VerificationRouter.get('/verify', VerificationRules.verify, wrapAsync(async (req: Request, res: Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(422).json(errors.array());

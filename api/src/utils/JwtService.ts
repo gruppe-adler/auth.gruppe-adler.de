@@ -4,7 +4,7 @@ import * as jwtExpress from 'express-jwt';
 // @ts-ignore
 import { config } from 'config';
 
-import { User } from "../models/user.model";
+import { User } from '../models/user.model';
 import * as fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 
@@ -15,23 +15,22 @@ export interface TokenPayload {
     admin: boolean;
     group: object;
 }
-const _privateKey = fs.readFileSync('config/keys/private.key', 'utf8');
-const _publicKey = fs.readFileSync('config/keys/public.key', 'utf8');
-const _signOptions = {
+const PRIVATE_KEY = fs.readFileSync('config/keys/private.key', 'utf8');
+const PUBLIC_KEY = fs.readFileSync('config/keys/public.key', 'utf8');
+const SIGN_OPTIONS = {
     expiresIn: '12h',
     ...config.jwt,
     algorithm: 'RS256'
-}
+};
 
-const _verifyOptions = {
+const VERIFY_OPTIONS = {
     expiresIn: '12h',
     ...config.jwt,
     algorithm: ['RS256']
-}
+};
 
 export class JwtService {
 
-    
     /**
      * @description Sign given payload
      * @author DerZade
@@ -39,8 +38,8 @@ export class JwtService {
      * @returns {string} token JSON Web Token
      */
     public static sign(user: User): string {
-        
-        const payload: TokenPayload = { 
+
+        const payload: TokenPayload = {
             username: user.username,
             email: user.email,
             avatar: user.avatar,
@@ -48,7 +47,7 @@ export class JwtService {
             group: user.group
         };
 
-        return jwt.sign(payload, _privateKey, { ..._signOptions, subject: payload.email });
+        return jwt.sign(payload, PRIVATE_KEY, { ...SIGN_OPTIONS, subject: payload.email });
     }
 
     /**
@@ -58,7 +57,7 @@ export class JwtService {
      * @returns ?
      */
     public static verify(token: string): TokenPayload {
-        return jwt.verify(token, _publicKey, _verifyOptions) as TokenPayload;
+        return jwt.verify(token, PUBLIC_KEY, VERIFY_OPTIONS) as TokenPayload;
     }
 
     /**
@@ -81,6 +80,6 @@ export class JwtService {
      * @returns The ExpressJS Middleware
      */
     public static middleware(req: Request, res: Response, next: NextFunction) {
-        jwtExpress({ ..._verifyOptions, cookie: 'sso-token', secret: _publicKey})(req, res, next);
+        jwtExpress({ ...VERIFY_OPTIONS, cookie: 'sso-token', secret: PUBLIC_KEY})(req, res, next);
     }
 }

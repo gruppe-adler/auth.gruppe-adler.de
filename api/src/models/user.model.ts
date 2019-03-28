@@ -1,5 +1,15 @@
 import { Group } from './group.model';
-import { Table, Column, Model, ForeignKey, BelongsTo, DataType, Default, Unique, DefaultScope } from 'sequelize-typescript';
+import {
+    Table,
+    Column,
+    Model,
+    ForeignKey,
+    BelongsTo,
+    DataType,
+    Default,
+    Unique,
+    DefaultScope
+} from 'sequelize-typescript';
 
 @DefaultScope({
     attributes: { exclude: [ 'password', 'groupId' ] },
@@ -9,30 +19,30 @@ import { Table, Column, Model, ForeignKey, BelongsTo, DataType, Default, Unique,
 export class User extends Model<User> {
     @Unique
     @Column(DataType.TEXT)
-    username: string;
+    public username: string;
 
     @Unique
     @Column(DataType.TEXT)
-    email: string;
-    
+    public email: string;
+
     @Column(DataType.TEXT)
-    password: string;
+    public password: string;
 
     @Default(false)
     @Column(DataType.BOOLEAN)
-    admin: boolean;
+    public admin: boolean;
 
     @Default(false)
     @Column(DataType.BOOLEAN)
-    verified: boolean;
+    public verified: boolean;
 
     @Column(DataType.TEXT)
-    avatar: string;
+    public avatar: string;
 
     @ForeignKey(() => Group)
     @Column(DataType.NUMBER)
-    groupId: number;
+    public groupId: number;
 
     @BelongsTo(() => Group)
-    group: Group;
+    public group: Group;
 }

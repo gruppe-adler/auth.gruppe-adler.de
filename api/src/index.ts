@@ -15,7 +15,7 @@ import { VerificationRouter } from './routers/verification.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
-    storage: 'database.sqlite',
+    storage: 'database.sqlite'
 });
 
 sequelize.addModels([ User, Group, Verification ]);
@@ -30,7 +30,7 @@ app.use(bp);
 
 
 const {
-    PORT = 3000,
+    PORT = 3000
 } = process.env;
 
 app.get('/', (req: Request, res: Response) => {
@@ -43,5 +43,5 @@ app.use('/verification', VerificationRouter);
 app.use('', AuthRouter);
 
 app.listen(PORT, () => {
-    console.log('server started at http://localhost:'+PORT);
+    console.log(`server started at http://localhost:${PORT}`);
 });

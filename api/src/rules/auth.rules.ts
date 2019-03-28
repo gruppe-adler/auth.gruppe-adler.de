@@ -1,4 +1,4 @@
-import { body, oneOf, check, header } from 'express-validator/check'
+import { body, oneOf, check, header } from 'express-validator/check';
 
 
 // @ts-ignore
@@ -11,7 +11,7 @@ export const AuthRules = {
             body('email').exists(),
             body('username').exists()
         ]),
-        body('password').exists(),
+        body('password').exists()
     ],
     authenticate: [
         oneOf([
@@ -19,7 +19,7 @@ export const AuthRules = {
                 .exists(),
             header('Authorization')
                 .exists()
-                .custom((header => header.match(/^bearer\s+[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/i) !== null))
+                .custom((h => h.match(/^bearer\s+[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/i) !== null))
         ])
     ],
     register: [
@@ -39,6 +39,6 @@ export const AuthRules = {
             .exists().withMessage('Field \'password\' is required')
             .not().isEmpty().withMessage('Field \'password\' is required'),
         body('avatar')
-            .exists().withMessage('Field \'admin\' is required'),
-    ],
-}
+            .exists().withMessage('Field \'admin\' is required')
+    ]
+};

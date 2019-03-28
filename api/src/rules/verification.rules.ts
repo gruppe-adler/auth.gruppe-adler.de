@@ -1,4 +1,4 @@
-import { check } from 'express-validator/check'
+import { check } from 'express-validator/check';
 
 
 export const VerificationRules = {
@@ -6,4 +6,4 @@ export const VerificationRules = {
         check('code')
             .not().isEmpty()
     ]
-}
+};

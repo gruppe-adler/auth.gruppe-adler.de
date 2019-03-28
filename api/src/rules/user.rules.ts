@@ -1,4 +1,4 @@
-import { body, oneOf, param } from 'express-validator/check'
+import { body, oneOf, param } from 'express-validator/check';
 import { User } from '../models/user.model';
 
 import { JwtService } from '../utils/JwtService';
@@ -20,7 +20,7 @@ export const UserRules = {
             .exists().withMessage('Field \'password\' is required')
             .not().isEmpty().withMessage('Field \'password\' is required'),
         body('avatar')
-            .exists().withMessage('Field \'admin\' is required'),
+            .exists().withMessage('Field \'admin\' is required')
     ],
     update: [
         JwtService.middleware,
@@ -48,4 +48,4 @@ export const UserRules = {
             body('id').exists()
         ])
     ]
-}
+};

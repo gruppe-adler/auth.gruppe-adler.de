@@ -1,8 +1,8 @@
-import { Router, Request, Response } from 'express'
+import { Router, Request, Response } from 'express';
 import { matchedData } from 'express-validator/filter';
 import { validationResult } from 'express-validator/check';
 
-import { User } from '../models/user.model'
+import { User } from '../models/user.model';
 import { Verification } from '../models/verification.model';
 import { AuthRules } from '../rules/auth.rules';
 
@@ -14,28 +14,28 @@ import { EmailService } from '../utils/EmailService';
 // @ts-ignore
 import { config } from 'config';
 
-export const AuthRouter = Router()
+export const AuthRouter = Router();
 
 // POST login
-AuthRouter.post('/login', AuthRules['login'], wrapAsync(async(req: Request, res: Response) => {
+AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(422).json(errors.array());
     const payload = matchedData(req);
 
-    let user: User = await User.findOne({ where: payload });
+    const user: User = await User.findOne({ where: payload });
 
     if (user === null) return res.status(401).end();
 
-    const token = JwtService.sign(user); 
+    const token = JwtService.sign(user);
 
-    res.cookie(config.cookie.name, token, { 
+    res.cookie(config.cookie.name, token, {
         domain: config.cookie.domain,
         httpOnly: true,
         secure: false,
         maxAge: 36000000
-    })
-    
+    });
+
     const resPayload = {};
 
     resPayload[config.cookie.name] = token;
@@ -44,7 +44,7 @@ AuthRouter.post('/login', AuthRules['login'], wrapAsync(async(req: Request, res:
 }));
 
 // POST authenticate (= check received token and return the payload if valid)
-AuthRouter.post('/authenticate', AuthRules['authenticate'], wrapAsync(async(req: Request, res: Response) => {
+AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: Request, res: Response) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(401).end();
@@ -54,7 +54,7 @@ AuthRouter.post('/authenticate', AuthRules['authenticate'], wrapAsync(async(req:
 
     let user;
     try {
-        user = JwtService.verify(token)
+        user = JwtService.verify(token);
     } catch (err) {
         return res.status(401).end();
     }
@@ -63,17 +63,17 @@ AuthRouter.post('/authenticate', AuthRules['authenticate'], wrapAsync(async(req:
 }));
 
 // POST create a new user
-AuthRouter.post('/register', AuthRules['register'], wrapAsync(async(req: Request, res: Response) => {
-    
+AuthRouter.post('/register', AuthRules.register, wrapAsync(async (req: Request, res: Response) => {
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(422).json(errors.array());
     const payload = matchedData(req);
-    
-    let user: User = new User(payload);
+
+    const user: User = new User(payload);
     await user.save();
-    
+
     // send verification mail
-    let verification: Verification = new Verification({ userId: user.id });
+    const verification: Verification = new Verification({ userId: user.id });
     await verification.save();
     EmailService.sendVerificationMail(user.email, verification.code);
 
@@ -81,7 +81,7 @@ AuthRouter.post('/register', AuthRules['register'], wrapAsync(async(req: Request
 }));
 
 // POST logout
-AuthRouter.post('/logout', wrapAsync(async(req: Request, res: Response) => {
+AuthRouter.post('/logout', wrapAsync(async (req: Request, res: Response) => {
     res.clearCookie(config.cookie.name);
 
     res.status(200).end();
