@@ -15,6 +15,7 @@ import { config } from 'config';
 
 export const AuthRouter = Router()
 
+// POST login
 AuthRouter.post('/login', AuthRules['login'], wrapAsync(async(req: Request, res: Response) => {
 
     const errors = validationResult(req);
@@ -41,10 +42,11 @@ AuthRouter.post('/login', AuthRules['login'], wrapAsync(async(req: Request, res:
     res.status(200).json(resPayload);
 }));
 
+// POST authenticate (= check received token and return the payload if valid)
 AuthRouter.post('/authenticate', AuthRules['authenticate'], wrapAsync(async(req: Request, res: Response) => {
 
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json(errors.array());
+    if (!errors.isEmpty()) return res.status(401).end();
     const payload = matchedData(req);
 
     const token = payload[config.cookie.name] || payload.Authorization.replace(/^Bearer\s+/i, '');
@@ -70,6 +72,13 @@ AuthRouter.post('/register', AuthRules['register'], wrapAsync(async(req: Request
     await user.save();
 
     res.status(201).json(user);
+}));
+
+// POST logout
+AuthRouter.post('/logout', wrapAsync(async(req: Request, res: Response) => {
+    res.clearCookie(config.cookie.name);
+
+    res.status(200).end();
 }));
 
 AuthRouter.use(globalErrorHandler);
