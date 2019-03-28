@@ -60,7 +60,7 @@ AuthRouter.post('/authenticate', AuthRules['authenticate'], wrapAsync(async(req:
 }));
 
 // POST create a new user
-AuthRouter.post('/register', UserRules['create'], wrapAsync(async(req: Request, res: Response) => {
+AuthRouter.post('/register', AuthRules['register'], wrapAsync(async(req: Request, res: Response) => {
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(422).json(errors.array());
