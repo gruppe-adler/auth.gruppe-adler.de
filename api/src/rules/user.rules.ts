@@ -6,6 +6,8 @@ import { JwtService } from '../utils/JwtService';
 export const UserRules = {
     create: [
         JwtService.middleware,
+        body('verified')
+            .not().exists(),
         body('username')
             .exists().withMessage('Field \'username\' is required')
             .isLength({ min: 5 }).withMessage('Field \'username\' is too short')

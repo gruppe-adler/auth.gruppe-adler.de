@@ -22,6 +22,10 @@ export class User extends Model<User> {
     @Column(DataType.BOOLEAN)
     admin: boolean;
 
+    @Default(false)
+    @Column(DataType.BOOLEAN)
+    verified: boolean;
+
     @Column(DataType.TEXT)
     avatar: string;
 

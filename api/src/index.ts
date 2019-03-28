@@ -6,17 +6,19 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { User } from './models/user.model';
 import { Group } from './models/group.model';
+import { Verification } from './models/verification.model';
 
 import { UserRouter } from './routers/user.router';
 import { GroupRouter } from './routers/group.router';
 import { AuthRouter } from './routers/auth.router';
+import { VerificationRouter } from './routers/verification.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
     storage: 'database.sqlite',
 });
 
-sequelize.addModels([ User, Group ]);
+sequelize.addModels([ User, Group, Verification ]);
 sequelize.sync({ force: true });
 
 const app = express();
@@ -37,6 +39,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/user', UserRouter);
 app.use('/group', GroupRouter);
+app.use('/verification', VerificationRouter);
 app.use('', AuthRouter);
 
 app.listen(PORT, () => {

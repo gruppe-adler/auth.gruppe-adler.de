@@ -3,12 +3,13 @@ import { matchedData } from 'express-validator/filter';
 import { validationResult } from 'express-validator/check';
 
 import { User } from '../models/user.model'
+import { Verification } from '../models/verification.model';
 import { AuthRules } from '../rules/auth.rules';
 
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
 import { JwtService } from '../utils/JwtService';
-import { UserRules } from '../rules/user.rules';
+import { EmailService } from '../utils/EmailService';
 
 // @ts-ignore
 import { config } from 'config';
@@ -70,6 +71,11 @@ AuthRouter.post('/register', AuthRules['register'], wrapAsync(async(req: Request
     
     let user: User = new User(payload);
     await user.save();
+    
+    // send verification mail
+    let verification: Verification = new Verification({ userId: user.id });
+    await verification.save();
+    EmailService.sendVerificationMail(user.email, verification.code);
 
     res.status(201).json(user);
 }));
