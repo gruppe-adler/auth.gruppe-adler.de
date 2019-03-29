@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { validationResult } from 'express-validator/check';
 import { matchedData } from 'express-validator/filter';
 
 import { Group } from '../models/group.model';

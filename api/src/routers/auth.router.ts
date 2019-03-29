@@ -1,6 +1,5 @@
 import { Router, Request, Response } from 'express';
 import { matchedData } from 'express-validator/filter';
-import { validationResult } from 'express-validator/check';
 
 import { User } from '../models/user.model';
 import { Verification } from '../models/verification.model';
