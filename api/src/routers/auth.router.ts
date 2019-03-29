@@ -16,6 +16,21 @@ import { config } from 'config';
 
 export const AuthRouter = Router();
 
+// POST register
+AuthRouter.post('/register', AuthRules.register, wrapAsync(async (req: Request, res: Response) => {
+    const payload = matchedData(req);
+
+    const user: User = new User(payload);
+    await user.save();
+
+    // send verification mail
+    const verification: Verification = new Verification({ userId: user.id });
+    await verification.save();
+    EmailService.sendVerificationMail(user.email, verification.code);
+
+    res.status(201).json(user);
+}));
+
 // POST login
 AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: Response) => {
     const payload = matchedData(req);
@@ -54,24 +69,6 @@ AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: R
     }
 
     res.status(200).json(user);
-}));
-
-// POST create a new user
-AuthRouter.post('/register', AuthRules.register, wrapAsync(async (req: Request, res: Response) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json(errors.array());
-    const payload = matchedData(req);
-
-    const user: User = new User(payload);
-    await user.save();
-
-    // send verification mail
-    const verification: Verification = new Verification({ userId: user.id });
-    await verification.save();
-    EmailService.sendVerificationMail(user.email, verification.code);
-
-    res.status(201).json(user);
 }));
 
 // POST logout
