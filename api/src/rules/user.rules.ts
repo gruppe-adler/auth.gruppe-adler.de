@@ -2,6 +2,7 @@ import { body, oneOf, param } from 'express-validator/check';
 import { User } from '../models/user.model';
 
 import { JwtService } from '../utils/JwtService';
+import { return422 } from '../utils/return422';
 
 export const UserRules = {
     create: [
@@ -20,7 +21,8 @@ export const UserRules = {
             .exists().withMessage('Field \'password\' is required')
             .not().isEmpty().withMessage('Field \'password\' is required'),
         body('avatar')
-            .exists().withMessage('Field \'admin\' is required')
+            .exists().withMessage('Field \'admin\' is required'),
+        return422
     ],
     update: [
         JwtService.middleware,
@@ -38,7 +40,8 @@ export const UserRules = {
             body('avatar').exists(),
             body('admin').exists(),
             body('group').exists()
-        ])
+        ]),
+        return422
     ],
     delete: [
         JwtService.middleware,
@@ -46,6 +49,7 @@ export const UserRules = {
         oneOf([
             param('id').exists(),
             body('id').exists()
-        ])
+        ]),
+        return422
     ]
 };

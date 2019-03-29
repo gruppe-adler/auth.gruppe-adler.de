@@ -28,9 +28,6 @@ GroupRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
 
 // POST create a new group
 GroupRouter.post('/', GroupRules.create, wrapAsync(async (req: Request, res: Response) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json(errors.array());
     const payload = matchedData(req);
 
     const group: Group = new Group(payload);
@@ -41,9 +38,6 @@ GroupRouter.post('/', GroupRules.create, wrapAsync(async (req: Request, res: Res
 
 // PUT update a group
 GroupRouter.put('/:id?', GroupRules.update, wrapAsync(async (req: Request, res: Response) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json(errors.array());
     const payload = matchedData(req);
 
     // find group to update
@@ -61,9 +55,6 @@ GroupRouter.put('/:id?', GroupRules.update, wrapAsync(async (req: Request, res: 
 
 // DELETE a group
 GroupRouter.delete('/:id?', GroupRules.delete, wrapAsync(async (req: Request, res: Response) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json(errors.array());
     const payload = matchedData(req);
 
     // find group to delete

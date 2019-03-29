@@ -14,9 +14,6 @@ export const VerificationRouter = Router();
 
 // GET verifies user
 VerificationRouter.get('/verify', VerificationRules.verify, wrapAsync(async (req: Request, res: Response) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json(errors.array());
     const payload = matchedData(req);
 
     const verification = await Verification.findByPk(payload.code);

@@ -4,6 +4,7 @@ import { body, oneOf, check, header } from 'express-validator/check';
 // @ts-ignore
 import { config } from 'config';
 import { User } from '../models/user.model';
+import { return422 } from '../utils/return422';
 
 export const AuthRules = {
     login: [
@@ -11,7 +12,8 @@ export const AuthRules = {
             body('email').exists(),
             body('username').exists()
         ]),
-        body('password').exists()
+        body('password').exists(),
+        return422
     ],
     authenticate: [
         oneOf([
@@ -20,7 +22,8 @@ export const AuthRules = {
             header('Authorization')
                 .exists()
                 .custom((h => h.match(/^bearer\s+[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/i) !== null))
-        ])
+        ]),
+        return422
     ],
     register: [
         body('verified')
@@ -39,6 +42,7 @@ export const AuthRules = {
             .exists().withMessage('Field \'password\' is required')
             .not().isEmpty().withMessage('Field \'password\' is required'),
         body('avatar')
-            .exists().withMessage('Field \'admin\' is required')
+            .exists().withMessage('Field \'admin\' is required'),
+        return422
     ]
 };

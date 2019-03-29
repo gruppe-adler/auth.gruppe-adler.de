@@ -18,9 +18,6 @@ export const AuthRouter = Router();
 
 // POST login
 AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: Response) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json(errors.array());
     const payload = matchedData(req);
 
     const user: User = await User.findOne({ where: payload });
@@ -45,9 +42,6 @@ AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: R
 
 // POST authenticate (= check received token and return the payload if valid)
 AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: Request, res: Response) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(401).end();
     const payload = matchedData(req);
 
     const token = payload[config.cookie.name] || payload.Authorization.replace(/^Bearer\s+/i, '');
