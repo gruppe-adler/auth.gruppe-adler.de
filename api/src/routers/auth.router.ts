@@ -12,6 +12,7 @@ import { EmailService } from '../utils/EmailService';
 
 // @ts-ignore
 import { config } from 'config';
+import { GradRequest } from '../@types/GradRequest';
 
 export const AuthRouter = Router();
 
@@ -55,19 +56,8 @@ AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: R
 }));
 
 // POST authenticate (= check received token and return the payload if valid)
-AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: Request, res: Response) => {
-    const payload = matchedData(req);
-
-    const token = payload[config.cookie.name] || payload.Authorization.replace(/^Bearer\s+/i, '');
-
-    let user;
-    try {
-        user = JwtService.verify(token);
-    } catch (err) {
-        return res.status(401).end();
-    }
-
-    res.status(200).json(user);
+AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: GradRequest, res: Response) => {
+    res.status(200).json(req.gradUser);
 }));
 
 // POST logout

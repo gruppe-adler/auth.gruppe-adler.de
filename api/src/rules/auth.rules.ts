@@ -5,6 +5,7 @@ import { body, oneOf, check, header } from 'express-validator/check';
 import { config } from 'config';
 import { User } from '../models/user.model';
 import { return422 } from '../utils/return422';
+import { JwtService } from '../utils/JwtService';
 
 export const AuthRules = {
     login: [
@@ -16,14 +17,7 @@ export const AuthRules = {
         return422
     ],
     authenticate: [
-        oneOf([
-            check(config.cookie.name)
-                .exists(),
-            header('Authorization')
-                .exists()
-                .custom((h => h.match(/^bearer\s+[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/i) !== null))
-        ]),
-        return422
+        JwtService.checkAuthenticated
     ],
     register: [
         body('verified')

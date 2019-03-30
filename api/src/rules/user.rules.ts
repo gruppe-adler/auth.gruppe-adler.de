@@ -6,7 +6,7 @@ import { return422 } from '../utils/return422';
 
 export const UserRules = {
     create: [
-        JwtService.middleware,
+        JwtService.checkAdmin,
         body('verified')
             .not().exists(),
         body('username')
@@ -25,8 +25,8 @@ export const UserRules = {
         return422
     ],
     update: [
-        JwtService.middleware,
-        // id of group to edit must be in param or in body
+        JwtService.checkAuthenticated,
+        // id of user to edit must be in param or in body
         oneOf([
             param('id').exists(),
             body('id').exists()
@@ -44,7 +44,7 @@ export const UserRules = {
         return422
     ],
     delete: [
-        JwtService.middleware,
+        JwtService.checkAdmin,
         // id of group to edit must be in param or in body
         oneOf([
             param('id').exists(),

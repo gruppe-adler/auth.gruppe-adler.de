@@ -4,7 +4,7 @@ import { return422 } from '../utils/return422';
 
 export const GroupRules = {
     create: [
-        JwtService.middleware,
+        JwtService.checkAdmin,
         body('tag')
             .exists().withMessage('Field \'tag\' is required'),
         body('color')
@@ -14,7 +14,7 @@ export const GroupRules = {
         return422
     ],
     update: [
-        JwtService.middleware,
+        JwtService.checkAdmin,
         // id of group to edit must be in param or in body
         oneOf([
             param('id').exists(),
@@ -28,7 +28,7 @@ export const GroupRules = {
         return422
     ],
     delete: [
-        JwtService.middleware,
+        JwtService.checkAdmin,
         // id of group to edit must be in param or in body
         oneOf([
             param('id').exists(),
