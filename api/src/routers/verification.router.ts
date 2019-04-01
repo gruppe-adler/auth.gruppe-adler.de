@@ -22,7 +22,7 @@ VerificationRouter.get('/verify', VerificationRules.verify, wrapAsync(async (req
     await verification.user.update({ verified: true });
     await verification.destroy();
 
-    res.send(200).end();
+    res.status(200).end();
 }));
 
 VerificationRouter.use(globalErrorHandler);
