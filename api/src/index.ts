@@ -33,10 +33,6 @@ const {
     PORT = 3000
 } = process.env;
 
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).json(sequelize.options);
-});
-
 app.use('/user', UserRouter);
 app.use('/group', GroupRouter);
 app.use('/verification', VerificationRouter);
