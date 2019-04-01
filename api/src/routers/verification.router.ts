@@ -8,6 +8,9 @@ import { globalErrorHandler } from '../utils/globalErrorHandler';
 
 // @ts-ignore
 import { Verification } from '../models/verification.model';
+import { User } from '../models/user.model';
+import { endianness } from 'os';
+import { EmailService } from '../utils/EmailService';
 
 export const VerificationRouter = Router();
 
@@ -20,9 +23,29 @@ VerificationRouter.get('/verify', VerificationRules.verify, wrapAsync(async (req
     if (verification === null) return res.status(404).end();
 
     await verification.user.update({ verified: true });
-    await verification.destroy();
+
+    Verification.destroy({ where: { userId: verification.user.id }});
 
     res.status(200).end();
+}));
+
+// POST resend verification email
+VerificationRouter.post('/resend', VerificationRules.resend, wrapAsync(async (req: Request, res: Response) => {
+    const payload = matchedData(req);
+
+    const user = await User.findOne({ where: { email: payload.email } });
+
+    if (user === null) return res.status(404).end();
+
+    // user already verified
+    if (user.verified) return res.status(204).end();
+
+    // send new verification mail
+    const verification: Verification = new Verification({ userId: user.id });
+    await verification.save();
+    EmailService.sendVerificationMail(user.email, verification.code);
+
+    res.status(204).end();
 }));
 
 VerificationRouter.use(globalErrorHandler);
