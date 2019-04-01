@@ -26,7 +26,7 @@ VerificationRouter.get('/verify', VerificationRules.verify, wrapAsync(async (req
 
     Verification.destroy({ where: { userId: verification.user.id }});
 
-    res.status(200).end();
+    res.status(204).end();
 }));
 
 // POST resend verification email
@@ -45,7 +45,7 @@ VerificationRouter.post('/resend', VerificationRules.resend, wrapAsync(async (re
     await verification.save();
     EmailService.sendVerificationMail(user.email, verification.code);
 
-    res.status(204).end();
+    res.status(201).end();
 }));
 
 VerificationRouter.use(globalErrorHandler);

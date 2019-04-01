@@ -64,7 +64,7 @@ UserRouter.delete('/:id?', UserRules.delete, wrapAsync(async (req: Request, res:
     // delete user
     user = await user.destroy();
 
-    res.status(200).json();
+    res.status(204).end();
 }));
 
 // global error handler

@@ -65,7 +65,7 @@ GroupRouter.delete('/:id?', GroupRules.delete, wrapAsync(async (req: Request, re
     // update group
     group = await group.destroy();
 
-    res.status(200).json();
+    res.status(204).end();
 }));
 
 // global error handler

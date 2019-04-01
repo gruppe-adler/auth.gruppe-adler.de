@@ -64,7 +64,7 @@ AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: G
 AuthRouter.post('/logout', wrapAsync(async (req: Request, res: Response) => {
     res.clearCookie(config.cookie.name);
 
-    res.status(200).end();
+    res.status(204).end();
 }));
 
 AuthRouter.use(globalErrorHandler);
