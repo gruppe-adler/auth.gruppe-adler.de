@@ -13,21 +13,45 @@ export default class GroupTag extends Vue {
     private mounted() {
         if (! this.group) return;
 
-        (this.$refs.tag as HTMLElement).style.setProperty('--grad-tag-color', this.group.color);
+        (this.$refs.tag as HTMLElement).style.backgroundColor = this.group.color;
+        (this.$refs.tag as HTMLElement).style.color = this.getCorrectTextColor(this.group.color);
+    }
+
+    private getCorrectTextColor(hex: string): string {
+        /*
+            From this W3C document:
+            http://www.webmasterworld.com/r.cgi?f=88&d=9769&url=http://www.w3.org/TR/AERT#color-contrast
+
+            Color brightness is determined by the following formula:
+            ((Red value X 299) + (Green value X 587) + (Blue value X 114)) / 1000
+
+        */
+
+        hex = (hex.charAt(0) === '#') ? hex.substring(1, 7) : hex;
+
+        const hRed = parseInt((hex).substring(0, 2), 16);
+        const hGreen = parseInt((hex).substring(2, 4), 16);
+        const hBlue = parseInt((hex).substring(4, 6), 16);
+
+        const threshold = 149; /* about half of 256. Lower threshold equals more dark text on dark background  */
+        const cBrightness = ((hRed * 299) + (hGreen * 587) + (hBlue * 114)) / 1000;
+        if (cBrightness > threshold) {
+            return '#000000';
+        } else {
+            return '#FFFFFF';
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .grad-group-tag {
-    $bg-color: var(--grad-tag-color, red);
-
     height: 1.2em;
+    line-height: 1.2em;
     padding: .1em .3em;
     border-radius: .2em;
-    background-color: $bg-color;
-    color: choose-contrast-color($bg-color);
     display: inline-block;
     margin: 0 .2em;
+    font-weight: bold;
 }
 </style>

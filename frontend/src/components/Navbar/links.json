@@ -1,0 +1,14 @@
+[
+    {
+        "text": "Nutzer",
+        "url": "/users"
+    },
+    {
+        "text": "Gruppen",
+        "url": "/groups"
+    },
+    {
+        "text": "Profil",
+        "url": "/profile"
+    }
+]
