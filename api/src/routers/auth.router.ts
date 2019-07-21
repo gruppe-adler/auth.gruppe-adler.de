@@ -1,43 +1,72 @@
 import { Router, Request, Response } from 'express';
-import { matchedData } from 'express-validator/filter';
+import * as rp from 'request-promise';
 
-import { User } from '../models/user.model';
-import { Verification } from '../models/verification.model';
 import { AuthRules } from '../rules/auth.rules';
 
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
-import { JwtService } from '../utils/JwtService';
-import { EmailService } from '../utils/EmailService';
 
 // @ts-ignore
 import { config } from 'config';
 import { GradRequest } from '../@types/GradRequest';
+import { User } from '../models/user.model';
+
+import Steam, { getUserInfo } from '../openid/Steam';
+import { JwtService } from '../utils/JwtService';
 
 export const AuthRouter = Router();
 
-// POST register
-AuthRouter.post('/register', AuthRules.register, wrapAsync(async (req: Request, res: Response) => {
-    const payload = matchedData(req);
-
-    const user: User = new User(payload);
-    await user.save();
-
-    // send verification mail
-    const verification: Verification = new Verification({ userId: user.id });
-    await verification.save();
-    EmailService.sendVerificationMail(user.email, verification.code);
-
-    res.status(201).json(user);
+// GET get steam login url 
+AuthRouter.get('/login/steam', wrapAsync(async (req: Request, res: Response) => {
+    Steam.authenticate('https://steamcommunity.com/openid', false, (err, url) => {
+        if (err) return res.status(503);
+        
+        res.json({ url });
+    });
 }));
 
-// POST login
-AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: Response) => {
-    const payload = matchedData(req);
+// POST validate assertion
+AuthRouter.post('/login/steam', AuthRules.login,  wrapAsync(async (req: Request, res: Response) => {
+    type t = { authenticated: boolean, claimedIdentifier?: string };
 
-    const user: User = await User.findOne({ where: payload });
+    let result: t;
+    try {
+        result = await new Promise<t>((resolve, reject) => {
+            Steam.verifyAssertion(req.body.url, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                };
+            });
+        })
+    } catch (err) {
+        throw { status: 401, message: 'Negative Assertion' };
+    }
 
-    if (user === null) return res.status(401).end();
+    if (!result.authenticated || !result.claimedIdentifier) throw { status: 401, message: 'Negative Assertion' };
+
+    const steamId = result.claimedIdentifier.substr('https://steamcommunity.com/openid/id/'.length);
+
+    let user: User|null = await User.findOne({ where: { steamId }});
+    
+    if (!user) {
+        // no user with given steam id exists -> create a new one
+        const steamUser = await getUserInfo(steamId);
+
+        const avatarPromise = rp.get({ url: steamUser.avatarfull, encoding: null });
+        
+        // make sure no user with same username exists
+        let username = steamUser.personaname;
+        let counter = 1;
+        let userWithUserName: User|null = null;
+        while (userWithUserName) {
+            userWithUserName = await User.findOne({ where: { username }});
+            username = `${steamUser.personaname}${counter++}`;
+        }
+
+        user = await User.create({ steamId, username, avatar: await avatarPromise });
+    }
 
     const token = JwtService.sign(user);
 
@@ -54,6 +83,7 @@ AuthRouter.post('/login', AuthRules.login, wrapAsync(async (req: Request, res: R
 
     res.status(200).json(resPayload);
 }));
+
 
 // POST authenticate (= check received token and return the payload if valid)
 AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: GradRequest, res: Response) => {

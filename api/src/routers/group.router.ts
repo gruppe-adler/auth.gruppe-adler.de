@@ -62,8 +62,8 @@ GroupRouter.delete('/:id?', GroupRules.delete, wrapAsync(async (req: Request, re
     // exit if group does not exist
     if (group === null) return res.status(404).end();
 
-    // update group
-    group = await group.destroy();
+    // delete group
+    await group.destroy();
 
     res.status(204).end();
 }));

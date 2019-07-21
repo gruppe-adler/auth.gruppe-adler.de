@@ -36,14 +36,12 @@ export class JwtService {
 
         const payload: TokenPayload = {
             username: user.username,
-            email: user.email,
             avatar: user.avatar,
             admin: user.admin,
-            group: user.group,
-            verified: user.verified
+            group: user.group
         };
 
-        return jwt.sign(payload, PRIVATE_KEY, { ...SIGN_OPTIONS, subject: payload.email });
+        return jwt.sign(payload, PRIVATE_KEY, { ...SIGN_OPTIONS, subject: payload.username });
     }
 
     /**
@@ -102,23 +100,6 @@ export class JwtService {
             }
 
             if (next) next();
-        });
-
-    }
-
-    /**
-     * @description ExpressJS middleware which checks if requester is authenticated and a verified user
-     * @author DerZade
-     * @returns The ExpressJS Middleware
-     */
-    public static checkVerified(req: GradRequest, res: Response, next: NextFunction) {
-        // call checkAuthenticated middleware directly to extract user from auth token
-        JwtService.checkAuthenticated(req, res, () => {
-            if (res.finished) return;
-
-            if (! req.gradUser.verified) return res.status(403).end();
-
-            next();
         });
 
     }

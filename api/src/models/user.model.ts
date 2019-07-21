@@ -10,6 +10,7 @@ import {
     Unique,
     DefaultScope
 } from 'sequelize-typescript';
+import { fstat } from 'fs';
 
 @DefaultScope({
     attributes: { exclude: [ 'password', 'groupId' ] },
@@ -23,21 +24,14 @@ export class User extends Model<User> {
 
     @Unique
     @Column(DataType.TEXT)
-    public email: string;
-
-    @Column(DataType.TEXT)
-    public password: string;
+    public steamId: string;
 
     @Default(false)
     @Column(DataType.BOOLEAN)
     public admin: boolean;
 
-    @Default(false)
-    @Column(DataType.BOOLEAN)
-    public verified: boolean;
-
-    @Column(DataType.TEXT)
-    public avatar: string;
+    @Column(DataType.BLOB)
+    public avatar: Buffer;
 
     @ForeignKey(() => Group)
     @Column(DataType.NUMBER)

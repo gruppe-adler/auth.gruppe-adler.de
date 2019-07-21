@@ -23,6 +23,14 @@ UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     res.status(200).json(user);
 }));
 
+UserRouter.get('/:id/avatar', wrapAsync(async (req: Request, res: Response) => {
+    const user: User|null = await User.findByPk(req.params.id);
+
+    if (user === null) return res.status(404).end();
+
+    res.status(200).json(user);
+}));
+
 
 // POST create a new user
 UserRouter.post('/', UserRules.create, wrapAsync(async (req: Request, res: Response) => {
@@ -62,7 +70,7 @@ UserRouter.delete('/:id?', UserRules.delete, wrapAsync(async (req: Request, res:
     if (user === null) return res.status(404).end();
 
     // delete user
-    user = await user.destroy();
+    await user.destroy();
 
     res.status(204).end();
 }));

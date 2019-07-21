@@ -1,23 +1,14 @@
 <template>
-<div>
-    <Navbar />
-    <router-view/>
-</div>
+    <div id="app">
+        <router-view/>
+    </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import Navbar from '@/components/TheNavbar.vue';
-
-@Component({
-    components: {
-        Navbar
-    }
-})
-export default class App extends Vue {}
-</script>
-
-
 <style lang="scss">
-@import url('./global.scss')
+html, body {
+    margin: 0px;
+    padding: 0px;
+    background-color: #F0EEEC;
+    font-family: 'Source Sans Pro', sans-serif;
+}
 </style>
