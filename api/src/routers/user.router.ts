@@ -9,37 +9,20 @@ import { globalErrorHandler } from '../utils/globalErrorHandler';
 
 export const UserRouter = Router();
 
+// GET all users
 UserRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
     const users: User[] = await User.findAll();
 
     res.status(200).json(users);
 }));
 
+// GET single user
 UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     const user: User|null = await User.findByPk(req.params.id);
 
-    if (user === null) return res.status(404).end();
+    if (user === null) throw { status: 404, message: `User with id '${req.params.id}' not found`};
 
     res.status(200).json(user);
-}));
-
-UserRouter.get('/:id/avatar', wrapAsync(async (req: Request, res: Response) => {
-    const user: User|null = await User.findByPk(req.params.id);
-
-    if (user === null) return res.status(404).end();
-
-    res.status(200).json(user);
-}));
-
-
-// POST create a new user
-UserRouter.post('/', UserRules.create, wrapAsync(async (req: Request, res: Response) => {
-    const payload = matchedData(req);
-
-    const user: User = new User(payload);
-    await user.save();
-
-    res.status(201).json(user);
 }));
 
 // PUT update a user
@@ -50,7 +33,7 @@ UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: Request, res: Re
     let user: User|null = await User.findByPk(payload.id);
 
     // exit if user does not exist
-    if (user === null) return res.status(404).end();
+    if (user === null) throw { status: 404, message: `User with id '${payload.id}' not found`};
 
     // update user
     delete payload.id;
@@ -67,7 +50,7 @@ UserRouter.delete('/:id?', UserRules.delete, wrapAsync(async (req: Request, res:
     let user: User|null = await User.findByPk(payload.id);
 
     // exit if user does not exist
-    if (user === null) return res.status(404).end();
+    if (user === null) throw { status: 404, message: `User with id '${payload.id}' not found`};
 
     // delete user
     await user.destroy();

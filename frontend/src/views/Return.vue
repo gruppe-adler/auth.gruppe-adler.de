@@ -9,6 +9,8 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import SpinnerVue from '@/components/Spinner.vue';
 
+import { logIn } from '@/services';
+
 @Component({
     components: {
         Spinner: SpinnerVue
@@ -16,15 +18,18 @@ import SpinnerVue from '@/components/Spinner.vue';
 })
 export default class ReturnVue extends Vue {
     private mounted() {
+        this.logIn();
+    }
 
+    private async logIn() {
+        try {
+            await logIn(process.env.BASE_URL + this.$route.fullPath);
+        } catch (err) {
+            // TODO: Catch errors
+            return;
+        }
 
-        fetch(`http://localhost:3000/api/login/steam`,  { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url: (process.env.BASE_URL + this.$route.fullPath) }) });
-        // TODO: Verify Assertion
+        this.$router.push('/redirect');
     }
 }
 </script>

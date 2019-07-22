@@ -3,17 +3,16 @@ import {
     Table,
     Column,
     Model,
-    ForeignKey,
-    BelongsTo,
     DataType,
     Default,
     Unique,
-    DefaultScope
+    DefaultScope,
+    BelongsToMany
 } from 'sequelize-typescript';
-import { fstat } from 'fs';
+import { UserGroup } from './user-group.model';
 
 @DefaultScope({
-    attributes: { exclude: [ 'password', 'groupId' ] },
+    attributes: { exclude: [ 'avatar' ] },
     include: [ () => Group ]
 })
 @Table
@@ -33,10 +32,6 @@ export class User extends Model<User> {
     @Column(DataType.BLOB)
     public avatar: Buffer;
 
-    @ForeignKey(() => Group)
-    @Column(DataType.NUMBER)
-    public groupId: number;
-
-    @BelongsTo(() => Group)
-    public group: Group;
+    @BelongsToMany(() => Group, () => UserGroup)
+    public groups: Group[];
 }

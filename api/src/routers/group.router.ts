@@ -20,7 +20,7 @@ GroupRouter.get('/', wrapAsync(async (req: Request, res: Response) => {
 GroupRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
     const group: Group|null = await Group.findByPk(req.params.id);
 
-    if (group === null) return res.status(404).end();
+    if (group === null) throw { status: 404, message: `Group with id '${req.params.id}' not found`};
 
     res.status(200).json(group);
 }));
@@ -43,7 +43,7 @@ GroupRouter.put('/:id?', GroupRules.update, wrapAsync(async (req: Request, res: 
     let group: Group|null = await Group.findByPk(payload.id);
 
     // exit if group does not exist
-    if (group === null) return res.status(404).end();
+    if (group === null) throw { status: 404, message: `Group with id '${payload.id}' not found`};
 
     // delete group
     delete payload.id;
@@ -60,7 +60,7 @@ GroupRouter.delete('/:id?', GroupRules.delete, wrapAsync(async (req: Request, re
     let group: Group|null = await Group.findByPk(payload.id);
 
     // exit if group does not exist
-    if (group === null) return res.status(404).end();
+    if (group === null) throw { status: 404, message: `Group with id '${payload.id}' not found`};
 
     // delete group
     await group.destroy();

@@ -2,10 +2,11 @@ import { Request } from 'express';
 
 
 export interface TokenPayload {
+    id: number;
     username: string;
-    avatar: string;
+    // avatar: Buffer;
     admin: boolean;
-    group: object;
+    groups: object[];
 }
 
 export interface GradRequest extends Request {

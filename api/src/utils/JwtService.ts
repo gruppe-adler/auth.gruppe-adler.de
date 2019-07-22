@@ -35,10 +35,10 @@ export class JwtService {
     public static sign(user: User): string {
 
         const payload: TokenPayload = {
+            id: user.id,
             username: user.username,
-            avatar: user.avatar,
             admin: user.admin,
-            group: user.group
+            groups: user.groups
         };
 
         return jwt.sign(payload, PRIVATE_KEY, { ...SIGN_OPTIONS, subject: payload.username });
