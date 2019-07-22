@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
-import { Request, Response, NextFunction } from 'express';
+import { join } from 'path';
 import { Sequelize } from 'sequelize-typescript';
 
 import { User } from './models/user.model';
@@ -39,12 +39,18 @@ app.use(bodyParser.json());
 // });
 
 const {
-    PORT = 3000,
+    PORT = 80,
 } = process.env;
 
 app.use('/api/user', UserRouter);
 app.use('/api/group', GroupRouter);
 app.use('/api', AuthRouter);
+
+app.use('/', express.static(join(__dirname, '../frontend')));
+
+app.get('*', (req, res) => {
+    res.sendFile(join(__dirname, '../frontend/index.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);

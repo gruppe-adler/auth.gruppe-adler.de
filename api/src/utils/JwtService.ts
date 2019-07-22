@@ -1,7 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 
-// @ts-ignore
-import { config } from 'config';
+const config = require('../../config/config.json');
 
 import { User } from '../models/user.model';
 import * as fs from 'fs';

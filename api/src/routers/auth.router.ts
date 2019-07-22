@@ -6,8 +6,7 @@ import { AuthRules } from '../rules/auth.rules';
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
 
-// @ts-ignore
-import { config } from 'config';
+const config = require('../../config/config.json');
 import { GradRequest } from '../@types/GradRequest';
 import { User } from '../models/user.model';
 
@@ -113,7 +112,7 @@ AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: G
 
 // POST logout
 AuthRouter.post('/logout', wrapAsync(async (req: Request, res: Response) => {
-    res.clearCookie(config.cookie.name { domain: config.cookie.domain });
+    res.clearCookie(config.cookie.name, { domain: config.cookie.domain });
 
     res.status(204).end();
 }));

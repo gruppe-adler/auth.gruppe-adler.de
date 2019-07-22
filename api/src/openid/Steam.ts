@@ -1,9 +1,12 @@
 import * as rp from 'request-promise';
-import { RelyingParty } from 'openid';
 
 // @ts-ignore
-import { config } from 'config';
+import { RelyingParty } from 'openid';
 
+const config = require('../../config/config.json');
+
+
+// @ts-ignore
 export default new RelyingParty(
     config.steam.returnUrl, // Return URL
     config.steam.realm, 
