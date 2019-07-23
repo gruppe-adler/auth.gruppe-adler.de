@@ -15,7 +15,7 @@ import { AuthRouter } from './routers/auth.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
-    storage: 'database.sqlite'
+    storage: '../data/database.sqlite'
 });
 
 sequelize.addModels([ User, Group, UserGroup ]);

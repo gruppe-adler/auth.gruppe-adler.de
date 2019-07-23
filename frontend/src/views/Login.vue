@@ -58,7 +58,7 @@ export default class LoginVue extends Vue {
         params.append('openid.ns', 'http://specs.openid.net/auth/2.0');
         params.append('openid.identity', 'http://specs.openid.net/auth/2.0/identifier_select');
         params.append('openid.claimed_id', 'http://specs.openid.net/auth/2.0/identifier_select');
-        params.append('openid.return_to', `http://test.gruppe-adler.de:8080/openid/return/steam`);
+        params.append('openid.return_to', `https://sso.gruppe-adler.de/openid/return/steam`);
 
         return `https://steamcommunity.com/openid/login?${params.toString()}`;
     }
