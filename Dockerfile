@@ -45,6 +45,9 @@ RUN [ "npm", "run", "build" ]
 ##########################################################################################
 
 FROM node:10-alpine
+
+RUN apk add --no-cache --virtual . python \
+
 WORKDIR /usr/src/app/
 
 # Copy homepage from frontend-builder
