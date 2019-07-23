@@ -6,7 +6,7 @@ WORKDIR /tmp/
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY package*.json ./
+COPY ./api/package*.json ./
 
 # Install node_modules
 RUN npm ci
@@ -27,7 +27,7 @@ WORKDIR /tmp/
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY package*.json ./
+COPY ./frontend/package*.json ./
 
 # Install node_modules
 RUN npm ci
