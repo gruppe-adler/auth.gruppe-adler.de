@@ -6,8 +6,8 @@ import { User } from '../models/user.model';
 import * as fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import { GradRequest, TokenPayload } from '../@types/GradRequest';
-import { oneOf, check, header, validationResult } from 'express-validator/check';
-import { matchedData } from 'express-validator/filter';
+import { oneOf, check, header, validationResult } from 'express-validator';
+import { matchedData } from 'express-validator';
 
 const PRIVATE_KEY = fs.readFileSync('config/keys/private.key', 'utf8');
 const PUBLIC_KEY = fs.readFileSync('config/keys/public.key', 'utf8');

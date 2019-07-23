@@ -12,7 +12,7 @@ import { User } from '../models/user.model';
 
 import Steam, { getUserInfo } from '../openid/Steam';
 import { JwtService } from '../utils/JwtService';
-import { matchedData } from 'express-validator/filter';
+import { matchedData } from 'express-validator';
 
 export const AuthRouter = Router();
 

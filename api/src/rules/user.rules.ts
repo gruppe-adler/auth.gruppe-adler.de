@@ -1,4 +1,4 @@
-import { body, oneOf, param } from 'express-validator/check';
+import { body, oneOf, param } from 'express-validator';
 import { sanitize } from 'express-validator';
 import { User } from '../models/user.model';
 

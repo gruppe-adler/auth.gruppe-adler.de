@@ -1,4 +1,4 @@
-import { body, oneOf, param } from 'express-validator/check';
+import { body, oneOf, param } from 'express-validator';
 import { JwtService } from '../utils/JwtService';
 import { return422 } from '../utils/return422';
 import { Group } from '../models/group.model';
