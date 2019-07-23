@@ -1,4 +1,4 @@
-FROM node:10-alpine AS api-builder
+FROM node:10 AS api-builder
 
 # Create app directory
 WORKDIR /tmp/
@@ -19,7 +19,7 @@ RUN [ "npm", "run", "tsc" ]
 
 ##########################################################################################
 
-FROM node:10-alpine AS frontend-builder
+FROM node:10 AS frontend-builder
 
 # Create app directory
 WORKDIR /tmp/
