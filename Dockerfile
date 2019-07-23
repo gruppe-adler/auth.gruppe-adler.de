@@ -37,7 +37,6 @@ COPY ./frontend .
 
 # Build project
 ENV NODE_ENV production
-RUN npm run build
 
 # Compile 
 RUN [ "npm", "run", "build" ]
