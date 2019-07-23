@@ -12,7 +12,7 @@ COPY package*.json ./
 RUN npm ci
 
 # Bundle app source
-COPY . .
+COPY ./api .
 
 # Compile 
 RUN [ "npm", "run", "tsc" ]
@@ -33,14 +33,14 @@ COPY package*.json ./
 RUN npm ci
 
 # Bundle app source
-COPY . .
+COPY ./frontend .
 
 # Build project
 ENV NODE_ENV production
 RUN npm run build
 
 # Compile 
-RUN [ "npm", "run", "tsc" ]
+RUN [ "npm", "run", "build" ]
 
 ##########################################################################################
 
