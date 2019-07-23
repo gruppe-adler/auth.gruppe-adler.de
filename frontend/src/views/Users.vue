@@ -7,7 +7,6 @@
                 <span v-else>Alle Gruppen</span>
                 <i class="material-icons">arrow_drop_down</i>
                 <div v-if="flyOutShown" class="grad-users__filter-flyout grad-menu">
-                    <span v-if="groups.length === 0">Keine Gruppen gefunden</span>
                     <span @click="selectFilterGroup(null)" class="grad-users__filter-flyout--all">Alle Gruppen</span>
                     <span v-for="g in groups" :key="g.tag" @click="selectFilterGroup(g)">
                         <GroupTag :group="g" :disabled="true" />
@@ -29,7 +28,7 @@
                     />
                     <GroupTag 
                         v-for="g in u.groups"
-                        v-if="g.tag !== u.primaryGroup.tag"
+                        v-if="!u.primaryGroup || g.tag !== u.primaryGroup.tag"
                         :key="g.tag"
                         :group="g"
                         :disabled="true"

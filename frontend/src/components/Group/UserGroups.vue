@@ -4,7 +4,7 @@
             v-for="g in groups"
             :key="g.tag"
             :group="g"
-            :star="primaryGroup.tag == g.tag"
+            :star="primaryGroup && primaryGroup.tag == g.tag"
             @delete="removeGroup"
             @select="$emit('select', $event)" />
         <div class="grad-user-groups__add" @click="showFlyOut" v-if="availableGroups.length > 0">
