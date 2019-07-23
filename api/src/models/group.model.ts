@@ -1,6 +1,6 @@
 import { User } from './user.model';
 import { UserGroup } from './user-group.model';
-import { Table, Column, Model, HasMany, DataType, Unique, BelongsToMany, PrimaryKey } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, DataType, Unique, BelongsToMany, Default } from 'sequelize-typescript';
 
 @Table
 export class Group extends Model<Group> {
@@ -13,6 +13,10 @@ export class Group extends Model<Group> {
 
     @Column(DataType.TEXT)
     public label: string;
+
+    @Default(false)
+    @Column(DataType.BOOLEAN)
+    public hidden: boolean;
 
     @BelongsToMany(() => User, () => UserGroup)
     public users: User[];

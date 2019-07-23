@@ -8,6 +8,7 @@ export const GroupRules = {
         JwtService.checkAdmin,
         body('label')
             .exists().withMessage('Field \'label\' is required'),
+        body('hidden').exists(),
         body('tag')
             .exists().withMessage('Field \'tag\' is required')
             .custom(tag => Group.findOne({ where: { tag } }).then(g => !!!g)).withMessage('tag already exists'),
@@ -27,6 +28,7 @@ export const GroupRules = {
         // either new tag or new color has to be given
         oneOf([
             body('label').exists(),
+            body('hidden').exists(),
             body('tag')
                 .exists()
                 .custom(tag => Group.findOne({ where: { tag } }).then(g => !!!g)).withMessage('tag already exists'),

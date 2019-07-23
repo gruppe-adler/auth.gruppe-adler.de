@@ -3,4 +3,5 @@ export default interface Group {
     tag: string;
     label: string;
     color: string;
+    hidden: boolean;
 }

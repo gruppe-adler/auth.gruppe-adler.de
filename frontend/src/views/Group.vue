@@ -14,6 +14,10 @@
                     @changeColor="changeColor"
                 />
             </div>
+            <div style="display: flex;">
+                <Toggle v-model="group.hidden" />
+                <label style="margin: 0px 10px;">Versteckt</label>
+            </div>
             <div class="grad-icon-input">
                 <i class="material-icons">label</i>
                 <input type="text" v-model="group.label" />
@@ -44,12 +48,14 @@ import { fetchGroup, createGroup, updateGroup, deleteGroup } from '@/services';
 import ColorPickerVue from '@caohenghu/vue-colorpicker';
 import LoaderVue from '@/components/Loader.vue';
 import ModalVue from '@/components/Modal.vue';
+import ToggleVue from '@/components/Toggle.vue';
 
 @Component({
     components: {
         ColorPicker: ColorPickerVue,
         Loader: LoaderVue,
-        Modal: ModalVue
+        Modal: ModalVue,
+        Toggle: ToggleVue
     }
 })
 export default class GroupVue extends Vue {
@@ -85,7 +91,8 @@ export default class GroupVue extends Vue {
                 id: -1,
                 tag: label,
                 label,
-                color: '#D18D1F'
+                color: '#D18D1F',
+                hidden: false
             };
         }
         this.loading = false;

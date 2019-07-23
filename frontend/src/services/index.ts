@@ -80,7 +80,8 @@ export const updateUser = async (user: User): Promise<User> => {
     const body = {
         admin: user.admin,
         username: user.username,
-        groups: user.groups
+        groups: user.groups,
+        displayGroup: user.displayGroup
     };
 
     const res: Response = await fetch(`${API_BASE_URL}/user/${user.id}`, {
@@ -137,11 +138,12 @@ export const fetchGroups = async (): Promise<Group[]> => {
  * @returns { Promise<Group> } Promise resolves into group.
  */
 export const createGroup = async (group: Group): Promise<Group> => {
-
+    console.log(group);
     const body = {
         label: group.label,
         tag: group.tag,
-        color: group.color
+        color: group.color,
+        hidden: group.hidden
     };
 
     const res: Response = await fetch(`${API_BASE_URL}/group`, {
@@ -166,7 +168,8 @@ export const updateGroup = async (group: Group): Promise<Group> => {
     const body = {
         label: group.label,
         tag: group.tag,
-        color: group.color
+        color: group.color,
+        hidden: group.hidden
     };
 
     const res: Response = await fetch(`${API_BASE_URL}/group/${group.id}`, {
