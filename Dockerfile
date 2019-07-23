@@ -57,6 +57,9 @@ COPY --from=api-builder /tmp/package*.json ./
 # Install depencies
 RUN npm ci --only=production
 
+RUN mkdir data
+RUN mkdir config
+
 EXPOSE 80
 VOLUME ["/usr/src/app/config"]
 VOLUME ["/usr/src/app/data"]
