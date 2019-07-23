@@ -45,6 +45,7 @@ export default class GroupTag extends Vue {
     padding: 10px 14px;
     width: auto;
     position: relative;
+    cursor: pointer;
 
     i {
         color: #999999;
@@ -88,6 +89,7 @@ export default class GroupTag extends Vue {
 
     &:hover {
         background-color: white;
+        transition: all .2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
     }
 
     &#{&}--disabled:hover {

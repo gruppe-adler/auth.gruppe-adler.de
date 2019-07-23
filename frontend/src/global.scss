@@ -144,9 +144,11 @@ input[type=text] {
         display: flex;
         align-items: center;
         cursor: pointer;
+        transition: all .2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
 
         &:hover {
             background-color: rgba(#D6D4D3, 0.5);
+            transition: all .2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
         }
     }
 }
