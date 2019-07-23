@@ -1,4 +1,4 @@
-import { User } from '@/models';
+import { User, Group } from '@/models';
 
 const API_BASE_URL = 'http://test.gruppe-adler.de/api';
 
@@ -37,7 +37,19 @@ export const authenticate = async (): Promise<User> => {
  */
 export const fetchUser = async (id: number): Promise<User> => {
     const res: Response = await fetch(`${API_BASE_URL}/user/${id}`, {
-        method: 'POST'
+        method: 'GET'
+    });
+
+    return await res.json();
+};
+
+/**
+ * Fetch a single user
+ * @returns { Promise<Group> } Promise resolves into user.
+ */
+export const fetchGroup = async (id: number): Promise<Group> => {
+    const res: Response = await fetch(`${API_BASE_URL}/group/${id}`, {
+        method: 'GET'
     });
 
     return await res.json();
@@ -57,3 +69,26 @@ export const logout = async (): Promise<void> => {
 };
 
 
+/**
+ * Fetch all groups
+ * @returns { Promise<Group[]> } Promise resolves into array of groups.
+ */
+export const fetchGroups = async (): Promise<Group[]> => {
+    const res: Response = await fetch(`${API_BASE_URL}/group`, {
+        method: 'GET'
+    });
+
+    return await res.json();
+};
+
+/**
+ * Fetch all users
+ * @returns { Promise<User[]> } Promise resolves into array of users.
+ */
+export const fetchUsers = async (): Promise<User[]> => {
+    const res: Response = await fetch(`${API_BASE_URL}/user`, {
+        method: 'GET'
+    });
+
+    return await res.json();
+};
