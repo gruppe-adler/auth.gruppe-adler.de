@@ -5,8 +5,8 @@
         <h3>Grad login</h3>
     </div>
     <div v-if="$root.$data.user && $root.$data.user.admin">
-        <router-link tag="button" to="/groups">Gruppen</router-link>
-        <router-link tag="button" to="/users">Nutzer</router-link>
+        <router-link tag="button" to="/groups" :class="[groupsNavActive ? 'grad-active' : '']">Gruppen</router-link>
+        <router-link tag="button" to="/users":class="[usersNavActive ? 'grad-active' : '']">Nutzer</router-link>
     </div>
     <span v-else></span>
     <div class="grad-navbar__user" v-if="$root.$data.user" @click="showFlyOut">
@@ -26,6 +26,14 @@ import { Component, Vue } from 'vue-property-decorator';
 @Component
 export default class NavbarVue extends Vue {
     private flyOutShown: boolean = false;
+
+    private get groupsNavActive() {
+        return this.$route.path === '/groups';
+    }
+
+    private get usersNavActive() {
+        return this.$route.path === '/users';
+    }
 
     private showFlyOut() {
         if (this.flyOutShown) {
