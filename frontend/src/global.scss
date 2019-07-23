@@ -5,6 +5,7 @@ html, body {
     padding: 0px;
     background-color: #F0EEEC;
     font-family: 'Source Sans Pro', sans-serif;
+    height: 100%;
 }
 
 * {
@@ -12,12 +13,12 @@ html, body {
     font-family: Source Sans Pro;
     font-size: 16px;
     margin: 0px;
+    color: #333333;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: Oswald;
     text-transform: uppercase;
-    color: #333333;
     font-weight: 600;
     line-height: 1em;
 }
@@ -33,6 +34,7 @@ button {
     padding: 10px 15px;
     border: none;
     font-weight: 600;
+    outline: none;
 
     display: flex;
     align-items: center;
@@ -77,6 +79,24 @@ input[type=text] {
     outline: none;
 }
 
+::-webkit-scrollbar-track
+{
+	background-color: transparent;
+}
+
+::-webkit-scrollbar
+{
+	width: 6px;
+    height: 6px;
+	background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb
+{
+    background-color: rgba(black, 0.3);
+    border-radius: 3px;
+}
+
 .grad-menu {
     background-color: white;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.24), 0px 2px 8px rgba(0, 0, 0, 0.12);
@@ -90,7 +110,27 @@ input[type=text] {
         box-sizing: border-box;
 
         &:hover {
-            background-color: rgba(black, 0.05);
+            background-color: #F0EEEC;
+        }
+    }
+}
+
+.grad-list {
+    width: 100%;
+    margin-top: 24px;
+    overflow-y: auto;
+
+    > * {
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 8px;
+        padding: 22px 12px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(#D6D4D3, 0.5);
         }
     }
 }
