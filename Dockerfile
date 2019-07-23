@@ -53,7 +53,6 @@ COPY --from=frontend-builder /tmp/dist ./frontend/
 # Copy api stuff from api-builder
 COPY --from=api-builder /tmp/build ./build/
 COPY --from=api-builder /tmp/package*.json ./
-COPY --from=api-builder /tmp/config ./
 
 # Install depencies
 RUN npm ci --only=production
