@@ -7,13 +7,18 @@ import {
     Default,
     Unique,
     DefaultScope,
-    BelongsToMany
+    BelongsToMany,
+    ForeignKey,
+    BelongsTo,
 } from 'sequelize-typescript';
 import { UserGroup } from './user-group.model';
 
 @DefaultScope({
-    attributes: { exclude: [  ] },
-    include: [ () => Group ]
+    attributes: { exclude: [ 'displayGroupId' ] },
+    include: [ 
+        { model: () => Group, as: 'groups', through: { attributes: [] } },
+        { model: () => Group, as: 'displayGroup' }
+    ]
 })
 @Table
 export class User extends Model<User> {
@@ -32,6 +37,13 @@ export class User extends Model<User> {
     @Column(DataType.TEXT)
     public avatar: string;
 
-    @BelongsToMany(() => Group, () => UserGroup)
+    @BelongsToMany(() => Group, { through: () => UserGroup, as: 'groups' })
     public groups: Group[];
+
+    @ForeignKey(() => Group)
+    @Column(DataType.NUMBER)
+    public displayGroupId: number;
+    
+    @BelongsTo(() => Group, { as: 'displayGroup', foreignKey: 'displayGroupId' })
+    public displayGroup: Group;
 }
