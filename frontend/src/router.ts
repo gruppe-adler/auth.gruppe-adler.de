@@ -25,6 +25,12 @@ export default new Router({
             // beforeEnter: authenticateBeforeEnter
         },
         {
+            path: '/profile/:uid',
+            props: true,
+            component: () => import(/* webpackChunkName: "profile" */ './views/Profile.vue')
+            // beforeEnter: authenticateBeforeEnter
+        },
+        {
             // special route to redirect the user after he successfully logged in
             path: '/redirect',
             beforeEnter(from, to, next) {
@@ -55,6 +61,27 @@ export default new Router({
         {
             path: '/openid/return/steam',
             component: () => import(/* webpackChunkName: "return" */ './views/Return.vue')
+        },
+        {
+            path: '/groups',
+            component: () => import(/* webpackChunkName: "admin" */ './views/Groups.vue')
+        },
+        {
+            path: '/users',
+            component: () => import(/* webpackChunkName: "admin" */ './views/Users.vue')
+        },
+        {
+            path: '/group/create',
+            component: () => import(/* webpackChunkName: "admin" */ './views/Group.vue')
+        },
+        {
+            path: '/group/:gid',
+            component: () => import(/* webpackChunkName: "admin" */ './views/Group.vue'),
+            props: true
+        },
+        {
+            path: '/unauthorized',
+            component: () => import(/* webpackChunkName: "admin" */ './views/Unauthorized.vue')
         }
     ]
 });
