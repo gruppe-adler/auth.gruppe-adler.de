@@ -69,7 +69,10 @@ AuthRouter.post('/login/steam', AuthRules.login,  wrapAsync(async (req: Request,
             username = `${steamUser.personaname}${counter++}`;
         }
 
-        user = await User.create({ steamId, username, avatar: await avatarPromise });
+        // set first user automatically  as admin
+        const allUsers = await User.findAll();
+
+        user = await User.create({ steamId, username, avatar: await avatarPromise, admin: allUsers.length === 0 });
     }
 
     const token = JwtService.sign(user);

@@ -1,10 +1,22 @@
 <template>
+<div class="grad-login">
+    <img src="@/assets/adlerkopp.svg" />
+    <h3>Grad login</h3>
+    <p>Steam gibt uns Deine SteamID und deinen Nick, um Dich zu identifizieren. Wir bekommen  keinen Zugriff auf Deinen Account.</p>
+
     <a :href="loginSteamRedirectUrl">
+        <button>
+            <img src="@/assets/steam.svg" />
+            <span>Login mit Steam SSO</span>
+        </button>
+    </a>
+</div>
+    <!-- <a :href="loginSteamRedirectUrl">
             <img
                 src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png"
                 alt="Anmeldung via Steam"
             />
-    </a>
+    </a> -->
 </template>
 
 <script lang="ts">
@@ -59,3 +71,31 @@ export default class LoginVue extends Vue {
 }
 </script>
 
+<style lang="scss" scoped>
+.grad-login {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 0 20vh 0 !important;
+
+    > img {
+        height: 128px;
+        width: 128px;
+    }
+
+    >p {
+        background-color: #E3E1DF;
+        border-radius: 8px;
+        padding: 20px 27px;
+
+        color: rgba(#333333, 0.7);
+        margin: 24px 0px;
+        width: 400px;
+    }
+
+    > h3 {
+        margin-top: 10px;
+        font-size: 30px;
+    }
+}
+</style>

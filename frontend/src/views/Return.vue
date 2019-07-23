@@ -33,14 +33,3 @@ export default class ReturnVue extends Vue {
     }
 }
 </script>
-
-<style lang="scss" scoped>
-.grad-return {
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-</style>

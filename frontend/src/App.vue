@@ -1,41 +1,65 @@
 <template>
-    <div id="app">
-        <router-view/>
-        <i class="material-icons grad-logout" @click="$router.push('/logout')">exit_to_app</i>
+    <div class="app">
+        <Navbar v-if="navbarShown" />
+        <router-view v-if="routerViewShown" class="page"/>
     </div>
 </template>
 
-<style lang="scss">
-@import url('https://fonts.googleapis.com/css?family=Oswald|Source+Sans+Pro|Material+Icons');
+<script lang="ts">
+import { Component, Vue, Watch } from 'vue-property-decorator';
 
-@import "~vue-material/dist/theme/engine"; // Import the theme engine
+import NavbarVue from '@/components/Navbar.vue';
+import { authenticate } from '@/services';
 
-@include md-register-theme("default", (
-  primary: #D18D1F, // The primary color of your brand
-  accent: #8F1167, // The secondary color of your brand
-  white: white
-));
+@Component({
+    components: {
+        Navbar: NavbarVue
+    }
+})
+export default class AppVue extends Vue {
+    get navbarShown() {
+        return !(['/login'].includes(this.$route.path));
+    }
 
-@import "~vue-material/dist/theme/all";
+    get routerViewShown() {
+        return this.$root.$data.user || ['/login', '/openid/return/steam', '/profile'].includes(this.$route.path);
+    }
 
-html, body {
-    margin: 0px;
-    padding: 0px;
-    background-color: #F0EEEC;
-    font-family: 'Source Sans Pro', sans-serif;
+    private created() {
+        this.fetchUser();
+    }
+
+    @Watch('$route')
+    private async fetchUser() {
+        if (this.$root.$data.user) return;
+
+        try {
+            const user = await authenticate();
+
+            this.$root.$data.user = user;
+        } catch (err) { /* intentionally empty. the user is not logged in if we get an error */ }
+
+    }
 }
+</script>
 
-.grad-logout {
-    position: fixed;
-    top: 0px;
-    right: 0px;
-    margin: 20px;
-    opacity: .5;
-    transition: opacity 0.1s linear;
-    cursor: pointer;
+<style lang="scss" scoped>
+.app {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 50px;
+    box-sizing: border-box;
 
-    &:hover {
-        opacity: 1;
+    > .page {
+        margin: auto 10px;
+        max-width: calc(100% - 20px);
     }
 }
 </style>
+
+
+<style lang="scss" src="./global.scss"></style>

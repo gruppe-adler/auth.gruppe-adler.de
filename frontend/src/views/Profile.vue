@@ -1,46 +1,54 @@
 <template>
-    <div :class="['grad-profile', canEdit ? 'grad-profile--editable' : '']">
-        <div v-if="user" class="grad-profile__wrapper">
-            <div class="grad-profile__avatar">
-                <img :src="user.avatar" />
-            </div>
-            <div>
-                <group-tag v-for="g in user.groups" :key="g.tag" :group="g" />
-            </div>
-            <div>
-                <input type="text" :value="user.username" :disabled="!canEdit" />
-            </div>
-            <!-- <div>
-                <input type="text" :value="user.steamId" />
-            </div> -->
-            <div>
-                <md-switch v-model="user.admin" class="md-secondary">Adminrechte</md-switch>
-            </div>
+    <div :class="['grad-profile', canEdit ? 'grad-profile--editable' : '']" v-if="user">
+        <div class="grad-profile__avatar">
+            <img :src="user.avatar" />
+            <i class="material-icons">add_photo_alternate</i>
         </div>
-        <span>{{$root.$data.user}}</span>
+        <div style="display: flex;">
+            <Toggle v-model="user.admin" :disabled="!$root.$data.user.admin" />
+            <label style="margin: 0px 10px;">Admin</label>
+        </div>
+        <div class="grad-profile__username">
+            <input type="text" :value="user.username" :disabled="!canEdit" />
+            <a target="_blank" :href="`https://steamcommunity.com/profiles/${user.steamId}`">
+                <img src="~@/assets/steam.svg" />
+            </a>
+        </div>
+        <button v-if="canEdit" class="grad-profile__save">Speichern</button>
+        <button v-if="canEdit" class="grad-profile__delete">Löschen</button>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { User } from '@/models';
-import GroupTag from '@/components/GroupTag.vue';
-import { authenticate, fetchUser } from '../services';
+import { authenticate, fetchUser } from '@/services';
+import ToggleVue from '@/components/Toggle.vue';
 @Component({
-    components: { GroupTag }
+    components: {
+        Toggle: ToggleVue
+    }
 })
 export default class ProfileVue extends Vue {
     @Prop() private uid?: number;
 
     private error: any = null;
     private user?: User|null = null;
-    private canEdit: boolean = true;
+    private get canEdit() {
+        if (! this.user) return false;
 
+        // @ts-ignore
+        if (! this.$root.user) return false;
+
+        // @ts-ignore
+        return this.$root.user!.admin || this.$root.user!.id === this.uid;
+    }
 
     private created() {
         this.fetchUser();
     }
 
+    @Watch('uid')
     private async fetchUser() {
         if (this.uid) {
             try {
@@ -62,45 +70,80 @@ export default class ProfileVue extends Vue {
 
 <style lang="scss" scoped>
 .grad-profile {
-    width: 100vw;
-    height: 100vh;
+    flex: 1;
+    width: 500px;
+
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
 
-    &__wrapper {
-        display: flex;
-        background-color: white;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 10px;
-        flex-direction: column;
-        align-items: center;
-        max-width: 100vw;
-        overflow: hidden;
-
-
-        > * {
-            margin: 10px 20px;
-        }
+    > * {
+        margin-top: 12px;
+        margin-bottom: 12px;
     }
 
-    input {
-        background: #F0F0F0;
-        border: 1px solid #999999;
-        box-sizing: border-box;
-        border-radius: 4px;
-        text-align: center;
-        font-size: 18px;
-        padding: 15px;
-        width: 300px;
+    button {
+        width: 50%;
     }
 
     &__avatar {
+        height: 128px;
+        width: 128px;
         position: relative;
         display: inline-flex;
         user-select: none;
         border-radius: 50%;
         overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+
+        i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            color: white;
+        }
+    }
+
+    &__username {
+        width: 100%;
+        position: relative;
+
+        > a {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            opacity: 0.5;
+            cursor: pointer;
+            height: calc(100% - 30px);
+
+            > img {
+                height: 100%;
+            }
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
+    &__save {
+        margin-top: auto;
+    }
+
+    &__delete {
+        color: #8F1167;
+        background-color: transparent;
+
+        &:hover {
+            background-color: #8F1167;
+            color: white;
+        }
     }
 }
 
@@ -109,29 +152,19 @@ export default class ProfileVue extends Vue {
         cursor: pointer;
 
         &:hover {
-            &::before,
-            &::after {
-                display: block;
-                position: absolute;
-                background-color: rgba(0,0,0,0.4);
-                content: '';
-            }
             &::before {
+                position: absolute;
+                display: block;
+                content: '';
+                background-color: rgba(0,0,0,0.4);
                 top: 0;
                 bottom: 0;
                 left: 0;
                 right: 0;
             }
         
-            &::after {
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                color: white;
-                font-weight: bold;
-                padding: 0.2em;
-                border-radius: 2px;
-                content: 'ÄNDERN';
+            > i {
+                display: block;
             }
         }
     }

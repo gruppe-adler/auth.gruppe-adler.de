@@ -1,6 +1,6 @@
 import { User } from '@/models';
 
-const API_BASE_URL = 'http://test.gruppe-adler.de:3000/api';
+const API_BASE_URL = 'http://test.gruppe-adler.de/api';
 
 /**
  * Login via steam. Called in openid return.
