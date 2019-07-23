@@ -1,12 +1,19 @@
 <template>
 <div :class="['grad-navbar', flyOutShown ? 'grad-navbar--flyout-shown' : '']">
-    <img src="@/assets/adlerkopp.svg" />
-    <h3>Grad login</h3>
-    <!-- TODO: Fetch user -->
+    <div class="grad-navbar__header">
+        <img src="@/assets/adlerkopp.svg" />
+        <h3>Grad login</h3>
+    </div>
+    <div v-if="$root.$data.user && $root.$data.user.admin">
+        <router-link tag="button" to="/groups">Gruppen</router-link>
+        <router-link tag="button" to="/users">Nutzer</router-link>
+    </div>
+    <span v-else></span>
     <div class="grad-navbar__user" v-if="$root.$data.user" @click="showFlyOut">
         <img :src="$root.$data.user.avatar" />
         <span>{{$root.$data.user.username}}</span>
         <div v-if="flyOutShown" class="grad-navbar__user-flyout grad-menu">
+            <router-link tag="span" to="/profile">Profil</router-link>
             <router-link tag="span" to="/logout">Ausloggen</router-link>
         </div>
     </div>
@@ -42,62 +49,77 @@ export default class NavbarVue extends Vue {
 <style lang="scss" scoped>
 .grad-navbar {
     flex: 0;
-    display: flex;
+    display: grid;
     padding: 20px;
     align-items: center;
-    justify-content: flex-start;
     width: 100%;
+    grid-template-columns: .5fr 500px .5fr;
+    justify-items: flex-start;
     box-sizing: border-box;
 
-    > img {
-        margin-left: 0px;
-        height: 24px;
+    > * {
+        display: grid;
+        grid-column-gap: 8px;
+        grid-template-columns: auto auto;
+        align-items: center;
     }
 
-    h3 {
-        font-size: 16px;
-        margin-left: 8px;
-        opacity: 0.5;
+    &__header {
+        display: grid;
+        grid-column-gap: 8px;
+        grid-template-columns: auto auto;
+        align-items: center;
+        img {
+            height: 30px;
+        }
+    
+        h3 {
+            font-size: 16px;
+            opacity: 0.5;
+        }
     }
+
 
 
     &__user {
-        margin-left: auto;
         position: relative;
+        justify-self: flex-end;
         cursor: pointer;
+        border-radius: 20px;
 
         display: flex;
         align-items: center;
+        transition: background-color linear 0.1s;
+
 
         > img {
             height: 40px;
             border-radius: 50%;
+            z-index: 1;
         }
 
         > span {
             color: #333333;
             box-sizing: border-box;
-            margin-left: 8px;
             padding: 10px 16px;
-            border-radius: 20px;
+            padding-left: 30px;
+            margin-left: -20px;
             height: 40px;
-            transition: background-color linear 0.1s;
 
-            &:hover {
-                background-color: rgba(255, 255, 255, 0.5);
-            }
+        }
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.5);
         }
 
         &-flyout {
-            width: 100%;
             position: absolute;
             top: calc(100% + 6px);
-            left: 0px;
+            right: 0px;
         }
     }
 
     &--flyout-shown {
-        .grad-navbar__user > span {
+        .grad-navbar__user {
             background-color: rgba(255, 255, 255, 0.5);
         }
     }

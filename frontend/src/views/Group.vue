@@ -1,40 +1,64 @@
 <template>
-    <div :class="['grad-group']" v-if="group">
-        <div class="grad-group__avatar" :style="`color: ${group.color}`" @click.self="pickerShown=true">
-            <div class="grad-group__color-picker-mask" v-if="pickerShown" @click="pickerShown=false"></div>
-            <ColorPicker
-                @click.stop="true;"
-                v-if="pickerShown"
-                class="grad-group__color-picker"
-                theme="dark"
-                :color="group.color"
-                :sucker-hide="true"
-                @changeColor="changeColor"
-            />
-        </div>
-        <input type="text" :value="group.label" />
-        <input type="text" :value="group.tag" />
-        <button class="grad-group__save">Speichern</button>
-        <button class="grad-group__delete" v-if="group.id !== -1">Löschen</button>
+    <div class="grad-group" >
+        <template v-if="group">
+            <div class="grad-group__avatar" :style="`color: ${group.color}`" @click.self="pickerShown=true">
+                <span>{{group.label.charAt(0)}}</span>
+                <div class="grad-group__color-picker-mask" v-if="pickerShown" @click="pickerShown=false"></div>
+                <ColorPicker
+                    @click.stop="true;"
+                    v-if="pickerShown"
+                    class="grad-group__color-picker"
+                    theme="dark"
+                    :color="group.color"
+                    :sucker-hide="true"
+                    @changeColor="changeColor"
+                />
+            </div>
+            <div class="grad-icon-input">
+                <i class="material-icons">label</i>
+                <input type="text" v-model="group.label" />
+            </div>
+            <div class="grad-icon-input">
+                <i class="material-icons">vpn_key</i>
+                <input type="text" v-model="group.tag" />
+            </div>
+            <button class="grad-group__save" :disabled="originalGroup === JSON.stringify(group)" @click="onClickSave">Speichern</button>
+            <button v-if="group.id !== -1" class="grad-group__delete" @click="onClickDelete">Löschen</button>
+            <Modal v-model="deleteModal" @submit="deleteGroup" type="warn">
+                Bist du dir sicher, dass du die Gruppe <span :style="`color: ${group.color}; font-size: inherit;`">{{group.label}}</span> löschen möchtest?
+                <br />    
+                Diese Aktion kann nicht Rückgängig gemacht werden!    
+            </Modal>
+        </template>
+        <Loader v-if="loading"/>
+        <!-- TODO: Show Error -->
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { Group } from '@/models';
-import { fetchGroup } from '@/services';
+import { fetchGroup, createGroup, updateGroup, deleteGroup } from '@/services';
 
 // @ts-ignore
 import ColorPickerVue from '@caohenghu/vue-colorpicker';
+import LoaderVue from '@/components/Loader.vue';
+import ModalVue from '@/components/Modal.vue';
 
 @Component({
     components: {
-        ColorPicker: ColorPickerVue
+        ColorPicker: ColorPickerVue,
+        Loader: LoaderVue,
+        Modal: ModalVue
     }
 })
 export default class GroupVue extends Vue {
     @Prop() private gid?: number;
+
+    private loading: boolean = false;
     private pickerShown: boolean = false;
+    private deleteModal: boolean = false;
+    private originalGroup: string = '';
 
     private error: any = null;
     private group?: Group|null = null;
@@ -45,39 +69,112 @@ export default class GroupVue extends Vue {
 
     @Watch('gid')
     private async fetchGroup() {
+        this.loading = true;
         if (this.gid) {
             try {
                 this.group = await fetchGroup(this.gid);
             } catch (err) {
                 this.error = err;
             }
+
+            this.originalGroup = JSON.stringify(this.group);
         } else {
             const label = this.$route.query.label as string || '';
 
-            const tag = label.toLowerCase().replace(/ /g, '_');
-
             this.group = {
                 id: -1,
-                tag,
+                tag: label,
                 label,
-                color: '#AAAAAA'
+                color: '#D18D1F'
             };
         }
+        this.loading = false;
     }
 
     private changeColor(color: { rgba: { toHexString: () => string }}) {
         this.group!.color = color.rgba.toHexString();
+    }
+
+    @Watch('group.tag')
+    private validateTag() {
+        this.group!.tag = this.group!.tag
+            .toLowerCase()
+            .replace(/ /ig, '_')
+            .replace(/ä/ig, 'ae')
+            .replace(/ö/ig, 'oe')
+            .replace(/ü/ig, 'ue')
+            .replace(/[^(\w|\-)]/ig, '');
+    }
+
+    private async onClickSave() {
+        if (!this.group) return;
+
+        if (this.group.id === -1) {
+            this.createGroup();
+        } else {
+            this.updateGroup();
+        }
+    }
+
+    private onClickDelete() {
+        if (!this.group) return;
+
+        this.deleteModal = true;
+    }
+
+    /**
+     * Create the group
+     */
+    private async createGroup() {
+        this.loading = true;
+
+        try {
+            await createGroup(this.group!);
+        } catch (err) {
+            this.error = err;
+        }
+        this.loading = false;
+        this.$router.push('/groups');
+    }
+
+    /**
+     * Update the group
+     */
+    private async updateGroup() {
+        this.loading = true;
+
+        try {
+            await updateGroup(this.group!);
+        } catch (err) {
+            this.error = err;
+        }
+        this.loading = false;
+        this.$router.push('/groups');
+    }
+
+    /**
+     * Delete the group
+     */
+    private async deleteGroup() {
+        this.loading = true;
+
+        try {
+            await deleteGroup(this.group!.id);
+        } catch (err) {
+            this.error = err;
+        }
+        this.loading = false;
+        this.$router.push('/groups');
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .grad-group {
-    // don't ask me why, but overflow-x won't work unless this is set
-    overflow-y: visible !important;
-
+    overflow-y: auto !important;
     flex: 1;
     width: 500px;
+    position: relative;
 
     display: flex;
     flex-direction: column;
@@ -86,6 +183,7 @@ export default class GroupVue extends Vue {
     > * {
         margin-top: 12px;
         margin-bottom: 12px;
+        flex: none;
     }
 
     button {
@@ -99,12 +197,24 @@ export default class GroupVue extends Vue {
         display: inline-flex;
         border-radius: 50%;
         background-color: currentColor;
+        cursor: pointer;
+        user-select: none;
+
+        > span {
+            font-size: 40px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            pointer-events: none;
+        }
     }
 
     &__color-picker {
         position: absolute;
         top: 0;
-        left: calc(100% + 5px);
+        left: calc(70%);
 
         &-mask {
             position: fixed;
@@ -126,29 +236,6 @@ export default class GroupVue extends Vue {
         &:hover {
             background-color: #8F1167;
             color: white;
-        }
-    }
-}
-
-.grad-group.grad-group--editable {
-    .grad-group__avatar {
-        cursor: pointer;
-
-        &:hover {
-            &::before {
-                position: absolute;
-                display: block;
-                content: '';
-                background-color: rgba(0,0,0,0.4);
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-            }
-        
-            > i {
-                display: block;
-            }
         }
     }
 }

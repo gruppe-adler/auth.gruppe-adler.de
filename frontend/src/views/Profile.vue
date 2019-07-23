@@ -1,47 +1,62 @@
 <template>
-    <div :class="['grad-profile', canEdit ? 'grad-profile--editable' : '']" v-if="user">
-        <div class="grad-profile__avatar">
-            <img :src="user.avatar" />
-            <i class="material-icons">add_photo_alternate</i>
-        </div>
-        <div style="display: flex;">
-            <Toggle v-model="user.admin" :disabled="!$root.$data.user.admin" />
-            <label style="margin: 0px 10px;">Admin</label>
-        </div>
-        <div class="grad-profile__username">
-            <input type="text" :value="user.username" :disabled="!canEdit" />
-            <a target="_blank" :href="`https://steamcommunity.com/profiles/${user.steamId}`">
-                <img src="~@/assets/steam.svg" />
-            </a>
-        </div>
-        <button v-if="canEdit" class="grad-profile__save">Speichern</button>
-        <button v-if="canEdit" class="grad-profile__delete">Löschen</button>
+    <div :class="['grad-profile', canEdit ? 'grad-profile--editable' : '']">
+        <template v-if="user">
+            <div class="grad-profile__avatar">
+                <img :src="user.avatar" />
+                <i class="material-icons">add_photo_alternate</i>
+            </div>
+            <div style="display: flex;">
+                <Toggle v-model="user.admin" :disabled="!$root.$data.user.admin" />
+                <label style="margin: 0px 10px;">Admin</label>
+            </div>
+            <div class="grad-profile__username">
+                <input type="text" v-model="user.username" :disabled="!canEdit" />
+                <a target="_blank" :href="`https://steamcommunity.com/profiles/${user.steamId}`">
+                    <img src="~@/assets/steam.svg" />
+                </a>
+            </div>
+            <button v-if="canEdit" :disabled="originalUser === JSON.stringify(user)" @click="onClickSave" class="grad-profile__save">Speichern</button>
+            <button v-if="canEdit" @click="onClickDelete" class="grad-profile__delete">Löschen</button>
+            <Modal v-model="deleteModal" @submit="deleteUser" type="warn">
+                Bist du dir sicher, dass du den Nutzer {{user.username}} löschen möchtest?
+                <br />
+                Diese Aktion kann nicht Rückgängig gemacht werden!
+            </Modal>
+        </template>
+        <Loader v-if="loading" />
+        <!-- TODO: Show Error -->
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { User } from '@/models';
-import { authenticate, fetchUser } from '@/services';
+import { authenticate, fetchUser, updateUser, deleteUser } from '@/services';
 import ToggleVue from '@/components/Toggle.vue';
+import ModalVue from '@/components/Modal.vue';
+import LoaderVue from '../components/Loader.vue';
 @Component({
     components: {
-        Toggle: ToggleVue
+        Toggle: ToggleVue,
+        Modal: ModalVue,
+        Loader: LoaderVue
     }
 })
 export default class ProfileVue extends Vue {
     @Prop() private uid?: number;
 
     private error: any = null;
+    private deleteModal: boolean = false;
+    private loading: boolean = false;
     private user?: User|null = null;
+    private originalUser: string = '';
+
     private get canEdit() {
         if (! this.user) return false;
 
-        // @ts-ignore
-        if (! this.$root.user) return false;
+        if (! this.$root.$data.user) return false;
 
-        // @ts-ignore
-        return this.$root.user!.admin || this.$root.user!.id === this.uid;
+        return this.$root.$data.user.admin || this.$root.$data.user.id === this.user.id;
     }
 
     private created() {
@@ -50,6 +65,7 @@ export default class ProfileVue extends Vue {
 
     @Watch('uid')
     private async fetchUser() {
+        this.loading = true;
         if (this.uid) {
             try {
                 this.user = await fetchUser(this.uid);
@@ -63,6 +79,61 @@ export default class ProfileVue extends Vue {
                 this.$router.push('/login');
                 return;
             }
+        }
+
+        this.loading = false;
+        this.originalUser = JSON.stringify(this.user);
+    }
+
+    private onClickDelete() {
+        if (!this.user) return;
+
+        this.deleteModal = true;
+    }
+
+    private onClickSave() {
+        if (!this.user) return;
+
+        this.updateUser();
+    }
+
+    /**
+     * Update the group
+     */
+    private async updateUser() {
+        this.loading = true;
+
+        try {
+            await updateUser(this.user!);
+        } catch (err) {
+            this.error = err;
+        }
+        this.loading = false;
+
+        if (this.user!.id === this.$root.$data.user.id) {
+            this.$router.push('/login');
+        } else {
+            this.$router.push('/users');
+        }
+    }
+
+    /**
+     * Delete the group
+     */
+    private async deleteUser() {
+        this.loading = true;
+
+        try {
+            await deleteUser(this.user!.id);
+        } catch (err) {
+            this.error = err;
+        }
+        this.loading = false;
+
+        if (this.user!.id === this.$root.$data.user.id) {
+            this.$router.push('/login');
+        } else {
+            this.$router.push('/users');
         }
     }
 }
@@ -162,7 +233,7 @@ export default class ProfileVue extends Vue {
                 left: 0;
                 right: 0;
             }
-        
+
             > i {
                 display: block;
             }

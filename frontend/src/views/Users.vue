@@ -1,28 +1,31 @@
 <template>
     <div class="grad-users">
         <div class="grad-users__filter">
-            <input type="text" placeholder="Suchen nach ..." />
+            <input type="text" placeholder="Suchen nach ..." v-model="filter" />
             <div @click="showFlyOut">
                 <span v-if="filterGroup">{{filterGroup.label}}</span>
                 <span v-else>Alle Gruppen</span>
                 <i class="material-icons">arrow_drop_down</i>
                 <div v-if="flyOutShown" class="grad-users__filter-flyout grad-menu">
                     <span v-if="groups.length === 0">Keine Gruppen gefunden</span>
-                    <span v-if="filterGroup" @click="selectGroup(null)">Alle Gruppen</span>
-                    <span v-for="g in groups" :key="g.tag" @click="selectGroup(g)">{{g.label}}</span>
+                    <span v-if="filterGroup" @click="selectFilterGroup(null)" class="grad-users__filter-flyout--all">Alle Gruppen</span>
+                    <span v-for="g in groups" :key="g.tag" @click="selectFilterGroup(g)">
+                        <GroupTag :group="g" :disabled="true" />
+                    </span>
                 </div>
             </div>
         </div>
         <div class="grad-users__list grad-list">
-            <div v-for="u in users" :key="u.id">
+            <div v-for="u in filteredUsers" :key="u.id" @click="$router.push(`/profile/${u.id}`)">
                 <img :src="u.avatar" />
                 <span>{{u.username}}</span>
                 <div>
-                    <GroupTag :group="{ tag: 'adler', color: '#d18d1f', label: 'Adler' }" />
-                    <GroupTag :group="{ tag: 'fuehrung', color: '#8F1167', label: 'Führung' }" />
+                    <GroupTag v-for="g in u.groups" :group="g" :key="g.tag" />
                 </div>
             </div>
         </div>
+        <Loader v-if="loading" />
+        <!-- TODO: Show Error -->
     </div>
 </template>
 
@@ -32,16 +35,20 @@ import { User, Group } from '@/models';
 import { fetchGroups, fetchUsers } from '@/services';
 
 import GroupTagVue from '@/components/Group/Tag.vue';
+import LoaderVue from '@/components/Loader.vue';
 
 @Component({
     components: {
-        GroupTag: GroupTagVue
+        GroupTag: GroupTagVue,
+        Loader: LoaderVue
     }
 })
 export default class UsersVue extends Vue {
+    private loading: boolean = false;
     private users: User[] = [];
     private groups: Group[] = [];
     private filterGroup: Group|null = null;
+    private filter: string = '';
     private flyOutShown: boolean = false;
 
     private created() {
@@ -50,19 +57,36 @@ export default class UsersVue extends Vue {
             return;
         }
 
-        this.fetchGroups();
-        this.fetchUsers();
+        this.fetchUsersAndGroups();
     }
 
-    private async fetchGroups() {
-        this.groups = await fetchGroups();
+    private get filteredUsers(): User[] {
+        let filtered = this.users;
+
+        if (this.filter.length > 0) {
+            filtered = filtered.filter(u => u.username.toLowerCase().includes(this.filter.toLowerCase()));
+        }
+
+        if (this.filterGroup) {
+            filtered = filtered.filter(u => u.groups.includes(this.filterGroup!));
+        }
+
+        return filtered;
     }
 
-    private async fetchUsers() {
-        this.users = await fetchUsers();
+    private async fetchUsersAndGroups() {
+        this.loading = true;
+
+        const p1 = fetchUsers();
+        const p2 = fetchGroups();
+
+        this.users = await p1;
+        this.groups = await p2;
+        // TODO: Catch errors
+        this.loading = false;
     }
 
-    private selectGroup(group: Group) {
+    private selectFilterGroup(group: Group) {
         this.filterGroup = group;
     }
 
@@ -123,6 +147,11 @@ export default class UsersVue extends Vue {
             top: 0px;
             right: 0px;
             text-align: left;
+
+            > *:not(.grad-users__filter-flyout--all) {
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
         }
     }
 
@@ -130,7 +159,14 @@ export default class UsersVue extends Vue {
         padding-top: 12px;
         padding-bottom: 12px;
         display: grid;
+        grid-column-gap: 16px;
         grid-template-columns: 40px .4fr .6fr;
+
+        img {
+            height: 40px;
+            width: 40px;
+            border-radius: 20px;
+        }
     }
 
 }

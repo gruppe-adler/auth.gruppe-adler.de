@@ -23,33 +23,11 @@ export const logIn = async (url: string): Promise<void> => {
  * @returns { Promise<User> } Promise resolves into user.
  */
 export const authenticate = async (): Promise<User> => {
+    // console.trace();
+
     const res: Response = await fetch(`${API_BASE_URL}/authenticate`, {
         credentials: 'include',
         method: 'POST'
-    });
-
-    return await res.json();
-};
-
-/**
- * Fetch a single user
- * @returns { Promise<User> } Promise resolves into user.
- */
-export const fetchUser = async (id: number): Promise<User> => {
-    const res: Response = await fetch(`${API_BASE_URL}/user/${id}`, {
-        method: 'GET'
-    });
-
-    return await res.json();
-};
-
-/**
- * Fetch a single user
- * @returns { Promise<Group> } Promise resolves into user.
- */
-export const fetchGroup = async (id: number): Promise<Group> => {
-    const res: Response = await fetch(`${API_BASE_URL}/group/${id}`, {
-        method: 'GET'
     });
 
     return await res.json();
@@ -68,13 +46,12 @@ export const logout = async (): Promise<void> => {
     await res.json();
 };
 
-
 /**
- * Fetch all groups
- * @returns { Promise<Group[]> } Promise resolves into array of groups.
+ * Fetch a single user
+ * @returns { Promise<User> } Promise resolves into user.
  */
-export const fetchGroups = async (): Promise<Group[]> => {
-    const res: Response = await fetch(`${API_BASE_URL}/group`, {
+export const fetchUser = async (id: number): Promise<User> => {
+    const res: Response = await fetch(`${API_BASE_URL}/user/${id}`, {
         method: 'GET'
     });
 
@@ -91,4 +68,127 @@ export const fetchUsers = async (): Promise<User[]> => {
     });
 
     return await res.json();
+};
+
+/**
+ * Update a group
+ * @param { User } group Object which includes all data
+ * @returns { Promise<User> } Promise resolves into user.
+ */
+export const updateUser = async (user: User): Promise<User> => {
+
+    const body = {
+        admin: user.admin,
+        username: user.username,
+        groups: user.groups
+    };
+
+    const res: Response = await fetch(`${API_BASE_URL}/user/${user.id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    });
+
+    return await res.json();
+};
+
+/**
+ * Delete a group
+ * @param { number } id Id of user
+ * @returns { Promise<void> } Promise resolves if successful
+ */
+export const deleteUser = async (id: number): Promise<void> => {
+    await fetch(`${API_BASE_URL}/user/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+    });
+};
+
+/**
+ * Fetch a single group
+ * @returns { Promise<Group> } Promise resolves into user.
+ */
+export const fetchGroup = async (id: number): Promise<Group> => {
+    const res: Response = await fetch(`${API_BASE_URL}/group/${id}`, {
+        method: 'GET'
+    });
+
+    return await res.json();
+};
+
+/**
+ * Fetch all groups
+ * @returns { Promise<Group[]> } Promise resolves into array of groups.
+ */
+export const fetchGroups = async (): Promise<Group[]> => {
+    const res: Response = await fetch(`${API_BASE_URL}/group`, {
+        method: 'GET'
+    });
+
+    return await res.json();
+};
+
+/**
+ * Create a group
+ * @param { Group } group Object which includes all data
+ * @returns { Promise<Group> } Promise resolves into group.
+ */
+export const createGroup = async (group: Group): Promise<Group> => {
+
+    const body = {
+        label: group.label,
+        tag: group.tag,
+        color: group.color
+    };
+
+    const res: Response = await fetch(`${API_BASE_URL}/group`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    });
+
+    return await res.json();
+};
+
+/**
+ * Update a group
+ * @param { Group } group Object which includes all data
+ * @returns { Promise<Group> } Promise resolves into group.
+ */
+export const updateGroup = async (group: Group): Promise<Group> => {
+
+    const body = {
+        label: group.label,
+        tag: group.tag,
+        color: group.color
+    };
+
+    const res: Response = await fetch(`${API_BASE_URL}/group/${group.id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    });
+
+    return await res.json();
+};
+
+/**
+ * Delete a group
+ * @param { number } id Id of group
+ * @returns { Promise<void> } Promise resolves if successful
+ */
+export const deleteGroup = async (id: number): Promise<void> => {
+    await fetch(`${API_BASE_URL}/group/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+    });
 };

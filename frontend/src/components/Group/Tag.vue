@@ -1,5 +1,5 @@
 <template>
-    <div v-if="group" class="grad-group-tag" :style="`color: ${group.color};`">
+    <div v-if="group" :class="[ 'grad-group-tag', disabled ? 'grad-group-tag--disabled' : '' ]" :style="`color: ${group.color};`">
         <GroupBlob />
         <i class="material-icons" @click="$emit('delete', group)">close</i>
         <span>{{group.label}}</span>
@@ -20,6 +20,8 @@ import GroupBlobVue from '@/components/Group/Blob.vue';
 })
 export default class GroupTag extends Vue {
     @Prop() public group!: Group;
+    @Prop({ default: false }) public disabled!: boolean;
+
 }
 </script>
 
@@ -47,7 +49,7 @@ export default class GroupTag extends Vue {
         color: #333;
     }
 
-    &:hover {
+    &:not(.grad-group-tag--disabled):hover {
         background-color: white;
 
         > i {

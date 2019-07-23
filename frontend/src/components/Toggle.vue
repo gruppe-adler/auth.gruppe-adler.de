@@ -60,7 +60,6 @@ export default class ToggleVue extends Vue {
         cursor: default;
 
         &::before {
-            transform: translate3d(15px,0,0);
             background-color: #bdbdbd;
         }
     }

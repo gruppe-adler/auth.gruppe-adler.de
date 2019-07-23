@@ -1,19 +1,19 @@
 <template>
 <div class="grad-return">
-    <Spinner :diameter="100" />
+    <Loader />
 </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import SpinnerVue from '@/components/Spinner.vue';
+import LoaderVue from '@/components/Loader.vue';
 
 import { logIn } from '@/services';
 
 @Component({
     components: {
-        Spinner: SpinnerVue
+        Loader: LoaderVue
     }
 })
 export default class ReturnVue extends Vue {

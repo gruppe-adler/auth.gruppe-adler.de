@@ -2,7 +2,7 @@
 <div class="grad-login">
     <img src="@/assets/adlerkopp.svg" />
     <h3>Grad login</h3>
-    <p>Steam gibt uns Deine SteamID und deinen Nick, um Dich zu identifizieren. Wir bekommen  keinen Zugriff auf Deinen Account.</p>
+    <p>Steam gibt uns nur deine SteamID und deinen Nick, um Dich zu identifizieren. Wir bekommen keinen Zugriff auf Deinen Account.</p>
 
     <a :href="loginSteamRedirectUrl">
         <button>
@@ -11,12 +11,6 @@
         </button>
     </a>
 </div>
-    <!-- <a :href="loginSteamRedirectUrl">
-            <img
-                src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png"
-                alt="Anmeldung via Steam"
-            />
-    </a> -->
 </template>
 
 <script lang="ts">
@@ -52,7 +46,7 @@ export default class LoginVue extends Vue {
 
     private async checkIfAlreadyLoggedIn() {
         try {
-            await authenticate();
+            this.$root.$data.user = await authenticate();
             this.$router.push('/redirect');
         } catch (err) { /* intentionally empty. the user is not logged in if we get an error */ }
     }

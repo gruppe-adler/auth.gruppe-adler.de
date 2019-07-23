@@ -22,22 +22,21 @@ export default class AppVue extends Vue {
     }
 
     get routerViewShown() {
-        return this.$root.$data.user || ['/login', '/openid/return/steam', '/profile'].includes(this.$route.path);
-    }
-
-    private created() {
-        this.fetchUser();
+        return this.$root.$data.user || ['/login', '/openid/return/steam'].includes(this.$route.path);
     }
 
     @Watch('$route')
     private async fetchUser() {
         if (this.$root.$data.user) return;
+        if ( ['/login', '/openid/return/steam'].includes(this.$route.path)) return;
 
         try {
             const user = await authenticate();
 
             this.$root.$data.user = user;
-        } catch (err) { /* intentionally empty. the user is not logged in if we get an error */ }
+        } catch (err) {
+            this.$router.push('/login');
+        }
 
     }
 }
@@ -55,7 +54,8 @@ export default class AppVue extends Vue {
     box-sizing: border-box;
 
     > .page {
-        margin: auto 10px;
+        margin: auto 0px;
+        padding: 0px 10px;
         max-width: calc(100% - 20px);
         overflow-y: hidden;
         overflow-x: visible;
