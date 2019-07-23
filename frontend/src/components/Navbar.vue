@@ -41,11 +41,12 @@ export default class NavbarVue extends Vue {
 
 <style lang="scss" scoped>
 .grad-navbar {
+    flex: 0;
     display: flex;
     padding: 20px;
     align-items: center;
     justify-content: flex-start;
-    width: 100vw;
+    width: 100%;
     box-sizing: border-box;
 
     > img {
@@ -92,9 +93,6 @@ export default class NavbarVue extends Vue {
             position: absolute;
             top: calc(100% + 6px);
             left: 0px;
-
-
-
         }
     }
 
