@@ -6,6 +6,7 @@ import { UserRules } from '../rules/user.rules';
 
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
+import { GradRequest } from '../@types/GradRequest';
 
 export const UserRouter = Router();
 
@@ -26,7 +27,7 @@ UserRouter.get('/:id', wrapAsync(async (req: Request, res: Response) => {
 }));
 
 // PUT update a user
-UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: Request, res: Response) => {
+UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: GradRequest, res: Response) => {
     const payload = matchedData(req);
 
     // find user to update
@@ -37,6 +38,8 @@ UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: Request, res: Re
 
     // update user
     delete payload.id;
+    if (!req.gradUser.admin) delete payload.admin;
+
     user = await user.update(payload);
 
     res.status(200).json(user);

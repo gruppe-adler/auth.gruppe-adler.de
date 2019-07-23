@@ -12,7 +12,7 @@ import {
 import { UserGroup } from './user-group.model';
 
 @DefaultScope({
-    attributes: { exclude: [ 'avatar' ] },
+    attributes: { exclude: [  ] },
     include: [ () => Group ]
 })
 @Table
@@ -29,8 +29,8 @@ export class User extends Model<User> {
     @Column(DataType.BOOLEAN)
     public admin: boolean;
 
-    @Column(DataType.BLOB)
-    public avatar: Buffer;
+    @Column(DataType.TEXT)
+    public avatar: string;
 
     @BelongsToMany(() => Group, () => UserGroup)
     public groups: Group[];

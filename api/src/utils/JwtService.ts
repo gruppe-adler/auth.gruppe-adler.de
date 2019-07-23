@@ -118,4 +118,24 @@ export class JwtService {
             next();
         });
     }
+
+    /**
+     * @description Express middleware which checks if requester is authenticated and a verified user
+     * @author DerZade
+     * @returns The ExpressJS Middleware
+     */
+    public static checkSelfOrAdmin(req: GradRequest, res: Response, next: NextFunction) {
+        // call checkAuthenticated middleware directly to extract user from auth token
+        JwtService.checkAuthenticated(req, res, () => {
+            if (res.finished) return;
+        
+            const payload = matchedData(req);
+            const isAdmin = req.gradUser.admin;
+            const isSelf = req.gradUser.id === payload.id;
+            
+            if (!isAdmin && !isSelf) return res.status(403).end();            
+
+            next();
+        });
+    }
 }
