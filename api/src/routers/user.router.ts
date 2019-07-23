@@ -7,6 +7,7 @@ import { UserRules } from '../rules/user.rules';
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
 import { GradRequest } from '../@types/GradRequest';
+import { Group } from '../models/group.model';
 
 export const UserRouter = Router();
 
@@ -41,6 +42,9 @@ UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: GradRequest, res
     if (!req.gradUser.admin) delete payload.admin;
 
     user = await user.update(payload);
+
+    // @ts-ignore
+    if (payload.groups)await user.setGroups(payload.groups.map(g => g.id));
 
     res.status(200).json(user);
 }));

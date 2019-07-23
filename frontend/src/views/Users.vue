@@ -8,7 +8,7 @@
                 <i class="material-icons">arrow_drop_down</i>
                 <div v-if="flyOutShown" class="grad-users__filter-flyout grad-menu">
                     <span v-if="groups.length === 0">Keine Gruppen gefunden</span>
-                    <span v-if="filterGroup" @click="selectFilterGroup(null)" class="grad-users__filter-flyout--all">Alle Gruppen</span>
+                    <span @click="selectFilterGroup(null)" class="grad-users__filter-flyout--all">Alle Gruppen</span>
                     <span v-for="g in groups" :key="g.tag" @click="selectFilterGroup(g)">
                         <GroupTag :group="g" :disabled="true" />
                     </span>
@@ -68,7 +68,7 @@ export default class UsersVue extends Vue {
         }
 
         if (this.filterGroup) {
-            filtered = filtered.filter(u => u.groups.includes(this.filterGroup!));
+            filtered = filtered.filter(u => u.groups.find(g => g.tag === this.filterGroup!.tag));
         }
 
         return filtered;

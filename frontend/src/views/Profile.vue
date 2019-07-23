@@ -15,6 +15,7 @@
                     <img src="~@/assets/steam.svg" />
                 </a>
             </div>
+            <UserGroups v-model="user.groups" />
             <button v-if="canEdit" :disabled="originalUser === JSON.stringify(user)" @click="onClickSave" class="grad-profile__save">Speichern</button>
             <button v-if="canEdit" @click="onClickDelete" class="grad-profile__delete">Löschen</button>
             <Modal v-model="deleteModal" @submit="deleteUser" type="warn">
@@ -30,16 +31,18 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
-import { User } from '@/models';
-import { authenticate, fetchUser, updateUser, deleteUser } from '@/services';
+import { User, Group } from '@/models';
+import { authenticate, fetchUser, updateUser, deleteUser, fetchGroups } from '@/services';
 import ToggleVue from '@/components/Toggle.vue';
 import ModalVue from '@/components/Modal.vue';
-import LoaderVue from '../components/Loader.vue';
+import LoaderVue from '@/components/Loader.vue';
+import UserGroupsVue from '@/components/Group/UserGroups.vue';
 @Component({
     components: {
         Toggle: ToggleVue,
         Modal: ModalVue,
-        Loader: LoaderVue
+        Loader: LoaderVue,
+        UserGroups: UserGroupsVue
     }
 })
 export default class ProfileVue extends Vue {

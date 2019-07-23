@@ -42,6 +42,7 @@ export default class GroupTag extends Vue {
         left: 10px;
         background-color: inherit;
         border-radius: 50%;
+        cursor: pointer;
     }
 
     > span:last-child {
