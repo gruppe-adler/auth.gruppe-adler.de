@@ -19,13 +19,20 @@ const sequelize =  new Sequelize({
 });
 
 sequelize.addModels([ User, Group, UserGroup ]);
-sequelize.sync({ force: true });
+sequelize.sync();
 
 const app = express();
 
 app.use(cookieParser());
 
-app.use(cors({ credentials: true, origin: [ new RegExp('gruppe-adler\.de$', 'i'), new RegExp('gruppe-adler\.de:8080$', 'i')] }));
+app.use(cors({
+    credentials: true,
+    origin: [
+        new RegExp('gruppe-adler\.de$', 'i'),
+        new RegExp('^localhost:\d+$', 'i'),
+        'localhost',
+    ] 
+}));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
