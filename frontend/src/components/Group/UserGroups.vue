@@ -96,6 +96,12 @@ export default class UserGroupsVue extends Vue {
         > i {
             padding: 10px;
             opacity: .5;
+            transition: all .1s linear;
+
+            &:hover {
+                color: #2F80ED;
+                opacity: 1;
+            }
         }
 
         &-flyout {

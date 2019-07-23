@@ -192,12 +192,12 @@ export default class ProfileVue extends Vue {
             position: absolute;
             right: 15px;
             top: 15px;
-            opacity: 0.5;
             cursor: pointer;
             height: calc(100% - 30px);
 
             > img {
                 height: 100%;
+                filter: saturate(0%);
             }
 
             &:hover {
