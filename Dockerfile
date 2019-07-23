@@ -48,8 +48,6 @@ FROM node:10
 
 WORKDIR /usr/src/app/
 
-RUN apk add --no-cache --virtual . python
-
 # Copy homepage from frontend-builder
 COPY --from=frontend-builder /tmp/dist ./frontend/
 
