@@ -22,7 +22,8 @@ export const UserRules = {
                 .withMessage('username already exists'),
             body('avatar').exists(),
             body('admin').exists(),
-            body('groups').exists()
+            body('groups').exists(),
+            body('primaryGroup').exists()
         ]),
         return422,
         JwtService.checkSelfOrAdmin

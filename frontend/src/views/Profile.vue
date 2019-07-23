@@ -15,7 +15,7 @@
                     <img src="~@/assets/steam.svg" />
                 </a>
             </div>
-            <UserGroups v-model="user.groups" />
+            <UserGroups v-model="user.groups" :primaryGroup="user.primaryGroup" @select="selectGroup" />
             <button v-if="canEdit" :disabled="originalUser === JSON.stringify(user)" @click="onClickSave" class="grad-profile__save">Speichern</button>
             <button v-if="canEdit" @click="onClickDelete" class="grad-profile__delete">Löschen</button>
             <Modal v-model="deleteModal" @submit="deleteUser" type="warn">
@@ -98,6 +98,10 @@ export default class ProfileVue extends Vue {
         if (!this.user) return;
 
         this.updateUser();
+    }
+
+    private selectGroup(group: Group) {
+        this.user!.primaryGroup = group;
     }
 
     /**

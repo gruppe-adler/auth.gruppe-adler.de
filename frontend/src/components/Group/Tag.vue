@@ -1,8 +1,19 @@
 <template>
-    <div v-if="group" :class="[ 'grad-group-tag', disabled ? 'grad-group-tag--disabled' : '' ]" :style="`color: ${group.color};`">
+    <div 
+        v-if="group" 
+        :class="[ 
+            'grad-group-tag',
+            disabled ? 'grad-group-tag--disabled' : '',
+        ]"
+        :style="`color: ${group.color};`"
+    >
         <GroupBlob />
-        <i class="material-icons" @click="$emit('delete', group)">close</i>
         <span>{{group.label}}</span>
+        <i v-if="star" class="material-icons" style="color: #2F80ED;">star</i>
+        <template v-if="!disabled">
+            <i v-if="!star" class="material-icons grad-group-tag__star" @click="$emit('select', group)">star_border'</i>
+            <i class="material-icons grad-group-tag__delete" @click="$emit('delete', group)">delete</i>
+        </template>
     </div>
 </template>
 
@@ -20,6 +31,7 @@ import GroupBlobVue from '@/components/Group/Blob.vue';
 })
 export default class GroupTag extends Vue {
     @Prop() public group!: Group;
+    @Prop({ default: false }) public star!: boolean;
     @Prop({ default: false }) public disabled!: boolean;
 
 }
@@ -35,27 +47,51 @@ export default class GroupTag extends Vue {
     position: relative;
 
     i {
-        color: #2F80ED;
-        font-size: 1.2em;
-        display: none;
-        position: absolute;
-        left: 10px;
-        background-color: inherit;
-        border-radius: 50%;
+        color: #999999;
+        margin: 0px 5px;
         cursor: pointer;
+        height: 24px;
+        width: 24px;
+        overflow: hidden;
+
+        &:last-child {
+            margin-right: 0px;
+        }
     }
 
-    > span:last-child {
-        margin-left: 12px;
+    &__delete {
+        &:hover {
+            color: #8F1167;
+        }
+    }
+
+    &__star {
+        &:hover {
+            color: #2F80ED;
+        }
+    }
+
+    &__star,
+    &__delete {
+        display: none;
+    }
+
+    &:hover &__star,
+    &:hover &__delete {
+        display: initial;
+    }
+
+    > span {
+        margin-left: 8px;
         color: #333;
     }
 
-    &:not(.grad-group-tag--disabled):hover {
+    &:hover {
         background-color: white;
+    }
 
-        > i {
-            display: inline;
-        }
+    &#{&}--disabled:hover {
+        background-color: transparent;
     }
 }
 </style>

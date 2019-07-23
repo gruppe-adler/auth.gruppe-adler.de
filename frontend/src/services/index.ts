@@ -81,7 +81,7 @@ export const updateUser = async (user: User): Promise<User> => {
         admin: user.admin,
         username: user.username,
         groups: user.groups,
-        displayGroup: user.displayGroup
+        primaryGroup: user.primaryGroup
     };
 
     const res: Response = await fetch(`${API_BASE_URL}/user/${user.id}`, {

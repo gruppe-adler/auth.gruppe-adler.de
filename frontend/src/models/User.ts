@@ -7,5 +7,5 @@ export default interface User {
     admin: boolean;
     avatar: string;
     groups: Group[];
-    displayGroup: Group|null;
+    primaryGroup: Group|null;
 }

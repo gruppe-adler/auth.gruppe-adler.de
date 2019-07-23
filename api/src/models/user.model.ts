@@ -14,10 +14,10 @@ import {
 import { UserGroup } from './user-group.model';
 
 @DefaultScope({
-    attributes: { exclude: [ 'displayGroupId' ] },
+    attributes: { exclude: [ 'primaryGroupId' ] },
     include: [ 
         { model: () => Group, as: 'groups', through: { attributes: [] } },
-        { model: () => Group, as: 'displayGroup' }
+        { model: () => Group, as: 'primaryGroup' }
     ]
 })
 @Table
@@ -42,8 +42,8 @@ export class User extends Model<User> {
 
     @ForeignKey(() => Group)
     @Column(DataType.NUMBER)
-    public displayGroupId: number;
+    public primaryGroupId: number;
     
-    @BelongsTo(() => Group, { as: 'displayGroup', foreignKey: 'displayGroupId' })
-    public displayGroup: Group;
+    @BelongsTo(() => Group, { as: 'primaryGroup', foreignKey: 'primaryGroupId' })
+    public primaryGroup: Group;
 }

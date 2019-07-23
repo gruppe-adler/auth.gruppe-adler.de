@@ -19,8 +19,21 @@
             <div v-for="u in filteredUsers" :key="u.id" @click="$router.push(`/profile/${u.id}`)">
                 <img :src="u.avatar" />
                 <span>{{u.username}}</span>
-                <div>
-                    <GroupTag v-for="g in u.groups" :group="g" :key="g.tag" />
+                <div style="display: flex; overflow-x: hidden;" >
+                    <GroupTag 
+                        v-if="u.primaryGroup"
+                        :key="u.primaryGroup.tag"
+                        :group="u.primaryGroup"
+                        :star="true"
+                        :disabled="true"
+                    />
+                    <GroupTag 
+                        v-for="g in u.groups"
+                        v-if="g.tag !== u.primaryGroup.tag"
+                        :key="g.tag"
+                        :group="g"
+                        :disabled="true"
+                    />
                 </div>
             </div>
         </div>

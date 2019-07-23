@@ -46,6 +46,9 @@ UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: GradRequest, res
     // @ts-ignore
     if (payload.groups)await user.setGroups(payload.groups.map(g => g.id));
 
+    // @ts-ignore
+    if (payload.primaryGroup)await user.setPrimaryGroup(payload.primaryGroup.id);
+
     res.status(200).json(user);
 }));
 

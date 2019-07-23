@@ -1,6 +1,12 @@
 <template>
     <div class="grad-user-groups">
-        <GroupTag v-for="g in groups" :key="g.tag" :group="g" @delete="removeGroup" />
+        <GroupTag 
+            v-for="g in groups"
+            :key="g.tag"
+            :group="g"
+            :star="primaryGroup.tag == g.tag"
+            @delete="removeGroup"
+            @select="$emit('select', $event)" />
         <div class="grad-user-groups__add" @click="showFlyOut" v-if="availableGroups.length > 0">
             <i class="material-icons">add_circle_outline</i>
             <div v-if="flyOut" class="grad-user-groups__add-flyout grad-menu">
@@ -27,6 +33,7 @@ import { fetchGroups } from '@/services';
 })
 export default class UserGroupsVue extends Vue {
     public allGroups: Group[] = [];
+    @Prop({ default: null }) public primaryGroup!: Group|null;
 
     @Prop({ default: [] }) public value!: Group[];
     get groups(): Group[] { return this.value; }
