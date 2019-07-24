@@ -5,9 +5,14 @@
             :key="g.tag"
             :group="g"
             :star="primaryGroup && primaryGroup.tag == g.tag"
+            :disabled="disabled"
             @delete="removeGroup"
             @select="$emit('select', $event)" />
-        <div class="grad-user-groups__add" @click="showFlyOut" v-if="availableGroups.length > 0">
+        <div
+            v-if="!disabled && availableGroups.length > 0"
+            class="grad-user-groups__add"
+            @click="showFlyOut"
+        >
             <i class="material-icons">add_circle_outline</i>
             <div v-if="flyOut" class="grad-user-groups__add-flyout grad-menu">
                 <span v-for="g in availableGroups" :key="g.tag" @click="addGroup(g)">
@@ -34,6 +39,7 @@ import { fetchGroups } from '@/services';
 export default class UserGroupsVue extends Vue {
     public allGroups: Group[] = [];
     @Prop({ default: null }) public primaryGroup!: Group|null;
+    @Prop({ default: false }) public disabled!: boolean;
 
     @Prop({ default: [] }) public value!: Group[];
     get groups(): Group[] { return this.value; }

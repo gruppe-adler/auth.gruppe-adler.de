@@ -15,9 +15,27 @@
                     <img src="~@/assets/steam.svg" />
                 </a>
             </div>
-            <UserGroups v-model="user.groups" :primaryGroup="user.primaryGroup" @select="selectGroup" />
-            <button v-if="canEdit" :disabled="originalUser === JSON.stringify(user)" @click="onClickSave" class="grad-profile__save">Speichern</button>
-            <button v-if="canEdit" @click="onClickDelete" class="grad-profile__delete">Löschen</button>
+            <UserGroups 
+                v-model="user.groups"
+                :primaryGroup="user.primaryGroup"
+                :disabled="!$root.$data.user.admin"
+                @select="selectGroup"
+            />
+            <button 
+                v-if="canEdit"
+                :disabled="originalUser === JSON.stringify(user)"
+                @click="onClickSave"
+                class="grad-profile__save"
+            >
+                Speichern
+            </button>
+            <button
+                v-if="canEdit"
+                @click="onClickDelete"
+                class="grad-profile__delete"
+            >
+                Löschen
+            </button>
             <Modal v-model="deleteModal" @submit="deleteUser" type="warn">
                 Bist du dir sicher, dass du den Nutzer {{user.username}} löschen möchtest?
                 <br />
