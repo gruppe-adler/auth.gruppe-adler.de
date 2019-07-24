@@ -1,7 +1,7 @@
 <template>
     <div class="grad-user-groups">
         <GroupTag 
-            v-for="g in groups"
+            v-for="g in sortedGroups"
             :key="g.tag"
             :group="g"
             :star="primaryGroup && primaryGroup.tag == g.tag"
@@ -43,6 +43,17 @@ export default class UserGroupsVue extends Vue {
 
     private created() {
         this.fetchGroups();
+    }
+
+    private get sortedGroups() {
+        return this.groups.sort((a, b) => {
+            if (!this.primaryGroup) return 0;
+
+            if (a.tag === this.primaryGroup.tag) return -1;
+            if (b.tag === this.primaryGroup.tag) return 1;
+
+            return 0;
+        });
     }
 
     get availableGroups() {
