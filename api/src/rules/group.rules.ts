@@ -11,7 +11,7 @@ export const GroupRules = {
         body('hidden').exists(),
         body('tag')
             .exists().withMessage('Field \'tag\' is required')
-            .custom(tag => Group.findOne({ where: { tag } }).then(g => !!!g)).withMessage('tag already exists'),
+            .custom(tag => Group.findOne({ where: { tag } }).then(g => { if (g) return Promise.reject('tag already exists')})),
         body('color')
             .exists().withMessage('Field \'color\' is required')
             .custom((color => color.match(/^#([a-f0-9]{3}){1,2}$/i) !== null))
@@ -26,14 +26,11 @@ export const GroupRules = {
             body('id').exists()
         ]),
         // either new tag or new color has to be given
-        oneOf([
-            body('label').exists(),
-            body('hidden').exists(),
-            body('tag')
-                .exists()
-                .custom(tag => Group.findOne({ where: { tag } }).then(g => !!!g)).withMessage('tag already exists'),
-            body('color').exists()
-        ]),
+        body('tag')
+            .custom(tag => Group.findOne({ where: { tag } }).then(g => { if (g) return Promise.reject('tag already exists')})),
+        body('label'),
+        body('hidden'),
+        body('color'),
         return422
     ],
     delete: [
