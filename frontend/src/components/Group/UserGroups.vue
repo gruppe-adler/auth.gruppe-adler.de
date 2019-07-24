@@ -52,7 +52,7 @@ export default class UserGroupsVue extends Vue {
     }
 
     private get sortedGroups() {
-        return this.groups.sort((a, b) => {
+        return [ ...this.groups ].sort((a, b) => {
             if (!this.primaryGroup) return 0;
 
             if (a.tag === this.primaryGroup.tag) return -1;
