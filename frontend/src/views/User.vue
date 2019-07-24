@@ -15,6 +15,7 @@
                     <img src="~@/assets/steam.svg" />
                 </a>
             </div>
+            <span v-if="errorMessages.username" class="grad-label-error">{{ errorMessages.username }}</span>
             <UserGroups 
                 v-model="user.groups"
                 :primaryGroup="user.primaryGroup"
@@ -66,6 +67,9 @@ import UserGroupsVue from '@/components/Group/UserGroups.vue';
 export default class ProfileVue extends Vue {
     @Prop({ default: '' }) private uid!: string;
 
+    private errorMessages: { [index: string]: string } =  {
+        username: ''
+    };
     private error: any = null;
     private deleteModal: boolean = false;
     private loading: boolean = false;
@@ -88,7 +92,7 @@ export default class ProfileVue extends Vue {
     private async fetchUser() {
         this.loading = true;
 
-        if (this.uid !== 'me') {
+        if (this.uid.toLowerCase() !== 'me') {
             const uid = Number.parseInt(this.uid, 10);
 
             if (Number.isNaN(uid)) return;
@@ -127,6 +131,30 @@ export default class ProfileVue extends Vue {
         this.user!.primaryGroup = group;
     }
 
+    private async extractErrors(res: Response) {
+
+        // we wont handle errors other than 422 any special
+        if (res.status !== 422) return this.error = res;
+
+        // get body
+        const body: Array<{ param: string, msg: string }> = await res.json();
+
+        // collect all erros of the same field in an array
+        const errors: { [index: string]: string[] } = {};
+        body.forEach(err => {
+            if (!errors.hasOwnProperty(err.param)) errors[err.param] = [];
+
+            errors[err.param].push(err.msg);
+        });
+
+        // join all errors of each field
+        for (const key in errors) {
+            if (errors.hasOwnProperty(key)) {
+                this.errorMessages[key] = errors[key].join(', ');
+            }
+        }
+    }
+
     /**
      * Update the group
      */
@@ -135,16 +163,17 @@ export default class ProfileVue extends Vue {
 
         try {
             await updateUser(this.user!);
+
+            if (this.uid.toLowerCase() === 'me') {
+                this.$router.push('/login');
+            } else {
+                this.$router.push('/users');
+            }
         } catch (err) {
-            this.error = err;
+            this.extractErrors(err as Response);
         }
         this.loading = false;
 
-        if (this.user!.id === this.$root.$data.user.id) {
-            this.$router.push('/login');
-        } else {
-            this.$router.push('/users');
-        }
     }
 
     /**
@@ -155,16 +184,17 @@ export default class ProfileVue extends Vue {
 
         try {
             await deleteUser(this.user!.id);
+
+            if (this.user!.id === this.$root.$data.user.id) {
+                this.$router.push('/login');
+            } else {
+                this.$router.push('/users');
+            }
         } catch (err) {
             this.error = err;
         }
         this.loading = false;
 
-        if (this.user!.id === this.$root.$data.user.id) {
-            this.$router.push('/login');
-        } else {
-            this.$router.push('/users');
-        }
     }
 }
 </script>

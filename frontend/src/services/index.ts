@@ -16,6 +16,8 @@ export const logIn = async (url: string): Promise<void> => {
         },
         body: JSON.stringify({ url })
     });
+
+    if (!res.ok) throw res;
 };
 
 /**
@@ -30,6 +32,8 @@ export const authenticate = async (): Promise<User> => {
         method: 'POST'
     });
 
+    if (!res.ok) throw res;
+
     return await res.json();
 };
 
@@ -43,6 +47,8 @@ export const logout = async (): Promise<void> => {
         method: 'POST'
     });
 
+    if (!res.ok) throw res;
+
     await res.json();
 };
 
@@ -55,6 +61,8 @@ export const fetchUser = async (id: number): Promise<User> => {
         method: 'GET'
     });
 
+    if (!res.ok) throw res;
+
     return await res.json();
 };
 
@@ -66,6 +74,8 @@ export const fetchUsers = async (): Promise<User[]> => {
     const res: Response = await fetch(`${API_BASE_URL}/user`, {
         method: 'GET'
     });
+
+    if (!res.ok) throw res;
 
     return await res.json();
 };
@@ -93,6 +103,8 @@ export const updateUser = async (user: User): Promise<User> => {
         body: JSON.stringify(body)
     });
 
+    if (!res.ok) throw res;
+
     return await res.json();
 };
 
@@ -102,10 +114,12 @@ export const updateUser = async (user: User): Promise<User> => {
  * @returns { Promise<void> } Promise resolves if successful
  */
 export const deleteUser = async (id: number): Promise<void> => {
-    await fetch(`${API_BASE_URL}/user/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/user/${id}`, {
         method: 'DELETE',
         credentials: 'include'
     });
+
+    if (!res.ok) throw res;
 };
 
 /**
@@ -116,6 +130,8 @@ export const fetchGroup = async (id: number): Promise<Group> => {
     const res: Response = await fetch(`${API_BASE_URL}/group/${id}`, {
         method: 'GET'
     });
+
+    if (!res.ok) throw res;
 
     return await res.json();
 };
@@ -128,6 +144,8 @@ export const fetchGroups = async (): Promise<Group[]> => {
     const res: Response = await fetch(`${API_BASE_URL}/group`, {
         method: 'GET'
     });
+
+    if (!res.ok) throw res;
 
     return await res.json();
 };
@@ -153,6 +171,8 @@ export const createGroup = async (group: Group): Promise<Group> => {
         },
         body: JSON.stringify(body)
     });
+
+    if (!res.ok) throw res;
 
     return await res.json();
 };
@@ -189,8 +209,10 @@ export const updateGroup = async (group: Group): Promise<Group> => {
  * @returns { Promise<void> } Promise resolves if successful
  */
 export const deleteGroup = async (id: number): Promise<void> => {
-    await fetch(`${API_BASE_URL}/group/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/group/${id}`, {
         method: 'DELETE',
         credentials: 'include'
     });
+
+    if (!res.ok) throw res;
 };
