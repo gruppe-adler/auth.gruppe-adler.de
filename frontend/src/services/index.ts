@@ -138,7 +138,6 @@ export const fetchGroups = async (): Promise<Group[]> => {
  * @returns { Promise<Group> } Promise resolves into group.
  */
 export const createGroup = async (group: Group): Promise<Group> => {
-    console.log(group);
     const body = {
         label: group.label,
         tag: group.tag,
