@@ -95,8 +95,8 @@ export default new Router({
             props: true
         },
         {
-            path: '/unauthorized',
-            component: () => import(/* webpackChunkName: "admin" */ './views/Unauthorized.vue')
+            path: '/403',
+            component: () => import(/* webpackChunkName: "admin" */ './views/403.vue')
         }
     ]
 });

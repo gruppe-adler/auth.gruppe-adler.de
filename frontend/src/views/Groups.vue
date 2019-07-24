@@ -38,11 +38,6 @@ export default class GroupsVue extends Vue {
     private loading: boolean = false;
 
     private created() {
-        if (!this.$root.$data.user.admin) {
-            this.$router.push('/unauthorized');
-            return;
-        }
-
         this.fetchGroups();
     }
 

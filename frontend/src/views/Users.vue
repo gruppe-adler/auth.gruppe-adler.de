@@ -57,11 +57,6 @@ export default class UsersVue extends Vue {
     private flyOutShown: boolean = false;
 
     private created() {
-        if (!this.$root.$data.user.admin) {
-            this.$router.push('/unauthorized');
-            return;
-        }
-
         this.fetchUsersAndGroups();
     }
 

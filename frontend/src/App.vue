@@ -45,9 +45,11 @@ export default class AppVue extends Vue {
 
             // redirect to login page if user authentification is needed
             if (this.$route.meta.requiresAuth) this.$router.push('/login');
+
+            return;
         }
 
-        if (this.$route.meta.requiresAdmin && !this.$root.$data.user.admin) this.$router.push('/unauthorized');
+        if (this.$route.meta.requiresAdmin && !this.$root.$data.user.admin) this.$router.push('/403');
 
         this.authFetching = false;
     }
