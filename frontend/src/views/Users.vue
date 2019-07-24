@@ -20,15 +20,8 @@
                 <span>{{u.username}}</span>
                 <div style="display: flex; overflow-x: hidden;" >
                     <GroupTag 
-                        v-if="u.primaryGroup"
-                        :key="u.primaryGroup.tag"
-                        :group="u.primaryGroup"
-                        :star="true"
-                        :disabled="true"
-                    />
-                    <GroupTag 
-                        v-for="g in u.groups"
-                        v-if="!u.primaryGroup || g.tag !== u.primaryGroup.tag"
+                        v-for="g in sortUserGroups(u)"
+                        :star="u.primaryGroup && g.tag === u.primaryGroup.tag"
                         :key="g.tag"
                         :group="g"
                         :disabled="true"
@@ -100,6 +93,21 @@ export default class UsersVue extends Vue {
 
     private selectFilterGroup(group: Group) {
         this.filterGroup = group;
+    }
+
+    private sortUserGroups(user: User) {
+        return user.groups.sort((a, b) => {
+
+            // make sure filtedGroup always comes first
+            if (this.filterGroup && a.tag === this.filterGroup.tag) return -1;
+            if (this.filterGroup && b.tag === this.filterGroup.tag) return 1;
+
+            // after that comes the primary group
+            if (user.primaryGroup && a.tag === user.primaryGroup.tag) return -1;
+            if (user.primaryGroup && b.tag === user.primaryGroup.tag) return 1;
+
+            return 0;
+        });
     }
 
     private showFlyOut() {
