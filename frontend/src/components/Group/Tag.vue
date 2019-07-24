@@ -81,7 +81,7 @@ export default class GroupTag extends Vue {
 
     &:hover &__star,
     &:hover &__delete {
-        display: initial;
+        display: initial !important;
     }
 
     > span {
