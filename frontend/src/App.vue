@@ -22,13 +22,15 @@ export default class AppVue extends Vue {
     }
 
     get routerViewShown() {
-        return this.$root.$data.user || ['/login', '/openid/return/steam'].includes(this.$route.path);
+        return this.$route.matched.length === 0 ||
+               this.$root.$data.user ||
+               ['/login', '/openid/return/steam', '/unauthorized'].includes(this.$route.path);
     }
 
     @Watch('$route')
     private async fetchUser() {
         if (this.$root.$data.user) return;
-        if ( ['/login', '/openid/return/steam'].includes(this.$route.path)) return;
+        if ( ['/login', '/openid/return/steam', '/unauthorized'].includes(this.$route.path)) return;
 
         try {
             const user = await authenticate();
