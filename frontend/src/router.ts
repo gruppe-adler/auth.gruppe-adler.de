@@ -24,14 +24,14 @@ export default new Router({
             component: LoginVue
         },
         {
-            path: '/profile',
-            component: () => import(/* webpackChunkName: "profile" */ './views/Profile.vue')
+            path: '/user',
+            component: () => import(/* webpackChunkName: "profile" */ './views/User.vue')
             // beforeEnter: authenticateBeforeEnter
         },
         {
-            path: '/profile/:uid',
+            path: '/user/:uid',
             props: true,
-            component: () => import(/* webpackChunkName: "profile" */ './views/Profile.vue')
+            component: () => import(/* webpackChunkName: "profile" */ './views/User.vue')
             // beforeEnter: authenticateBeforeEnter
         },
         {
@@ -50,7 +50,7 @@ export default new Router({
                 }
 
                 // redirect to profile if no redirect was given
-                next('/profile');
+                next('/user');
             }
         },
         {

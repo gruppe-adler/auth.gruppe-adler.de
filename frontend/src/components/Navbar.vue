@@ -13,7 +13,7 @@
         <img :src="$root.$data.user.avatar" />
         <span>{{$root.$data.user.username}}</span>
         <div v-if="flyOutShown" class="grad-navbar__user-flyout grad-menu">
-            <router-link tag="span" to="/profile">Profil</router-link>
+            <router-link tag="span" to="/user/me">Profil</router-link>
             <router-link tag="span" to="/logout">Ausloggen</router-link>
         </div>
     </div>

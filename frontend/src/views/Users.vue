@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="grad-users__list grad-list">
-            <div v-for="u in filteredUsers" :key="u.id" @click="$router.push(`/profile/${u.id}`)">
+            <div v-for="u in filteredUsers" :key="u.id" @click="$router.push(`/user/${u.id}`)">
                 <img :src="u.avatar" />
                 <span>{{u.username}}</span>
                 <div style="display: flex; overflow-x: hidden;" >

@@ -64,7 +64,7 @@ import UserGroupsVue from '@/components/Group/UserGroups.vue';
     }
 })
 export default class ProfileVue extends Vue {
-    @Prop() private uid?: number;
+    @Prop({ default: '' }) private uid!: string;
 
     private error: any = null;
     private deleteModal: boolean = false;
@@ -87,9 +87,14 @@ export default class ProfileVue extends Vue {
     @Watch('uid')
     private async fetchUser() {
         this.loading = true;
-        if (this.uid) {
+
+        if (this.uid !== 'me') {
+            const uid = Number.parseInt(this.uid, 10);
+
+            if (Number.isNaN(uid)) return;
+
             try {
-                this.user = await fetchUser(this.uid);
+                this.user = await fetchUser(uid);
             } catch (err) {
                 this.error = err;
             }
