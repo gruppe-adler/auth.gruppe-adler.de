@@ -37,6 +37,7 @@ export class JwtService {
             id: user.id,
             username: user.username,
             admin: user.admin,
+            avatar: user.avatar,
             groups: user.groups
         };
 
@@ -81,7 +82,7 @@ export class JwtService {
             header('Authorization')
                 .exists()
                 .custom((h => h.match(/^bearer\s+[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/i) !== null))
-        ])(req, res, () => {
+        ])(req, res, async () => {
 
             // make sure token was given
             const errors = validationResult(req);
@@ -91,12 +92,21 @@ export class JwtService {
             const payload = matchedData(req);
             const token = payload[config.cookie.name] || payload.Authorization.replace(/^Bearer\s+/i, '');
 
+            let tokenUser;
             try {
-                (req as GradRequest).gradUser = JwtService.verify(token);
+                tokenUser = JwtService.verify(token);
             } catch (err) {
                 console.error(err);
                 return res.status(401).end();
             }
+
+            // get user from db to make sure he doesn't have an token where he is admin
+            // although he was demoted / deleted in the mean time
+            const user = await User.findByPk(tokenUser.id);
+
+            if (user === null) return res.status(401).end();;
+
+            (req as GradRequest).gradUser = user;
 
             if (next) next();
         });

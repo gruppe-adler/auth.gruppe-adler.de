@@ -94,24 +94,16 @@ AuthRouter.post('/login/steam', AuthRules.login,  wrapAsync(async (req: Request,
 
 // POST authenticate (= check received token and return the payload if valid)
 AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: GradRequest, res: Response) => {
-    const user = await User.findByPk(req.gradUser.id);
+    const token = JwtService.sign(req.gradUser);
 
-    if (user === null) {
-        console.log('no user found');
-        res.clearCookie(config.cookie.name);
-        throw { status: 401 };
-    } else {
-        const token = JwtService.sign(user);
+    res.cookie(config.cookie.name, token, {
+        domain: config.cookie.domain,
+        httpOnly: true,
+        secure: false,
+        maxAge: 36000000
+    });
 
-        res.cookie(config.cookie.name, token, {
-            domain: config.cookie.domain,
-            httpOnly: true,
-            secure: false,
-            maxAge: 36000000
-        });
-    }
-
-    res.status(200).json(user);
+    res.status(200).json(req.gradUser);
 }));
 
 // POST logout
