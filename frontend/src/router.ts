@@ -26,6 +26,7 @@ export default new Router({
         {
             path: '/user/:uid',
             props: true,
+            meta: { requiresAuth: true },
             component: () => import(/* webpackChunkName: "profile" */ './views/User.vue')
             // beforeEnter: authenticateBeforeEnter
         },
