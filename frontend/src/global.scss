@@ -90,11 +90,10 @@ input[type=text] {
     width: 100%;
     box-sizing: border-box;
     outline: none;
-    transition: all .1s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    transition: all .2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
 
     &:focus {
         background-color: white;
-        transition: all .2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
     }
 }
 

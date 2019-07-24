@@ -139,7 +139,7 @@ export default class UsersVue extends Vue {
     &__filter {
         width: 100%;
         display: flex;
-
+        
         > input {
             text-align: left;
             width: auto;
@@ -148,10 +148,11 @@ export default class UsersVue extends Vue {
             border-bottom-right-radius: 0px;
         }
 
-        > div:nth-child(2) {
+        > div {
             display: flex;
             cursor: pointer;
-            background: #D6D4D3;
+            background-color: #D6D4D3;
+            transition: all .2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
             padding: 20px;
@@ -160,6 +161,12 @@ export default class UsersVue extends Vue {
             letter-spacing: 0.01em;
             box-sizing: border-box;
             position: relative;
+        }
+
+        &:focus-within {
+            > div {
+                background-color: white;
+            }
         }
 
         &-flyout {
