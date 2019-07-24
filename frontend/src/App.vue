@@ -2,6 +2,9 @@
     <div class="app">
         <Navbar v-if="navbarShown" />
         <router-view v-if="routerViewShown" class="page"/>
+        <div v-else class="page">
+            <Loader />
+        </div>
     </div>
 </template>
 
@@ -10,36 +13,43 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 
 import NavbarVue from '@/components/Navbar.vue';
 import { authenticate } from '@/services';
+import LoaderVue from '@/components/Loader.vue';
 
 @Component({
     components: {
-        Navbar: NavbarVue
+        Navbar: NavbarVue,
+        Loader: LoaderVue
     }
 })
 export default class AppVue extends Vue {
+    private authFetching: boolean = false;
+
     get navbarShown() {
         return !(['/login'].includes(this.$route.path));
     }
 
     get routerViewShown() {
-        return this.$route.matched.length === 0 ||
-               this.$root.$data.user ||
-               ['/login', '/openid/return/steam', '/unauthorized'].includes(this.$route.path);
+        return !this.$route.meta.requiresAuth || this.$root.$data.user;
     }
 
     @Watch('$route')
-    private async fetchUser() {
-        if (this.$root.$data.user) return;
-        if ( ['/login', '/openid/return/steam', '/unauthorized'].includes(this.$route.path)) return;
+    private async authenticateUser() {
+        if (this.authFetching) return;
+        this.authFetching = true;
+
+        const path = this.$route.path;
 
         try {
-            const user = await authenticate();
-
-            this.$root.$data.user = user;
+            this.$root.$data.user = await authenticate();
         } catch (err) {
-            this.$router.push('/login');
+
+            // redirect to login page if user authentification is needed
+            if (this.$route.meta.requiresAuth) this.$router.push('/login');
         }
 
+        if (this.$route.meta.requiresAdmin && !this.$root.$data.user.admin) this.$router.push('/unauthorized');
+
+        this.authFetching = false;
     }
 }
 </script>

@@ -24,11 +24,6 @@ export default new Router({
             component: LoginVue
         },
         {
-            path: '/user',
-            component: () => import(/* webpackChunkName: "profile" */ './views/User.vue')
-            // beforeEnter: authenticateBeforeEnter
-        },
-        {
             path: '/user/:uid',
             props: true,
             component: () => import(/* webpackChunkName: "profile" */ './views/User.vue')
@@ -50,7 +45,7 @@ export default new Router({
                 }
 
                 // redirect to profile if no redirect was given
-                next('/user');
+                next('/user/me');
             }
         },
         {
@@ -68,18 +63,34 @@ export default new Router({
         },
         {
             path: '/groups',
+            meta: {
+                requiresAuth: true,
+                requiresAdmin: true
+            },
             component: () => import(/* webpackChunkName: "admin" */ './views/Groups.vue')
         },
         {
             path: '/users',
+            meta: {
+                requiresAuth: true,
+                requiresAdmin: true
+            },
             component: () => import(/* webpackChunkName: "admin" */ './views/Users.vue')
         },
         {
             path: '/group/create',
+            meta: {
+                requiresAuth: true,
+                requiresAdmin: true
+            },
             component: () => import(/* webpackChunkName: "admin" */ './views/Group.vue')
         },
         {
             path: '/group/:gid',
+            meta: {
+                requiresAuth: true,
+                requiresAdmin: true
+            },
             component: () => import(/* webpackChunkName: "admin" */ './views/Group.vue'),
             props: true
         },
