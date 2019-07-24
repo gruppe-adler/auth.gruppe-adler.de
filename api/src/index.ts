@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
+import * as morgan from 'morgan';
 import * as cors from 'cors';
 import { join } from 'path';
 import { Sequelize } from 'sequelize-typescript';
@@ -15,7 +16,8 @@ import { AuthRouter } from './routers/auth.router';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
-    storage: join(__dirname, '../data/database.sqlite')
+    storage: join(__dirname, '../data/database.sqlite'),
+    logging: false
 });
 
 sequelize.addModels([ User, Group, UserGroup ]);
@@ -37,7 +39,9 @@ app.use(cors({
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json());+
+
+app.use(morgan('short'))
 
 const {
     PORT = 80,
