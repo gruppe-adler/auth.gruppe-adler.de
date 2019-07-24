@@ -28,5 +28,12 @@ export default class LoaderVue extends Vue {}
     bottom: 0px;
     right: 0px;
     z-index: 1000;
+    animation: appearAfterDelay .5s;
+}
+
+@keyframes appearAfterDelay {
+  0% { opacity: 0; }
+  99% { opacity: 0; }
+  100% { opacity: 1; }
 }
 </style>
