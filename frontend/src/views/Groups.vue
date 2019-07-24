@@ -72,7 +72,6 @@ export default class GroupsVue extends Vue {
 
         input {
             text-align: left;
-            background-color: white;
         }
 
         button {
