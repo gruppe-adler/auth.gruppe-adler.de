@@ -96,7 +96,7 @@ export default class UsersVue extends Vue {
     }
 
     private sortUserGroups(user: User) {
-        return user.groups.sort((a, b) => {
+        return [ ...user.groups ].sort((a, b) => {
 
             // make sure filtedGroup always comes first
             if (this.filterGroup && a.tag === this.filterGroup.tag) return -1;
