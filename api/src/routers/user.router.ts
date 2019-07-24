@@ -7,7 +7,6 @@ import { UserRules } from '../rules/user.rules';
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
 import { GradRequest } from '../@types/GradRequest';
-import { Group } from '../models/group.model';
 
 export const UserRouter = Router();
 
