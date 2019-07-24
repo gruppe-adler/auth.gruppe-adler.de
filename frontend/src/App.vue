@@ -41,7 +41,10 @@ export default class AppVue extends Vue {
 
         try {
             this.$root.$data.user = await authenticate();
+            this.authFetching = false;
+
         } catch (err) {
+            this.authFetching = false;
 
             // redirect to login page if user authentification is needed
             if (this.$route.meta.requiresAuth) this.$router.push('/login');
@@ -50,8 +53,6 @@ export default class AppVue extends Vue {
         }
 
         if (this.$route.meta.requiresAdmin && !this.$root.$data.user.admin) this.$router.push('/403');
-
-        this.authFetching = false;
     }
 }
 </script>
