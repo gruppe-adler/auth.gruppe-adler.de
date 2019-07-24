@@ -7,9 +7,10 @@
         ]"
         :style="`color: ${group.color};`"
     >
-        <GroupBlob />
+        <GroupBlob v-if="!star || !disabled" />
+        <i v-if="star && disabled" class="material-icons" :style="`color: ${group.color};`">star</i>
         <span>{{group.label}}</span>
-        <i v-if="star" class="material-icons" style="color: #2F80ED;">star</i>
+        <i v-if="star && !disabled" class="material-icons" style="color: #2F80ED;">star</i>
         <template v-if="!disabled">
             <i v-if="!star" class="material-icons grad-group-tag__star" @click="$emit('select', group)">star_border'</i>
             <i class="material-icons grad-group-tag__delete" @click="$emit('delete', group)">delete</i>
@@ -58,6 +59,11 @@ export default class GroupTag extends Vue {
 
         &:last-child {
             margin-right: 0px;
+        }
+
+        &:first-child {
+            // star
+            margin: 0px;
         }
     }
 
