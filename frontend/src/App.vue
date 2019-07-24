@@ -64,7 +64,6 @@ export default class AppVue extends Vue {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding-bottom: 50px;
     box-sizing: border-box;
 
     > .page {

@@ -85,6 +85,7 @@ export default class LoginVue extends Vue {
         color: rgba(#333333, 0.7);
         margin: 24px 0px;
         width: 400px;
+        max-width: 100%;
     }
 
     > h3 {

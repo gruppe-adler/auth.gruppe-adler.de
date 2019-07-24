@@ -177,10 +177,12 @@ export default class ProfileVue extends Vue {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-y: auto !important;
 
     > * {
         margin-top: 12px;
         margin-bottom: 12px;
+        flex-shrink: 0;
     }
 
     button {
@@ -191,13 +193,12 @@ export default class ProfileVue extends Vue {
         height: 128px;
         width: 128px;
         position: relative;
-        display: inline-flex;
         user-select: none;
         border-radius: 50%;
         overflow: hidden;
 
         img {
-            width: 100%;
+            height: 100%;
             height: 100%;
         }
 

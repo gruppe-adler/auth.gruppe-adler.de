@@ -65,6 +65,11 @@ export default class NavbarVue extends Vue {
     justify-items: flex-start;
     box-sizing: border-box;
 
+    @media (max-width: 800px) {
+        grid-template-columns: auto 1fr auto;
+        padding: 10px;
+    }
+
     > * {
         display: grid;
         grid-column-gap: 8px;
@@ -77,6 +82,11 @@ export default class NavbarVue extends Vue {
         grid-column-gap: 8px;
         grid-template-columns: auto auto;
         align-items: center;
+
+        @media (max-width: 800px) {
+            display: none;
+        }
+
         img {
             height: 30px;
         }
@@ -84,9 +94,8 @@ export default class NavbarVue extends Vue {
         h3 {
             font-size: 16px;
             opacity: 0.5;
-        }
+        }   
     }
-
 
 
     &__user {
@@ -98,7 +107,6 @@ export default class NavbarVue extends Vue {
         display: flex;
         align-items: center;
         transition: background-color linear 0.1s;
-
 
         > img {
             height: 40px;
@@ -113,8 +121,8 @@ export default class NavbarVue extends Vue {
             padding-left: 30px;
             margin-left: -20px;
             height: 40px;
-
         }
+
         &:hover {
             background-color: rgba(255, 255, 255, 0.5);
         }

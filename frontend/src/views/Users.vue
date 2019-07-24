@@ -156,6 +156,10 @@ export default class UsersVue extends Vue {
             letter-spacing: 0.01em;
             box-sizing: border-box;
             position: relative;
+
+            > i {
+                line-height: 20px;
+            }
         }
 
         &:focus-within {
