@@ -27,5 +27,6 @@ export default class LoaderVue extends Vue {}
     left: 0px;
     bottom: 0px;
     right: 0px;
+    z-index: 1000;
 }
 </style>
