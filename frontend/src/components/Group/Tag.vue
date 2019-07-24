@@ -75,7 +75,7 @@ export default class GroupTag extends Vue {
 
     &__star,
     &__delete {
-        width: 0px; // former: display none
+        width: 0px !important; // former: display none
         transition: all .2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
     }
 
