@@ -29,21 +29,13 @@ app.use(cors({
     credentials: true,
     origin: [
         new RegExp('gruppe-adler\.de$', 'i'),
-        new RegExp('^localhost:\d+$', 'i'),
-        'localhost',
+        new RegExp('localhost:\d+$', 'i'),
+        new RegExp('localhost$', 'i'),
     ] 
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// set Access-Control-Allow Headers
-// app.all('/*', (req: Request, res: Response, next: NextFunction) => {
-//     res.header('Access-Control-Allow-Origin', '*');
-//     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     res.header('Access-Control-Allow-Methods', 'GET, HEAD, PUT, POST, DELETE, CONNECT, OPTIONS, TRACE, PATCH');
-//     next();
-// });
 
 const {
     PORT = 80,
