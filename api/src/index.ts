@@ -41,9 +41,9 @@ const {
     PORT = 80,
 } = process.env;
 
-app.use('/api/user', UserRouter);
-app.use('/api/group', GroupRouter);
-app.use('/api', AuthRouter);
+app.use('/api/v1/user', UserRouter);
+app.use('/api/v1/group', GroupRouter);
+app.use('/api/v1', AuthRouter);
 
 app.use('/', express.static(join(__dirname, '../frontend')));
 

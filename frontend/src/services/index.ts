@@ -1,6 +1,6 @@
 import { User, Group } from '@/models';
 
-const API_BASE_URL = 'https://sso.gruppe-adler.de/api';
+const API_BASE_URL = 'https://sso.gruppe-adler.de/api/v1';
 
 /**
  * Login via steam. Called in openid return.
