@@ -82,7 +82,7 @@ AuthRouter.post('/login/steam', AuthRules.login,  wrapAsync(async (req: Request,
         domain: config.cookie.domain,
         httpOnly: true,
         secure: false,
-        maxAge: 36000000
+        maxAge: 5.184e+9 // 60 days
     });
 
     const resPayload = {};
@@ -96,11 +96,12 @@ AuthRouter.post('/login/steam', AuthRules.login,  wrapAsync(async (req: Request,
 AuthRouter.post('/authenticate', AuthRules.authenticate, wrapAsync(async (req: GradRequest, res: Response) => {
     const token = JwtService.sign(req.gradUser);
 
+    // renew cookie
     res.cookie(config.cookie.name, token, {
         domain: config.cookie.domain,
         httpOnly: true,
         secure: false,
-        maxAge: 36000000
+        maxAge: 5.184e+9 // 60 days
     });
 
     res.status(200).json(req.gradUser);
