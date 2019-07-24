@@ -13,18 +13,13 @@ export const UserRules = {
             body('id').isInt()
         ]),
         sanitize('id').toInt(),
-        oneOf([
-            body('username')
-                .exists()
-                .isLength({ min: 5 })
-                .withMessage('username is too short')
-                .custom(username => User.findOne({ where: { username } }).then(u => !!!u))
-                .withMessage('username already exists'),
-            body('avatar').exists(),
-            body('admin').exists(),
-            body('groups').exists(),
-            body('primaryGroup').exists()
-        ]),
+        body('username')
+            .isLength({ min: 5 }).withMessage('Nutzername muss mindestens 5 Zeichen lang sein')
+            .custom(username => User.findOne({ where: { username } }).then(g => { if (g) return Promise.reject(`Name ${username} ist bereits vergeben.`)})),
+        body('avatar'),
+        body('admin'),
+        body('groups'),
+        body('primaryGroup'),
         return422,
         JwtService.checkSelfOrAdmin
     ],
