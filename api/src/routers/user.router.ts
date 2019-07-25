@@ -55,7 +55,7 @@ UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: GradRequest, res
 }));
 
 // PUT update a user avatar
-UserRouter.PUT('/:id/avatar', UserRules.avatar, wrapAsync(async (req: GradRequest, res: Response) => {
+UserRouter.put('/:id/avatar', UserRules.avatar, wrapAsync(async (req: GradRequest, res: Response) => {
     const payload = matchedData(req);
 
     // find user to update
