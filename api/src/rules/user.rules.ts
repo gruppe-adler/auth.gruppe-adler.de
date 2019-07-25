@@ -22,7 +22,9 @@ export const UserRules = {
             .custom((username, { req }) => {
                 const payload = matchedData(req);
 
-                User.findOne({ where: { username, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${username}' ist bereits vergeben.`)})
+                User.findOne({ where: { username, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${username}' ist bereits vergeben.`); });
+
+                return Promise.resolve();
             }),
         body('avatar'),
         body('admin'),
