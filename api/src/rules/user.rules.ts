@@ -20,12 +20,11 @@ export const UserRules = {
         body('username')
             .optional()
             .isLength({ min: 5 }).withMessage('Nutzername muss mindestens 5 Zeichen lang sein')
-            .custom((username, { req }) => {
+            .custom(async (username, { req }) => {
                 const payload = matchedData(req);
-
-                User.findOne({ where: { username, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${username}' ist bereits vergeben.`); });
-
-                return Promise.resolve();
+                const group = await User.findOne({ where: { username, id: { [Op.not]: payload.id } } });
+                if (group !== null) throw new Error(`'${username}' ist bereits vergeben.`);
+                return true;
             }),
         body('admin').optional(),
         body('groups').optional(),

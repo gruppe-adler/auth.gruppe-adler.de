@@ -12,12 +12,11 @@ export const GroupRules = {
         body('hidden').exists(),
         body('tag')
             .exists().withMessage('Field \'tag\' is required')
-            .custom((tag, { req }) => {
+            .custom(async (tag, { req }) => {
                 const payload = matchedData(req);
-
-                Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${tag}' ist bereits vergeben.`) });
-                
-                return Promise.resolve();
+                const group = await Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } });
+                if (group !== null) throw new Error(`'${tag}' ist bereits vergeben.`);
+                return true;
             }),
         body('color')
             .exists().withMessage('Field \'color\' is required')
@@ -35,12 +34,11 @@ export const GroupRules = {
         // either new tag or new color has to be given
         body('tag')
             .optional()
-            .custom((tag, { req }) => {
+            .custom(async (tag, { req }) => {
                 const payload = matchedData(req);
-
-                Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${tag}' ist bereits vergeben.`) });
-
-                return Promise.resolve();
+                const group = await Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } });
+                if (group !== null) throw new Error(`'${tag}' ist bereits vergeben.`);
+                return true;
             }),
         body('label').optional(),
         body('hidden').optional(),
