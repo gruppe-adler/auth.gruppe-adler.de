@@ -212,7 +212,7 @@ export default class GroupVue extends Vue {
 .grad-group {
     overflow-y: auto !important;
     flex: 1;
-    width: 500px;
+    width: 600px;
     position: relative;
 
     display: flex;

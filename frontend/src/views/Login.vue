@@ -2,7 +2,7 @@
 <div class="grad-login">
     <img src="@/assets/adlerkopp.svg" />
     <h3>Grad login</h3>
-    <p>Steam gibt uns nur deine SteamID und deinen Nick, um Dich zu identifizieren. Wir bekommen keinen Zugriff auf Deinen Account.</p>
+    <p>Steam gibt uns Deine SteamID und Deinen Nick, um Dich zu identifizieren. <br/>Wir bekommen keinen Zugriff auf Deinen Account.</p>
 
     <a :href="loginSteamRedirectUrl">
         <button>
@@ -10,6 +10,8 @@
             <span>Login mit Steam SSO</span>
         </button>
     </a>
+
+    <p class="cookie-disclaimer">Wir verwenden Cookies. Durch die weitere Nutzung der Webseite stimmst Du der Verwendung von Cookies zu. Weitere Informationen zu Cookies erhältst Du in unserer <a href="https://dev.gruppe-adler.de/datenschutzerklaerung">Datenschutzerklärung.</a></p>
 </div>
 </template>
 
@@ -84,13 +86,24 @@ export default class LoginVue extends Vue {
 
         color: rgba(#333333, 0.7);
         margin: 24px 0px;
-        width: 400px;
+        width: 600px;
         max-width: 100%;
     }
 
     > h3 {
         margin-top: 10px;
         font-size: 30px;
+    }
+
+    .cookie-disclaimer {
+        margin-top: 32px;
+        font-size: 14px;
+        background-color: transparent;
+    }
+
+    .cookie-disclaimer a {
+        margin-top: 48px;
+        font-size: 14px;
     }
 }
 </style>

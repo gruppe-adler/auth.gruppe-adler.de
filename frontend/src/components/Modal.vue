@@ -42,7 +42,7 @@ export default class ModalVue extends Vue {
         border-radius: 5px;
         box-shadow: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 1px 8px 0 rgba(0,0,0,.12);
         z-index: 1000;
-        width: 500px;
+        width: 600px;
 
         > p {
             padding: 20px;
