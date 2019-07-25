@@ -201,7 +201,7 @@ export default class ProfileVue extends Vue {
         // redirect if no error occured
         if (errorOccured) return;
         if (this.uid.toLowerCase() === 'me') {
-            this.$router.push('/login');
+            this.$router.go(0);
         } else {
             this.$router.push('/users');
         }
