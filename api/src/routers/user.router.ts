@@ -38,6 +38,7 @@ UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: GradRequest, res
 
     // update user
     delete payload.id;
+    delete payload.avatar;
     if (!req.gradUser.admin && payload.admin !== undefined) delete payload.admin;
     if (!req.gradUser.admin && payload.groups !== undefined) delete payload.groups;
 

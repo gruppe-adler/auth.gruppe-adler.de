@@ -216,3 +216,21 @@ export const deleteGroup = async (id: number): Promise<void> => {
 
     if (!res.ok) throw res;
 };
+
+/**
+ * Update avatar of user
+ * @param { File } file new avatar
+ * @param { number } uid Id of user
+ * @returns { Promise<void> } Promise resolves if successful
+ */
+export const updateAvatar = async (file: File, uid: number): Promise<void> => {
+    const data = new FormData();
+    data.append('file', file);
+
+    const res = await fetch(`${API_BASE_URL}/user/${uid}/avatar`, {
+        method: 'POST',
+        body: file
+    });
+
+    if (!res.ok) throw res;
+};

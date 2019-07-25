@@ -51,6 +51,8 @@ app.use('/api/v1/user', UserRouter);
 app.use('/api/v1/group', GroupRouter);
 app.use('/api/v1', AuthRouter);
 
+app.use('/api/avatars/', express.static(join(__dirname, '../data/avatars')));
+
 app.use('/', express.static(join(__dirname, '../frontend')));
 
 app.get('*', (req, res) => {

@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import * as rp from 'request-promise';
+import { Response as RpResponse } from 'request';
 
 import { AuthRules } from '../rules/auth.rules';
 
@@ -13,6 +14,7 @@ import { User } from '../models/user.model';
 import Steam, { getUserInfo } from '../openid/Steam';
 import { JwtService } from '../utils/JwtService';
 import { matchedData } from 'express-validator';
+import { AvatarService } from '../utils/AvatarService';
 
 export const AuthRouter = Router();
 
@@ -58,7 +60,7 @@ AuthRouter.post('/login/steam', AuthRules.login,  wrapAsync(async (req: Request,
         const steamUser = await getUserInfo(steamId);
 
         // fetch avatar
-        const avatarPromise = rp.get({ url: steamUser.avatarfull, encoding: null });
+        const steamAvatarPromise = rp.get({ url: steamUser.avatarfull, encoding: null, resolveWithFullResponse: true });
         
         // make sure no user with same username exists
         let username = steamUser.personaname;
@@ -70,10 +72,16 @@ AuthRouter.post('/login/steam', AuthRules.login,  wrapAsync(async (req: Request,
         }
 
         // set first user automatically  as admin
-        const allUsers = await User.findAll();
+        const usersCount = await User.count();
 
-        user = await User.create({ steamId, username, avatar: 'https://i.imgur.com/WLmLm9C.png', admin: allUsers.length === 0 });
-        // user = await User.create({ steamId, username, avatar: await avatarPromise, admin: allUsers.length === 0 });
+        let steamAvatar: RpResponse; 
+        try {
+            steamAvatar = await steamAvatarPromise;
+        } catch(err) { /* TODO: Catch error */ }
+
+        const avatar = AvatarService.saveImage(steamAvatar.body, steamAvatar.headers['content-type']);
+
+        user = await User.create({ steamId, username, avatar, admin: usersCount === 0 });
     }
 
     const token = JwtService.sign(user);

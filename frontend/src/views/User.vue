@@ -1,10 +1,7 @@
 <template>
     <div :class="['grad-profile', canEdit ? 'grad-profile--editable' : '']">
         <template v-if="user">
-            <div class="grad-profile__avatar">
-                <img :src="user.avatar" />
-                <i class="material-icons">add_photo_alternate</i>
-            </div>
+            <Avatar :canEdit="canEdit" v-model="avatar" :img="user.avatar" />
             <div style="display: flex;">
                 <Toggle v-model="user.admin" :disabled="!$root.$data.user.admin" />
                 <label style="margin: 0px 10px;">Admin</label>
@@ -22,7 +19,7 @@
                 :disabled="!$root.$data.user.admin"
                 @select="selectGroup"
             />
-            <button 
+            <button
                 v-if="canEdit"
                 :disabled="originalUser === JSON.stringify(user)"
                 @click="onClickSave"
@@ -51,17 +48,19 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { User, Group } from '@/models';
-import { authenticate, fetchUser, updateUser, deleteUser, fetchGroups } from '@/services';
+import { authenticate, fetchUser, updateUser, updateAvatar, deleteUser, fetchGroups } from '@/services';
 import ToggleVue from '@/components/Toggle.vue';
 import ModalVue from '@/components/Modal.vue';
 import LoaderVue from '@/components/Loader.vue';
 import GroupsVue from '@/components/User/Groups.vue';
+import AvatarVue from '@/components/User/Avatar.vue';
 @Component({
     components: {
         Toggle: ToggleVue,
         Modal: ModalVue,
         Loader: LoaderVue,
         Groups: GroupsVue,
+        Avatar: AvatarVue
     }
 })
 export default class ProfileVue extends Vue {
@@ -75,6 +74,7 @@ export default class ProfileVue extends Vue {
     private loading: boolean = false;
     private user?: User|null = null;
     private originalUser: string = '';
+    private avatar: File|null = null;
 
     private get canEdit() {
         if (! this.user) return false;
@@ -113,6 +113,17 @@ export default class ProfileVue extends Vue {
 
         this.loading = false;
         this.originalUser = JSON.stringify(this.user);
+    }
+
+    @Watch('avatar')
+    private async onAvatarChanged() {
+        if (!this.avatar) return;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(this.avatar);
+
+        // @ts-ignore
+        reader.onload = ((e: ProgressEvent) => { this.user.avatar = e.target!.result; });
     }
 
     private onClickDelete() {
@@ -160,20 +171,37 @@ export default class ProfileVue extends Vue {
      */
     private async updateUser() {
         this.loading = true;
+        let errorOccured = false;
 
-        try {
-            await updateUser(this.user!);
+        // start put request to update user
+        const userProm = updateUser(this.user!);
 
-            if (this.uid.toLowerCase() === 'me') {
-                this.$router.push('/login');
-            } else {
-                this.$router.push('/users');
+        // update avatar if it has changed
+        if (this.avatar) {
+            try {
+                await updateAvatar(this.avatar, this.user!.id);
+            } catch (err) {
+                errorOccured = true;
+                this.extractErrors(err as Response);
             }
+        }
+
+        // wait on user update succeded
+        try {
+            await userProm;
         } catch (err) {
             this.extractErrors(err as Response);
         }
+
         this.loading = false;
 
+        // redirect if no error occured
+        if (errorOccured) return;
+        if (this.uid.toLowerCase() === 'me') {
+            this.$router.push('/login');
+        } else {
+            this.$router.push('/users');
+        }
     }
 
     /**
@@ -219,29 +247,6 @@ export default class ProfileVue extends Vue {
         width: 50%;
     }
 
-    &__avatar {
-        height: 128px;
-        width: 128px;
-        position: relative;
-        user-select: none;
-        border-radius: 50%;
-        overflow: hidden;
-
-        img {
-            height: 100%;
-            height: 100%;
-        }
-
-        i {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-            color: white;
-        }
-    }
-
     &__username {
         width: 100%;
         position: relative;
@@ -279,27 +284,5 @@ export default class ProfileVue extends Vue {
     }
 }
 
-.grad-profile.grad-profile--editable {
-    .grad-profile__avatar {
-        cursor: pointer;
-
-        &:hover {
-            &::before {
-                position: absolute;
-                display: block;
-                content: '';
-                background-color: rgba(0,0,0,0.4);
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-            }
-
-            > i {
-                display: block;
-            }
-        }
-    }
-}
 
 </style>

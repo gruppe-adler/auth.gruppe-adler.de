@@ -15,7 +15,7 @@ export const UserRules = {
         sanitize('id').toInt(),
         body('username')
             .isLength({ min: 5 }).withMessage('Nutzername muss mindestens 5 Zeichen lang sein')
-            .custom(username => User.findOne({ where: { username } }).then(g => { if (g) return Promise.reject(`Name ${username} ist bereits vergeben.`)})),
+            .custom(username => User.findOne({ where: { username } }).then(g => { if (g) return Promise.reject(`'${username}' ist bereits vergeben.`)})),
         body('avatar'),
         body('admin'),
         body('groups'),
