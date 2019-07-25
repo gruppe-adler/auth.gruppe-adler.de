@@ -107,6 +107,9 @@ export default class LoginVue extends Vue {
     }
 
     @media (max-height: 600px /* some height */){
+
+        margin: 0 0 0 0 !important;
+
         > img{
             height: 64px;
             width: 64px; /* 'some height' divided by ten */
