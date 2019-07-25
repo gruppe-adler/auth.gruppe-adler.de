@@ -225,11 +225,11 @@ export const deleteGroup = async (id: number): Promise<void> => {
  */
 export const updateAvatar = async (file: File, uid: number): Promise<void> => {
     const data = new FormData();
-    data.append('file', file);
+    data.append('avatar', file);
 
     const res = await fetch(`${API_BASE_URL}/user/${uid}/avatar`, {
         method: 'PUT',
-        body: file
+        body: data
     });
 
     if (!res.ok) throw res;
