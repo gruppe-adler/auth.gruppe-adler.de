@@ -18,6 +18,7 @@ export const UserRules = {
         ]),
         sanitize('id').toInt(),
         body('username')
+            .optional()
             .isLength({ min: 5 }).withMessage('Nutzername muss mindestens 5 Zeichen lang sein')
             .custom((username, { req }) => {
                 const payload = matchedData(req);
@@ -26,10 +27,9 @@ export const UserRules = {
 
                 return Promise.resolve();
             }),
-        body('avatar'),
-        body('admin'),
-        body('groups'),
-        body('primaryGroup'),
+        body('admin').optional(),
+        body('groups').optional(),
+        body('primaryGroup').optional(),
         return422,
         JwtService.checkSelfOrAdmin
     ],

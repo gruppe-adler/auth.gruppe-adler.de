@@ -34,6 +34,7 @@ export const GroupRules = {
         ]),
         // either new tag or new color has to be given
         body('tag')
+            .optional()
             .custom((tag, { req }) => {
                 const payload = matchedData(req);
 
@@ -41,9 +42,9 @@ export const GroupRules = {
 
                 return Promise.resolve();
             }),
-        body('label'),
-        body('hidden'),
-        body('color'),
+        body('label').optional(),
+        body('hidden').optional(),
+        body('color').optional(),
         return422
     ],
     delete: [
