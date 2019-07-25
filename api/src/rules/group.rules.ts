@@ -2,7 +2,7 @@ import { body, oneOf, param, matchedData } from 'express-validator';
 import { JwtService } from '../utils/JwtService';
 import { return422 } from '../utils/return422';
 import { Group } from '../models/group.model';
-import { Op } from 'sequelize/types';
+import { Op } from 'sequelize';
 
 export const GroupRules = {
     create: [

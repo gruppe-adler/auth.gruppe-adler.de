@@ -7,7 +7,7 @@ import { User } from '../models/user.model';
 
 import { JwtService } from '../utils/JwtService';
 import { return422 } from '../utils/return422';
-import { Op } from 'sequelize/types';
+import { Op } from 'sequelize';
 
 export const UserRules = {
     update: [
