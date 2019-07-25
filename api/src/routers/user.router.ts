@@ -67,7 +67,8 @@ UserRouter.put('/:id/avatar', UserRules.avatar, wrapAsync(async (req: GradReques
     // delete old avatar
     AvatarService.removeImage(user.avatar);
 
-    const avatar = AvatarService.saveImage(req.body, req.headers["content-type"]);
+    // @ts-ignore
+    const avatar = AvatarService.saveImage(req.file.buffer as Buffer, req.file.mimetype);
 
     user = await user.update({ avatar });
 

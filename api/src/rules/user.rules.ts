@@ -1,3 +1,5 @@
+import * as multer from 'multer';
+
 import { body, oneOf, param } from 'express-validator';
 import { sanitize } from 'express-validator';
 import { User } from '../models/user.model';
@@ -28,7 +30,8 @@ export const UserRules = {
         param('id').isInt(),
         sanitize('id').toInt(),
         return422,
-        JwtService.checkSelfOrAdmin
+        JwtService.checkSelfOrAdmin,
+        multer({ storage: multer.memoryStorage() }).single('image')
     ],
     delete: [
         // id of group to edit must be in param or in body
