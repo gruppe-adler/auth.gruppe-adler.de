@@ -15,7 +15,9 @@ export const GroupRules = {
             .custom((tag, { req }) => {
                 const payload = matchedData(req);
 
-                Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${tag}' ist bereits vergeben.`)})
+                Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${tag}' ist bereits vergeben.`) });
+                
+                return Promise.resolve();
             }),
         body('color')
             .exists().withMessage('Field \'color\' is required')
@@ -35,7 +37,9 @@ export const GroupRules = {
             .custom((tag, { req }) => {
                 const payload = matchedData(req);
 
-                Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${tag}' ist bereits vergeben.`)})
+                Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${tag}' ist bereits vergeben.`) });
+
+                return Promise.resolve();
             }),
         body('label'),
         body('hidden'),
