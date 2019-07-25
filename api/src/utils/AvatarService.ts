@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
 
 const AVATAR_BASE_PATH = join(__dirname, '../../data/avatars');
 
@@ -22,19 +22,25 @@ export class AvatarService {
      */
     public static saveImage(buffer: Buffer, mimeType: string): string {
         
-        // generate random name
-        let name = this.randomName();
-        while(existsSync(`${AVATAR_BASE_PATH}/${name}`)) name = this.randomName();
-
         const fileEnding = {
             'image/gif': 'gif',
             'image/jpeg': 'jpeg',
             'image/png': 'png'
         }[mimeType];
 
+        // generate random name
+        let name = this.randomName();
+        while(existsSync(`${AVATAR_BASE_PATH}/${name}.${fileEnding}`)) name = this.randomName();
+
         writeFileSync(`${AVATAR_BASE_PATH}/${name}.${fileEnding}`, buffer);
 
         return `${name}.${fileEnding}`;
+    }
+    
+    public static removeImage(name: string) {
+        if(!existsSync(`${AVATAR_BASE_PATH}/${name}`)) return;
+
+        unlinkSync(`${AVATAR_BASE_PATH}/${name}`);
     }
 
     private static randomName(): string {

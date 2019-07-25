@@ -23,6 +23,13 @@ export const UserRules = {
         return422,
         JwtService.checkSelfOrAdmin
     ],
+    avatar: [
+        // id of user to edit must be in param or in body
+        param('id').isInt(),
+        sanitize('id').toInt(),
+        return422,
+        JwtService.checkSelfOrAdmin
+    ],
     delete: [
         // id of group to edit must be in param or in body
         oneOf([

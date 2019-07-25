@@ -7,6 +7,7 @@ import { UserRules } from '../rules/user.rules';
 import { wrapAsync } from '../utils/wrapAsync';
 import { globalErrorHandler } from '../utils/globalErrorHandler';
 import { GradRequest } from '../@types/GradRequest';
+import { AvatarService } from '../utils/AvatarService';
 
 export const UserRouter = Router();
 
@@ -49,6 +50,26 @@ UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: GradRequest, res
 
     // @ts-ignore
     if (payload.primaryGroup)await user.setPrimaryGroup(payload.primaryGroup.id);
+
+    res.status(200).json(user);
+}));
+
+// PUT update a user avatar
+UserRouter.PUT('/:id/avatar', UserRules.avatar, wrapAsync(async (req: GradRequest, res: Response) => {
+    const payload = matchedData(req);
+
+    // find user to update
+    let user: User|null = await User.findByPk(payload.id);
+
+    // exit if user does not exist
+    if (user === null) throw { status: 404, message: `User with id '${payload.id}' not found`};
+
+    // delete old avatar
+    AvatarService.removeImage(user.avatar);
+
+    const avatar = AvatarService.saveImage(req.body, req.headers["content-type"]);
+
+    user = await user.update({ avatar });
 
     res.status(200).json(user);
 }));
