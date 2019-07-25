@@ -16,7 +16,7 @@
         </div>
         <div class="grad-users__list grad-list">
             <div v-for="u in filteredUsers" :key="u.id" @click="$router.push(`/user/${u.id}`)">
-                <img :src="u.avatar" />
+                <img :src="`https://sso.gruppe-adler.de/api/avatars/${u.avatar}`" />
                 <span>{{u.username}}</span>
                 <div style="display: flex; overflow-x: hidden;" >
                     <GroupTag 

@@ -229,6 +229,7 @@ export const updateAvatar = async (file: File, uid: number): Promise<void> => {
 
     const res = await fetch(`${API_BASE_URL}/user/${uid}/avatar`, {
         method: 'PUT',
+        credentials: 'include',
         body: data
     });
 
