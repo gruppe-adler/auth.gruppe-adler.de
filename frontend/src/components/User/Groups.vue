@@ -36,7 +36,7 @@ import { fetchGroups } from '@/services';
         GroupTag: GroupTagVue
     }
 })
-export default class UserGroupsVue extends Vue {
+export default class GroupsVue extends Vue {
     public allGroups: Group[] = [];
     @Prop({ default: null }) public primaryGroup!: Group|null;
     @Prop({ default: false }) public disabled!: boolean;

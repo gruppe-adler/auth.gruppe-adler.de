@@ -16,7 +16,7 @@
                 </a>
             </div>
             <span v-if="errorMessages.username" class="grad-label-error">{{ errorMessages.username }}</span>
-            <UserGroups 
+            <Groups
                 v-model="user.groups"
                 :primaryGroup="user.primaryGroup"
                 :disabled="!$root.$data.user.admin"
@@ -55,13 +55,13 @@ import { authenticate, fetchUser, updateUser, deleteUser, fetchGroups } from '@/
 import ToggleVue from '@/components/Toggle.vue';
 import ModalVue from '@/components/Modal.vue';
 import LoaderVue from '@/components/Loader.vue';
-import UserGroupsVue from '@/components/Group/UserGroups.vue';
+import GroupsVue from '@/components/User/Groups.vue';
 @Component({
     components: {
         Toggle: ToggleVue,
         Modal: ModalVue,
         Loader: LoaderVue,
-        UserGroups: UserGroupsVue
+        Groups: GroupsVue,
     }
 })
 export default class ProfileVue extends Vue {
