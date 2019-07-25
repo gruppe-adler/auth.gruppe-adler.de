@@ -110,8 +110,10 @@ export default class NavbarVue extends Vue {
 
         > img {
             height: 40px;
+            width: 40px;
             border-radius: 50%;
             z-index: 1;
+            object-fit: cover;
         }
 
         > span {

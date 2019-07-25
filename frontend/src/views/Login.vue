@@ -72,7 +72,7 @@ export default class LoginVue extends Vue {
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin: 0 0 20vh 0 !important;
+    margin: -20vh 0 0 0 !important;
 
     > img {
         height: 128px;
@@ -104,6 +104,19 @@ export default class LoginVue extends Vue {
     .cookie-disclaimer a {
         margin-top: 48px;
         font-size: 14px;
+    }
+
+    @media (max-height: 600px /* some height */){
+        > img{
+            height: 64px;
+            width: 64px; /* 'some height' divided by ten */
+            transition: all .2s ease-out;
+        }
+
+        >h3 {
+            font-size: 18px;
+            transition: all .2s ease-out;
+        }
     }
 }
 </style>
