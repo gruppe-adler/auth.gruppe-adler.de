@@ -61,7 +61,7 @@ export default class NavbarVue extends Vue {
     padding: 20px;
     align-items: center;
     width: 100%;
-    grid-template-columns: .5fr 500px .5fr;
+    grid-template-columns: .5fr 600px .5fr;
     justify-items: flex-start;
     box-sizing: border-box;
 

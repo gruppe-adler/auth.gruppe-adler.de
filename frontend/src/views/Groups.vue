@@ -57,7 +57,7 @@ export default class GroupsVue extends Vue {
 <style lang="scss" scoped>
 .grad-groups {
     flex: 1;
-    width: 500px;
+    width: 600px;
     display: flex;
     flex-direction: column;
 

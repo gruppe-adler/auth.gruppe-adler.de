@@ -127,7 +127,7 @@ export default class UsersVue extends Vue {
 <style lang="scss" scoped>
 .grad-users {
     flex: 1;
-    width: 500px;
+    width: 600px;
     display: flex;
     flex-direction: column;
 
