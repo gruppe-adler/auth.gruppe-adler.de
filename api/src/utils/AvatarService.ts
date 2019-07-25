@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
-const AVATAR_BASE_PATH = join(__dirname, '../data/avatars');
+const AVATAR_BASE_PATH = join(__dirname, '../../data/avatars');
 
 // create directory if it doesn't exist already
 if (!existsSync(AVATAR_BASE_PATH)) {
