@@ -58,6 +58,9 @@ UserRouter.put('/:id?', UserRules.update, wrapAsync(async (req: GradRequest, res
 UserRouter.put('/:id/avatar', UserRules.avatar, wrapAsync(async (req: GradRequest, res: Response) => {
     const payload = matchedData(req);
 
+    // @ts-ignore
+    if (!req.file) throw { status: 400, message: 'no file given' };
+
     // find user to update
     let user: User|null = await User.findByPk(payload.id);
 

@@ -29,7 +29,6 @@ export const UserRules = {
         // id of user to edit must be in param or in body
         param('id').isInt(),
         sanitize('id').toInt(),
-        body('avatar').exists(),
         return422,
         JwtService.checkSelfOrAdmin,
         multer({ storage: multer.memoryStorage() }).single('avatar')
