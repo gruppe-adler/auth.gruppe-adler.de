@@ -1,7 +1,8 @@
-import { body, oneOf, param } from 'express-validator';
+import { body, oneOf, param, matchedData } from 'express-validator';
 import { JwtService } from '../utils/JwtService';
 import { return422 } from '../utils/return422';
 import { Group } from '../models/group.model';
+import { Op } from 'sequelize/types';
 
 export const GroupRules = {
     create: [
@@ -11,7 +12,11 @@ export const GroupRules = {
         body('hidden').exists(),
         body('tag')
             .exists().withMessage('Field \'tag\' is required')
-            .custom(tag => Group.findOne({ where: { tag } }).then(g => { if (g) return Promise.reject(`Tag ${tag} ist bereits vergeben.`)})),
+            .custom((tag, { req }) => {
+                const payload = matchedData(req);
+
+                Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${tag}' ist bereits vergeben.`)})
+            }),
         body('color')
             .exists().withMessage('Field \'color\' is required')
             .custom((color => color.match(/^#([a-f0-9]{3}){1,2}$/i) !== null))
@@ -27,7 +32,11 @@ export const GroupRules = {
         ]),
         // either new tag or new color has to be given
         body('tag')
-            .custom(tag => Group.findOne({ where: { tag } }).then(g => { if (g) return Promise.reject(`Tag ${tag} ist bereits vergeben.`)})),
+            .custom((tag, { req }) => {
+                const payload = matchedData(req);
+
+                Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${tag}' ist bereits vergeben.`)})
+            }),
         body('label'),
         body('hidden'),
         body('color'),
