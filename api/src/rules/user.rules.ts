@@ -1,11 +1,13 @@
 import * as multer from 'multer';
 
-import { body, oneOf, param } from 'express-validator';
+import { body, oneOf, param, matchedData } from 'express-validator';
+
 import { sanitize } from 'express-validator';
 import { User } from '../models/user.model';
 
 import { JwtService } from '../utils/JwtService';
 import { return422 } from '../utils/return422';
+import { Op } from 'sequelize/types';
 
 export const UserRules = {
     update: [
@@ -17,7 +19,11 @@ export const UserRules = {
         sanitize('id').toInt(),
         body('username')
             .isLength({ min: 5 }).withMessage('Nutzername muss mindestens 5 Zeichen lang sein')
-            .custom(username => User.findOne({ where: { username } }).then(g => { if (g) return Promise.reject(`'${username}' ist bereits vergeben.`)})),
+            .custom((username, { req }) => {
+                const payload = matchedData(req);
+
+                User.findOne({ where: { username, id: { [Op.not]: payload.id } } }).then(g => { if (g) return Promise.reject(`'${username}' ist bereits vergeben.`)})
+            }),
         body('avatar'),
         body('admin'),
         body('groups'),

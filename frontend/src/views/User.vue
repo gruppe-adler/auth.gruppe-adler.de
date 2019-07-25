@@ -192,6 +192,7 @@ export default class ProfileVue extends Vue {
         try {
             await userProm;
         } catch (err) {
+            errorOccured = true;
             this.extractErrors(err as Response);
         }
 
