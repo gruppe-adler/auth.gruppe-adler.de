@@ -200,6 +200,8 @@ export const updateGroup = async (group: Group): Promise<Group> => {
         body: JSON.stringify(body)
     });
 
+    if (!res.ok) throw res;
+
     return await res.json();
 };
 

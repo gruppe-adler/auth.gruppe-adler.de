@@ -13,8 +13,7 @@ export const GroupRules = {
         body('tag')
             .exists().withMessage('Field \'tag\' is required')
             .custom(async (tag, { req }) => {
-                const payload = matchedData(req);
-                const group = await Group.findOne({ where: { tag, id: { [Op.not]: payload.id } } });
+                const group = await Group.findOne({ where: { tag } });
                 if (group !== null) throw new Error(`'${tag}' ist bereits vergeben.`);
                 return true;
             }),
