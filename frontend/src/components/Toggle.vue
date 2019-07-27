@@ -56,12 +56,8 @@ export default class ToggleVue extends Vue {
     }
 
     &#{&}--disabled {
-        background-color: #dedede;
+        opacity: .4;
         cursor: default;
-
-        &::before {
-            background-color: #bdbdbd;
-        }
     }
 }
 </style>
