@@ -49,10 +49,10 @@ export default class User extends Model<User> {
     @BelongsToMany(() => Group, { through: () => UserGroup, as: 'groups' })
     public groups: Group[];
 
+    @ForeignKey(() => Group)
+    @Column(DataType.INTEGER)
+    public primaryGroupId: number;
+
     @BelongsTo(() => Group, { as: 'primaryGroup', foreignKey: 'primaryGroupId' })
     public primaryGroup: Group;
-
-    @ForeignKey(() => Group)
-    @Column(DataType.NUMBER)
-    public primaryGroupId: number;
 }
