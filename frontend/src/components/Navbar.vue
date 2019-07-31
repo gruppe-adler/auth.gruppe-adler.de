@@ -10,7 +10,7 @@
     </div>
     <span v-else></span>
     <div class="grad-navbar__user" v-if="$root.$data.user" @click="showFlyOut">
-        <img :src="`https://sso.gruppe-adler.de/api/avatars/${$root.$data.user.avatar}`" />
+        <img :src="`https://sso.gruppe-adler.de/avatars/${$root.$data.user.avatar}`" />
         <span>{{$root.$data.user.username}}</span>
         <div v-if="flyOutShown" class="grad-navbar__user-flyout grad-menu">
             <router-link tag="span" to="/user/me">Profil</router-link>

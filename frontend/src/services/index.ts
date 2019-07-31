@@ -119,7 +119,7 @@ export const updateUser = async (user: User): Promise<User> => {
 
     const payload: any = { id: undefined, avatar: undefined };
 
-    if (user.groups) payload.groups = user.groups.map(g => ({ id: g.id }));
+    if (user.groups) payload.groups = user.groups.map(g => (`{ id: ${g.id} }`));
     if (user.primaryGroup) payload.primaryGroup = { id: user.primaryGroup.id };
 
     const data = await sendGraphQL(`

@@ -111,7 +111,7 @@ export default class ProfileVue extends Vue {
             }
         }
 
-        if (this.user) this.user.avatar = `https://sso.gruppe-adler.de/api/avatars/${this.user.avatar}`;
+        if (this.user) this.user.avatar = `https://sso.gruppe-adler.de/avatars/${this.user.avatar}`;
 
         this.loading = false;
         this.originalUser = JSON.stringify(this.user);
