@@ -17,10 +17,10 @@ export class AvatarService {
     ];
 
     /**
-     * 
+     *
      */
     public static saveImage(buffer: Buffer, mimeType: string): string {
-        
+
         const fileEnding = {
             'image/gif': 'gif',
             'image/jpeg': 'jpeg',
@@ -29,18 +29,18 @@ export class AvatarService {
 
         // generate random name
         let name = this.randomName();
-        while(existsSync(`${AVATAR_BASE_PATH}/${name}.${fileEnding}`)) name = this.randomName();
+        while (existsSync(`${AVATAR_BASE_PATH}/${name}.${fileEnding}`)) name = this.randomName();
 
         writeFileSync(`${AVATAR_BASE_PATH}/${name}.${fileEnding}`, buffer);
 
         return `${name}.${fileEnding}`;
     }
-    
+
     /**
-     * 
+     *
      */
     public static removeImage(name: string) {
-        if(!existsSync(`${AVATAR_BASE_PATH}/${name}`)) return;
+        if (!existsSync(`${AVATAR_BASE_PATH}/${name}`)) return;
 
         unlinkSync(`${AVATAR_BASE_PATH}/${name}`);
     }

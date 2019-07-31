@@ -3,20 +3,20 @@ import { Field, ArgsType, Int, InputType } from 'type-graphql';
 @InputType()
 class CreateGroupInput {
     @Field()
-    tag: string;
-  
+    public tag: string;
+
     @Field()
-    color: string;
-    
+    public color: string;
+
     @Field()
-    label: string;
-    
+    public label: string;
+
     @Field()
-    hidden: boolean;
+    public hidden: boolean;
 }
 
 @ArgsType()
 export default class CreateGroupArgs {
     @Field(type => CreateGroupInput)
-    data: CreateGroupInput;
+    public data: CreateGroupInput;
 }

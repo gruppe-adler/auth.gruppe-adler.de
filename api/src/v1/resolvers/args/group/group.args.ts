@@ -4,5 +4,5 @@ import GroupWhereInput from '../inputs/groupWhere.input';
 @ArgsType()
 export default class GroupArgs {
     @Field(type => GroupWhereInput, { nullable: true})
-    where: GroupWhereInput;
+    public where: GroupWhereInput;
 }

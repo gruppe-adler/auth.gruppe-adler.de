@@ -4,17 +4,17 @@ import { GroupSchema } from '../../../schemas';
 @InputType('GroupWhereInput')
 export default class GroupWhereInput implements Partial<GroupSchema> {
     @Field(type => Int, { nullable: true })
-    id?: number;
+    public id?: number;
 
     @Field({ nullable: true })
-    tag?: string;
-  
+    public tag?: string;
+
     @Field({ nullable: true })
-    color?: string;
-    
+    public color?: string;
+
     @Field({ nullable: true })
-    label?: string;
-    
+    public label?: string;
+
     @Field({ nullable: true })
-    hidden?: boolean;
+    public hidden?: boolean;
 }

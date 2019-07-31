@@ -1,4 +1,4 @@
-import { 
+import {
     Table,
     Column,
     Model,
@@ -20,27 +20,27 @@ export default class GroupsCollection extends Model<GroupsCollection> {
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
-    id: number;
+    public id: number;
 
     @Unique
     @Column({
         type: DataType.TEXT,
-        set(val: string) { this.setDataValue('tag', val.toLowerCase()) }
+        set(val: string) { this.setDataValue('tag', val.toLowerCase()); }
     })
-    tag: string;
-  
-    @Column({ 
+    public tag: string;
+
+    @Column({
         type: DataType.TEXT,
-        set(val: string) { this.setDataValue('color', val.toUpperCase()) }
+        set(val: string) { this.setDataValue('color', val.toUpperCase()); }
     })
-    color: string;
+    public color: string;
 
     @Column(DataType.TEXT)
-    label: string;
+    public label: string;
 
     @Default(false)
     @Column(DataType.BOOLEAN)
-    hidden: boolean;
+    public hidden: boolean;
 
     @BelongsToMany(() => User, () => UserGroup)
     public users: User[];

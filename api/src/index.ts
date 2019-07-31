@@ -9,7 +9,7 @@ import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';
 import * as cors from 'cors';
 
-import { User, Group, UserGroup } from './models'; 
+import { User, Group, UserGroup } from './models';
 import v1Router from './v1';
 
 const sequelize =  new Sequelize({
@@ -32,7 +32,7 @@ app.use(cors({
         new RegExp('127.0.0.1:[0-9]+$', 'i'),
         new RegExp('127.0.0.1$', 'i'),
         new RegExp('localhost$', 'i')
-    ] 
+    ]
 }));
 
 // body and cookie parser
@@ -56,7 +56,7 @@ app.get('*', (req, res) => {
 });
 
 const {
-    PORT = 80,
+    PORT = 80
 } = process.env;
 
 app.listen(PORT, () => {

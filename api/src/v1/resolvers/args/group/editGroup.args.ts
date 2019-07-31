@@ -3,23 +3,23 @@ import { Field, ArgsType, Int, InputType } from 'type-graphql';
 @InputType()
 class EditGroupInput {
     @Field({ nullable: true })
-    tag?: string;
-  
+    public tag?: string;
+
     @Field({ nullable: true })
-    color?: string;
-    
+    public color?: string;
+
     @Field({ nullable: true })
-    label?: string;
-    
+    public label?: string;
+
     @Field({ nullable: true })
-    hidden?: boolean;
+    public hidden?: boolean;
 }
 
 @ArgsType()
 export default class EditGroupArgs {
     @Field(type => Int)
-    id: number;
+    public id: number;
 
     @Field(type => EditGroupInput)
-    data: EditGroupInput;
+    public data: EditGroupInput;
 }

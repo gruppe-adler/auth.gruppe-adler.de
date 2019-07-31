@@ -4,25 +4,25 @@ import UserGroupsInput from './userGroup.input';
 
 @InputType('UserWhereInput')
 export default class UserWhereInput {
-    
+
     @Field(type => Int, { nullable: true })
-    id?: number;
-    
+    public id?: number;
+
     @Field({ nullable: true })
-    username?: string;
-    
+    public username?: string;
+
     @Field({ nullable: true })
-    steamId?: string;
-    
+    public steamId?: string;
+
     @Field({ nullable: true })
-    avatar?: string;
-  
+    public avatar?: string;
+
     @Field({ nullable: true })
-    admin?: boolean;
-    
+    public admin?: boolean;
+
     // @Field(type => [UserGroupsInput], { nullable: true })
     // groups?: UserGroupsInput;
-    
+
     @Field(type => UserGroupsInput, { nullable: true })
-    primaryGroup?: UserGroupsInput;
+    public primaryGroup?: UserGroupsInput;
 }

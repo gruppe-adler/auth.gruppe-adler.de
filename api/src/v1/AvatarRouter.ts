@@ -16,31 +16,30 @@ interface AvatarRequest extends GradRequest {
 }
 
 // PUT update a user avatar
-AvatarRouter.put('/avatar/:id', [
+AvatarRouter.put('/upload/avatar/:id', [
     multer({ storage: multer.memoryStorage() }).single('avatar')
 ], wrapAsync(async (req: AvatarRequest, res: Response) => {
     const id = req.params.id;
 
-    JwtService.checkSelfOrAdmin(req, res, async () => {
+    JwtService.checkSelfOrAdmin(id)(req, res, async () => {
 
         if (!req.file) throw { status: 400, message: 'no file given' };
-    
+
         // find user to update
         let user: User|null = await User.findByPk(id);
-    
+
         // exit if user does not exist
         if (user === null) throw { status: 404, message: `User with id '${id}' not found`};
-    
+
         // delete old avatar
         AvatarService.removeImage(user.avatar);
-    
-        const avatar = AvatarService.saveImage(req.file.buffer as Buffer, req.file.mimetype);
-    
-        user = await user.update({ avatar });
-    
-        res.status(200).json(user);
-    }, id);
-}));
 
+        const avatar = AvatarService.saveImage(req.file.buffer as Buffer, req.file.mimetype);
+
+        user = await user.update({ avatar });
+
+        res.status(200).json({ avatar });
+    });
+}));
 
 AvatarRouter.use(globalErrorHandler);

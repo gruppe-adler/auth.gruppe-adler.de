@@ -6,12 +6,12 @@ import GroupWhereInput from '../inputs/groupWhere.input';
 export default class GroupsArgs {
     @Field(type => Int, { defaultValue: 0 })
     @Min(0)
-    skip: number;
+    public skip: number;
 
     @Field(type => Int, { nullable: true })
     @Min(1)
-    limit?: number;
+    public limit?: number;
 
     @Field(type => GroupWhereInput, { nullable: true})
-    where: GroupWhereInput;
+    public where: GroupWhereInput;
 }

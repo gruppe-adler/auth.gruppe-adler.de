@@ -4,5 +4,5 @@ import UserWhereInput from '../inputs/userWhere.input';
 @ArgsType()
 export default class UserArgs {
     @Field(type => UserWhereInput, { nullable: true })
-    where?: UserWhereInput;
+    public where?: UserWhereInput;
 }

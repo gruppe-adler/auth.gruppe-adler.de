@@ -10,7 +10,7 @@ import {
     ForeignKey,
     BelongsTo,
     PrimaryKey,
-    AutoIncrement,
+    AutoIncrement
 } from 'sequelize-typescript';
 
 import Group from './group.model';
@@ -18,7 +18,7 @@ import UserGroup from './userGroup.model';
 
 @DefaultScope({
     attributes: { exclude: [ 'primaryGroupId' ] },
-    include: [ 
+    include: [
         { model: () => Group, as: 'groups', through: { attributes: [] } },
         { model: () => Group, as: 'primaryGroup' }
     ]
@@ -27,33 +27,33 @@ import UserGroup from './userGroup.model';
     tableName: 'Users'
 })
 export default class User extends Model<User> {
-    
+
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.NUMBER)
-    id: number;
+    public id: number;
 
     @Unique
     @Column(DataType.TEXT)
-    username: string;
+    public username: string;
 
     @Unique
     @Column(DataType.TEXT)
-    steamId: string;
+    public steamId: string;
 
     @Column(DataType.TEXT)
-    avatar: string;
+    public avatar: string;
 
     @Default(false)
     @Column(DataType.BOOLEAN)
-    admin: boolean;
+    public admin: boolean;
 
     @BelongsToMany(() => Group, { through: () => UserGroup, as: 'groups' })
-    groups: Group[];
+    public groups: Group[];
 
     @BelongsTo(() => Group, { as: 'primaryGroup', foreignKey: 'primaryGroupId' })
-    primaryGroup: Group;
-    
+    public primaryGroup: Group;
+
     @ForeignKey(() => Group)
     @Column(DataType.NUMBER)
     public primaryGroupId: number;

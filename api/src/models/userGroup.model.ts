@@ -9,9 +9,9 @@ import Group from './group.model';
 export default class UserGroup extends Model<UserGroup> {
     @ForeignKey(() => User)
     @Column(DataType.NUMBER)
-    userId: number;
+    public userId: number;
 
     @ForeignKey(() => Group)
     @Column(DataType.NUMBER)
-    groupId: number;
+    public groupId: number;
 }

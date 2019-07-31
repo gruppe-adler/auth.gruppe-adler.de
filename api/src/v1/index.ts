@@ -3,18 +3,18 @@ import { Router } from 'express';
 import { buildSchemaSync } from 'type-graphql';
 
 import resolvers from './resolvers';
-import { AuthRouter } from './AuthRouter';
+import { JwtService } from '../utils/JwtService';
 
 const router = Router();
 
 const schema = buildSchemaSync({ resolvers });
 
-router.use('/graphql', graphqlExpress(req =>({
+router.use(JwtService.extractUserMiddleware);
+
+router.use('/graphql', graphqlExpress((req, res) => ({
     schema,
     graphiql: true,
-    rootValue: req
+    context: { request: req, response: res }
 })));
-
-router.use(AuthRouter);
 
 export default router;

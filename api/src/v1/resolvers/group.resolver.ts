@@ -7,21 +7,23 @@ import GroupsArgs from './args/group/groups.args';
 import CreateGroupArgs from './args/group/createGroup.args';
 import EditGroupArgs from './args/group/editGroup.args';
 import DeleteGroupArgs from './args/group/deleteGroup.args';
+import { Op } from 'sequelize';
+import { GraphQLError } from 'graphql';
 
 @Resolver()
 export default class GroupResolver {
 
     // Query single group
     @Query(returns => GroupSchema, { nullable: true })
-    async group(@Args() { where }: GroupArgs): Promise<GroupSchema> {
+    public async group(@Args() { where }: GroupArgs): Promise<GroupSchema> {
         const actualWhere = where ? JSON.parse(JSON.stringify(where)) : undefined;
-        
+
         return await Group.findOne({ where: actualWhere });
     }
-    
+
     // Query all groups
     @Query(returns => [GroupSchema])
-    async groups(@Args() { skip, limit, where }: GroupsArgs): Promise<GroupSchema[]> {
+    public async groups(@Args() { skip, limit, where }: GroupsArgs): Promise<GroupSchema[]> {
         const actualWhere = where ? JSON.parse(JSON.stringify(where)) : undefined;
 
         return await Group.findAll({ limit, offset: skip, where: actualWhere });
@@ -29,14 +31,33 @@ export default class GroupResolver {
 
     // Create new group
     @Mutation(returns => GroupSchema)
-    async createGroup(@Args() { data }: CreateGroupArgs): Promise<GroupSchema> {
+    public async createGroup(@Args() { data }: CreateGroupArgs): Promise<GroupSchema> {
+
+        const groupWithSameTag: Group|null = await Group.findOne({
+            where: { tag: data.tag.toLowerCase() }
+        });
+
+        if (groupWithSameTag) {
+            throw new GraphQLError(`'${data.tag}' ist bereits vergeben`);
+        }
+
         return await Group.create(data);
     }
-    
+
     // Edit group
     @Mutation(returns => GroupSchema, { nullable: true })
-    async editGroup(@Args() { id, data }: EditGroupArgs): Promise<GroupSchema> {
-        
+    public async editGroup(@Args() { id, data }: EditGroupArgs): Promise<GroupSchema> {
+
+        if (data.tag) {
+            const groupWithSameTag: Group|null = await Group.findOne({
+                where: { tag: data.tag.toLowerCase(), id: { [Op.not]: id } }
+            });
+
+            if (groupWithSameTag) {
+                throw new GraphQLError(`'${data.tag}' ist bereits vergeben`);
+            }
+        }
+
         const group: Group|null = await Group.findByPk(id);
 
         if (group) await group.update(data);
@@ -46,7 +67,7 @@ export default class GroupResolver {
 
     // Delete group
     @Mutation(returns => GroupSchema, { nullable: true })
-    async deleteGroup(@Args() { id }: DeleteGroupArgs): Promise<GroupSchema> {
+    public async deleteGroup(@Args() { id }: DeleteGroupArgs): Promise<GroupSchema> {
         const group: Group|null = await Group.findByPk(id);
 
         if (group) await group.destroy();

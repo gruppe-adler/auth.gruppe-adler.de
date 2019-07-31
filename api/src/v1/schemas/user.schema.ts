@@ -5,23 +5,23 @@ import { GroupSchema } from '.';
 @ObjectType('User')
 export default class UserSchema {
     @Field(type => Int)
-    id: number;
+    public id: number;
 
     @Field()
-    username: string;
+    public username: string;
 
     @Field()
-    steamId: string;
+    public steamId: string;
 
     @Field()
-    avatar: string;
+    public avatar: string;
 
     @Field()
-    admin: boolean;
+    public admin: boolean;
 
     @Field(type => [GroupSchema])
-    groups: GroupSchema[];
+    public groups: GroupSchema[];
 
     @Field(type => GroupSchema, { nullable: true })
-    primaryGroup: GroupSchema;
+    public primaryGroup: GroupSchema;
 }
