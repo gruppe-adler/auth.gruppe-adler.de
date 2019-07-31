@@ -14,7 +14,7 @@ import User from './user.model';
 import UserGroup from './userGroup.model';
 
 @Table
-export default class GroupsCollection extends Model<GroupsCollection> {
+export default class Group extends Model<Group> {
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
