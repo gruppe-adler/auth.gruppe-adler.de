@@ -75,7 +75,7 @@ export class JwtService {
 
         let token: string;
         try {
-            token = this.extractToken(req);
+            token = JwtService.extractToken(req);
         } catch (err) {
             (req as GradRequest).gradUser = null;
             if (next) next();
