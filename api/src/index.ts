@@ -15,7 +15,7 @@ import v1Router from './v1';
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
     storage: join(__dirname, '../data/database.sqlite'),
-    // logging: false
+    logging: false
 });
 
 sequelize.addModels([ User, Group, UserGroup ]);
