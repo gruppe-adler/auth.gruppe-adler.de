@@ -17,7 +17,6 @@ import Group from './group.model';
 import UserGroup from './userGroup.model';
 
 @DefaultScope({
-    attributes: { exclude: [ 'primaryGroupId' ] },
     include: [
         { model: () => Group, as: 'groups', through: { attributes: [] } },
         { model: () => Group, as: 'primaryGroup' }
