@@ -10,9 +10,6 @@ class EditUserInput {
     public steamId?: string;
 
     @Field({ nullable: true })
-    public avatar?: string;
-
-    @Field({ nullable: true })
     public admin?: boolean;
 
     @Field(type => [UserGroupsInput], { nullable: true })
