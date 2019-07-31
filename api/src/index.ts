@@ -1,18 +1,16 @@
+import 'reflect-metadata';
+import { join } from 'path';
+import { Sequelize } from 'sequelize-typescript';
+
 import * as express from 'express';
+
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as morgan from 'morgan';
 import * as cors from 'cors';
-import { join } from 'path';
-import { Sequelize } from 'sequelize-typescript';
 
-import { User } from './models/user.model';
-import { Group } from './models/group.model';
-import { UserGroup } from './models/user-group.model';
-
-import { UserRouter } from './routers/user.router';
-import { GroupRouter } from './routers/group.router';
-import { AuthRouter } from './routers/auth.router';
+import { User, Group, UserGroup } from './models';
+import v1Router from './v1';
 
 const sequelize =  new Sequelize({
     dialect: 'sqlite',
@@ -25,8 +23,7 @@ sequelize.sync();
 
 const app = express();
 
-app.use(cookieParser());
-
+// cors
 app.use(cors({
     credentials: true,
     origin: [
@@ -35,30 +32,34 @@ app.use(cors({
         new RegExp('127.0.0.1:[0-9]+$', 'i'),
         new RegExp('127.0.0.1$', 'i'),
         new RegExp('localhost$', 'i')
-    ] 
+    ]
 }));
 
+// body and cookie parser
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());+
+app.use(bodyParser.json());
+app.use(cookieParser());
 
-app.use(morgan('short'))
+// logger
+app.use(morgan('short'));
 
-const {
-    PORT = 80,
-} = process.env;
+// api
+app.use('/api/v1/', v1Router);
 
-app.use('/api/v1/user', UserRouter);
-app.use('/api/v1/group', GroupRouter);
-app.use('/api/v1', AuthRouter);
+// avatars
+app.use('/avatars/', express.static(join(__dirname, '../data/avatars')));
 
-app.use('/api/avatars/', express.static(join(__dirname, '../data/avatars')));
-
+// frontend
 app.use('/', express.static(join(__dirname, '../frontend')));
-
 app.get('*', (req, res) => {
     res.sendFile(join(__dirname, '../frontend/index.html'));
 });
 
+const {
+    PORT = 80
+} = process.env;
+
 app.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);
 });
+

@@ -1,14 +1,38 @@
-import { User } from './user.model';
-import { UserGroup } from './user-group.model';
-import { Table, Column, Model, HasMany, DataType, Unique, BelongsToMany, Default } from 'sequelize-typescript';
+import {
+    Table,
+    Column,
+    Model,
+    DataType,
+    Unique,
+    BelongsToMany,
+    Default,
+    PrimaryKey,
+    AutoIncrement
+} from 'sequelize-typescript';
 
-@Table
-export class Group extends Model<Group> {
+import User from './user.model';
+import UserGroup from './userGroup.model';
+
+@Table({
+    tableName: 'Groups'
+})
+export default class GroupsCollection extends Model<GroupsCollection> {
+    @PrimaryKey
+    @AutoIncrement
+    @Column(DataType.INTEGER)
+    public id: number;
+
     @Unique
-    @Column(DataType.TEXT)
+    @Column({
+        type: DataType.TEXT,
+        set(val: string) { this.setDataValue('tag', val.toLowerCase()); }
+    })
     public tag: string;
 
-    @Column(DataType.TEXT)
+    @Column({
+        type: DataType.TEXT,
+        set(val: string) { this.setDataValue('color', val.toUpperCase()); }
+    })
     public color: string;
 
     @Column(DataType.TEXT)

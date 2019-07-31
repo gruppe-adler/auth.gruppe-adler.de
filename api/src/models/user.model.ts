@@ -1,4 +1,3 @@
-import { Group } from './group.model';
 import {
     Table,
     Column,
@@ -10,18 +9,30 @@ import {
     BelongsToMany,
     ForeignKey,
     BelongsTo,
+    PrimaryKey,
+    AutoIncrement
 } from 'sequelize-typescript';
-import { UserGroup } from './user-group.model';
+
+import Group from './group.model';
+import UserGroup from './userGroup.model';
 
 @DefaultScope({
     attributes: { exclude: [ 'primaryGroupId' ] },
-    include: [ 
+    include: [
         { model: () => Group, as: 'groups', through: { attributes: [] } },
         { model: () => Group, as: 'primaryGroup' }
     ]
 })
-@Table
-export class User extends Model<User> {
+@Table({
+    tableName: 'Users'
+})
+export default class User extends Model<User> {
+
+    @PrimaryKey
+    @AutoIncrement
+    @Column(DataType.NUMBER)
+    public id: number;
+
     @Unique
     @Column(DataType.TEXT)
     public username: string;
@@ -30,20 +41,20 @@ export class User extends Model<User> {
     @Column(DataType.TEXT)
     public steamId: string;
 
+    @Column(DataType.TEXT)
+    public avatar: string;
+
     @Default(false)
     @Column(DataType.BOOLEAN)
     public admin: boolean;
 
-    @Column(DataType.TEXT)
-    public avatar: string;
-
     @BelongsToMany(() => Group, { through: () => UserGroup, as: 'groups' })
     public groups: Group[];
+
+    @BelongsTo(() => Group, { as: 'primaryGroup', foreignKey: 'primaryGroupId' })
+    public primaryGroup: Group;
 
     @ForeignKey(() => Group)
     @Column(DataType.NUMBER)
     public primaryGroupId: number;
-    
-    @BelongsTo(() => Group, { as: 'primaryGroup', foreignKey: 'primaryGroupId' })
-    public primaryGroup: Group;
 }

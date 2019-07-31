@@ -1,13 +1,12 @@
 import * as jwt from 'jsonwebtoken';
 
+/* tslint:disable-next-line */
 const config = require('../../config/config.json');
 
-import { User } from '../models/user.model';
+import { User } from '../models';
 import * as fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import { GradRequest, TokenPayload } from '../@types/GradRequest';
-import { oneOf, check, header, validationResult } from 'express-validator';
-import { matchedData } from 'express-validator';
 
 const PRIVATE_KEY = fs.readFileSync('config/keys/private.key', 'utf8');
 const PUBLIC_KEY = fs.readFileSync('config/keys/public.key', 'utf8');
@@ -69,83 +68,109 @@ export class JwtService {
     }
 
     /**
+     * @description ExpressJS middleware to extract user from provided authentication
+     * @author DerZade
+     */
+    public static async extractUserMiddleware(req: Request, res: Response, next?: NextFunction) {
+
+        let token: string;
+        try {
+            token = this.extractToken(req);
+        } catch (err) {
+            (req as GradRequest).gradUser = null;
+            if (next) next();
+            return;
+        }
+
+        let tokenUser;
+        try {
+            tokenUser = JwtService.verify(token);
+        } catch (err) {
+            (req as GradRequest).gradUser = null;
+            if (next) next();
+            return;
+        }
+
+        // get user from db to make sure he doesn't have an token where he is admin
+        // although he was demoted / deleted in the meantime
+        const user = await User.findByPk(tokenUser.id);
+
+        (req as GradRequest).gradUser = user;
+
+        if (next) next();
+    }
+
+    /**
      * @description ExpressJS middleware which checks wether the requester is authenticated
      * @author DerZade
-     * @returns The ExpressJS Middleware
      */
-    public static checkAuthenticated(req: Request, res: Response, next?: NextFunction) {
+    public static async checkAuthenticatedMiddleware(req: GradRequest, res: Response, next?: NextFunction) {
 
-        // call validation middleware directly to extract token
-        oneOf([
-            check(config.cookie.name)
-                .exists(),
-            header('Authorization')
-                .exists()
-                .custom((h => h.match(/^bearer\s+[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/i) !== null))
-        ])(req, res, async () => {
+        if (!req.gradUser) {
+            // call extractUserMiddleware directly to extract user from auth token
+            JwtService.extractUserMiddleware(req, res, () => {
+                if (!req.gradUser) return res.status(401).end();
 
-            // make sure token was given
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) return res.status(401).end();
+                if (next) next();
+            });
+        } else {
+            if (next) next();
+        }
 
-            // extract token
-            const payload = matchedData(req);
-            const token = payload[config.cookie.name] || payload.Authorization.replace(/^Bearer\s+/i, '');
+    }
 
-            let tokenUser;
-            try {
-                tokenUser = JwtService.verify(token);
-            } catch (err) {
-                console.error(err);
-                return res.status(401).end();
-            }
-
-            // get user from db to make sure he doesn't have an token where he is admin
-            // although he was demoted / deleted in the mean time
-            const user = await User.findByPk(tokenUser.id);
-
-            if (user === null) return res.status(401).end();;
-
-            (req as GradRequest).gradUser = user;
+    /**
+     * @description ExpressJS middleware which checks if requester is authenticated user
+     * @author DerZade
+     */
+    public static checkAdminMiddleware(req: GradRequest, res: Response, next: NextFunction) {
+        // call checkAuthenticated middleware directly to extract user from auth token
+        JwtService.checkAuthenticatedMiddleware(req, res, () => {
+            if (! req.gradUser.admin) return res.status(403).end();
 
             if (next) next();
         });
-
     }
 
     /**
-     * @description Express middleware which checks if requester is authenticated and a verified user
+     * @description Factory function for ExpressJS middleware which checks if requester is authenticated user
+     * @param {number} id user id to check against
      * @author DerZade
      * @returns The ExpressJS Middleware
      */
-    public static checkAdmin(req: GradRequest, res: Response, next: NextFunction) {
-        // call checkAuthenticated middleware directly to extract user from auth token
-        JwtService.checkAuthenticated(req, res, () => {
-            if (res.finished) return;
+    public static checkSelfOrAdmin(id: number) {
 
-            if (! req.gradUser.admin) return res.status(403).end();
+        return (req: GradRequest, res: Response, next: NextFunction) => {
+            // call checkAuthenticated middleware directly to extract user from auth token
+            JwtService.checkAuthenticatedMiddleware(req, res, () => {
+                const isAdmin = req.gradUser.admin;
+                const isSelf = req.gradUser.id === id;
 
-            next();
-        });
+                if (!isAdmin && !isSelf) return res.status(403).end();
+
+                if (next) next();
+            });
+        };
     }
 
     /**
-     * @description Express middleware which checks if requester is authenticated and a verified user
+     * @description Function to extract a auth token from an request header / cookie
      * @author DerZade
-     * @returns The ExpressJS Middleware
+     * @param {Request} req Request to extract token from
+     * @returns {string} token
      */
-    public static checkSelfOrAdmin(req: GradRequest, res: Response, next: NextFunction) {
-        // call checkAuthenticated middleware directly to extract user from auth token
-        JwtService.checkAuthenticated(req, res, () => {
-            if (res.finished) return;
-        
-            const payload = matchedData(req);
-            const isAdmin = req.gradUser.admin;
-            const isSelf = req.gradUser.id === payload.id;
-            
-            if (!isAdmin && !isSelf) return res.status(403).end();            
+    private static extractToken(req: Request): string {
+        if (req.cookies[config.cookie.name]) {
+            return req.cookies[config.cookie.name];
+        }
 
-            next();
-        });
+        if (req.headers.authorization) {
+            const header = req.headers.authorization;
+            if (header.match(/^bearer\s+[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/i)) {
+                return header.replace(/^Bearer\s+/i, '');
+            }
+        }
+
+        throw new Error('Couldn\'t find token to extract');
     }
 }
