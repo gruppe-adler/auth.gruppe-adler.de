@@ -4,12 +4,15 @@ import { buildSchemaSync } from 'type-graphql';
 
 import resolvers from './resolvers';
 import { JwtService } from '../utils/JwtService';
+import { AvatarRouter } from './AvatarRouter';
 
 const router = Router();
 
 const schema = buildSchemaSync({ resolvers });
 
 router.use(JwtService.extractUserMiddleware);
+
+router.use('/', AvatarRouter);
 
 router.use('/graphql', graphqlExpress((req, res) => ({
     schema,
