@@ -13,9 +13,7 @@ import {
 import User from './user.model';
 import UserGroup from './userGroup.model';
 
-@Table({
-    tableName: 'Groups'
-})
+@Table
 export default class GroupsCollection extends Model<GroupsCollection> {
     @PrimaryKey
     @AutoIncrement

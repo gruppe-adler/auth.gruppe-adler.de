@@ -23,9 +23,7 @@ import UserGroup from './userGroup.model';
         { model: () => Group, as: 'primaryGroup' }
     ]
 })
-@Table({
-    tableName: 'Users'
-})
+@Table
 export default class User extends Model<User> {
 
     @PrimaryKey
