@@ -50,7 +50,7 @@ export default class UserResolver {
 
         if (data.username) {
             const userWithSameUsername: User|null = await User.findOne({
-                where: { username: { [Op.like]: data.username } }
+                where: { username: { [Op.like]: data.username }, id: { [Op.not]: id } }
             });
 
             if (userWithSameUsername) {
