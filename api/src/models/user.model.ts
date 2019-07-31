@@ -28,7 +28,7 @@ export default class User extends Model<User> {
 
     @PrimaryKey
     @AutoIncrement
-    @Column(DataType.NUMBER)
+    @Column(DataType.INTEGER)
     public id: number;
 
     @Unique
