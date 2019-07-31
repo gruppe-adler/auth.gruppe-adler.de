@@ -2,22 +2,57 @@ import { User, Group } from '@/models';
 
 const API_BASE_URL = 'https://sso.gruppe-adler.de/api/v1';
 
+const fullGroupFragment = `
+fragment fullGroup on Group {
+    id
+    tag
+    color
+    label
+    hidden
+}
+`;
+
+const fullUserFragment = `
+fragment fullUser on User {
+    id
+    username
+    steamId
+    avatar
+    admin
+    groups { ...fullGroup }
+    primaryGroup { ...fullGroup }
+}
+
+${fullGroupFragment}
+`;
+
+const sendGraphQL = async (query: string, variables: object = {}) => {
+    const res = await fetch(`${API_BASE_URL}/graphql`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            query,
+            variables
+        })
+    });
+
+    const body = await res.json();
+
+    if (body.errors) throw body.errors;
+
+    return body.data;
+};
+
 /**
  * Login via steam. Called in openid return.
  * @param {string} url BASE_URL + route + url params
  * @returns { Promise<void> } Promise resolves if successful
  */
 export const logIn = async (url: string): Promise<void> => {
-    const res = await fetch(`${API_BASE_URL}/login/steam`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url })
-    });
-
-    if (!res.ok) throw res;
+    await sendGraphQL(`mutation {login(url: "${url}")}`);
 };
 
 /**
@@ -25,16 +60,16 @@ export const logIn = async (url: string): Promise<void> => {
  * @returns { Promise<User> } Promise resolves into user.
  */
 export const authenticate = async (): Promise<User> => {
-    // console.trace();
+    const data = await sendGraphQL(`
+        mutation {
+            authenticate { ...fullUser }
+        }
+        ${fullUserFragment}
+    `);
 
-    const res: Response = await fetch(`${API_BASE_URL}/authenticate`, {
-        credentials: 'include',
-        method: 'POST'
-    });
+    if (data.authenticate === null) throw new Error('not authenticated');
 
-    if (!res.ok) throw res;
-
-    return await res.json();
+    return data.authenticate;
 };
 
 /**
@@ -42,14 +77,7 @@ export const authenticate = async (): Promise<User> => {
  * @returns { Promise<void> } Promise resolves if successful
  */
 export const logout = async (): Promise<void> => {
-    const res: Response = await fetch(`${API_BASE_URL}/logout`, {
-        credentials: 'include',
-        method: 'POST'
-    });
-
-    if (!res.ok) throw res;
-
-    await res.json();
+    await sendGraphQL(`mutation { logout }`);
 };
 
 /**
@@ -57,13 +85,14 @@ export const logout = async (): Promise<void> => {
  * @returns { Promise<User> } Promise resolves into user.
  */
 export const fetchUser = async (id: number): Promise<User> => {
-    const res: Response = await fetch(`${API_BASE_URL}/user/${id}`, {
-        method: 'GET'
-    });
+    const data = await sendGraphQL(`
+        query {
+            user(where: { id: ${id} }) { ...fullUser }
+        }
+        ${fullUserFragment}
+    `);
 
-    if (!res.ok) throw res;
-
-    return await res.json();
+    return data.user;
 };
 
 /**
@@ -71,55 +100,49 @@ export const fetchUser = async (id: number): Promise<User> => {
  * @returns { Promise<User[]> } Promise resolves into array of users.
  */
 export const fetchUsers = async (): Promise<User[]> => {
-    const res: Response = await fetch(`${API_BASE_URL}/user`, {
-        method: 'GET'
-    });
+    const data = await sendGraphQL(`
+        query {
+            users { ...fullUser }
+        }
+        ${fullUserFragment}
+    `);
 
-    if (!res.ok) throw res;
-
-    return await res.json();
+    return data.users;
 };
 
 /**
- * Update a group
- * @param { User } group Object which includes all data
+ * Update a user
+ * @param { User } user Object which includes all data
  * @returns { Promise<User> } Promise resolves into user.
  */
 export const updateUser = async (user: User): Promise<User> => {
 
-    const body = {
-        admin: user.admin,
-        username: user.username,
-        groups: user.groups,
-        primaryGroup: user.primaryGroup
-    };
+    const payload: any = { id: undefined };
 
-    const res: Response = await fetch(`${API_BASE_URL}/user/${user.id}`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-    });
+    if (user.groups) payload.groups = user.groups.map(g => ({ id: g.id }));
+    if (user.primaryGroup) payload.primaryGroup = { id: user.primaryGroup.id };
 
-    if (!res.ok) throw res;
+    const data = await sendGraphQL(`
+        mutation($user: EditUserInput!) {
+            editUser(id: ${user.id}, data: $user) { ...fullUser }
+        }
+        ${fullUserFragment}
+    `, { user: { ...user, ...payload } });
 
-    return await res.json();
+    return data.editUser;
 };
 
 /**
- * Delete a group
+ * Delete a user
  * @param { number } id Id of user
  * @returns { Promise<void> } Promise resolves if successful
  */
 export const deleteUser = async (id: number): Promise<void> => {
-    const res = await fetch(`${API_BASE_URL}/user/${id}`, {
-        method: 'DELETE',
-        credentials: 'include'
-    });
-
-    if (!res.ok) throw res;
+    await sendGraphQL(`
+        mutation {
+            deleteUser(id: ${id}) { id }
+        }
+    `);
 };
 
 /**
@@ -127,13 +150,14 @@ export const deleteUser = async (id: number): Promise<void> => {
  * @returns { Promise<Group> } Promise resolves into user.
  */
 export const fetchGroup = async (id: number): Promise<Group> => {
-    const res: Response = await fetch(`${API_BASE_URL}/group/${id}`, {
-        method: 'GET'
-    });
+    const data = await sendGraphQL(`
+        query {
+            group(where: { id: ${id} }) { ...fullGroup }
+        }
+        ${fullGroupFragment}
+    `);
 
-    if (!res.ok) throw res;
-
-    return await res.json();
+    return data.group;
 };
 
 /**
@@ -141,13 +165,14 @@ export const fetchGroup = async (id: number): Promise<Group> => {
  * @returns { Promise<Group[]> } Promise resolves into array of groups.
  */
 export const fetchGroups = async (): Promise<Group[]> => {
-    const res: Response = await fetch(`${API_BASE_URL}/group`, {
-        method: 'GET'
-    });
+    const data = await sendGraphQL(`
+        query {
+            groups { ...fullGroup }
+        }
+        ${fullGroupFragment}
+    `);
 
-    if (!res.ok) throw res;
-
-    return await res.json();
+    return data.groups;
 };
 
 /**
@@ -156,25 +181,13 @@ export const fetchGroups = async (): Promise<Group[]> => {
  * @returns { Promise<Group> } Promise resolves into group.
  */
 export const createGroup = async (group: Group): Promise<Group> => {
-    const body = {
-        label: group.label,
-        tag: group.tag,
-        color: group.color,
-        hidden: group.hidden
-    };
+    const data = await sendGraphQL(`
+        mutation($group: CreateGroupInput!) {
+            createGroup(data: $group) { id }
+        }
+    `, { group: { ...group, id: undefined } });
 
-    const res: Response = await fetch(`${API_BASE_URL}/group`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-    });
-
-    if (!res.ok) throw res;
-
-    return await res.json();
+    return data.createGroup;
 };
 
 /**
@@ -183,26 +196,13 @@ export const createGroup = async (group: Group): Promise<Group> => {
  * @returns { Promise<Group> } Promise resolves into group.
  */
 export const updateGroup = async (group: Group): Promise<Group> => {
+    const data = await sendGraphQL(`
+        mutation($group: EditGroupInput!) {
+            editGroup(id: ${group.id}, data: $group) { id }
+        }
+    `, { group: { ...group, id: undefined } });
 
-    const body = {
-        label: group.label,
-        tag: group.tag,
-        color: group.color,
-        hidden: group.hidden
-    };
-
-    const res: Response = await fetch(`${API_BASE_URL}/group/${group.id}`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-    });
-
-    if (!res.ok) throw res;
-
-    return await res.json();
+    return data.editGroup;
 };
 
 /**
@@ -211,12 +211,11 @@ export const updateGroup = async (group: Group): Promise<Group> => {
  * @returns { Promise<void> } Promise resolves if successful
  */
 export const deleteGroup = async (id: number): Promise<void> => {
-    const res = await fetch(`${API_BASE_URL}/group/${id}`, {
-        method: 'DELETE',
-        credentials: 'include'
-    });
-
-    if (!res.ok) throw res;
+    await sendGraphQL(`
+        mutation {
+            deleteGroup(id: ${id}) { id }
+        }
+    `);
 };
 
 /**
@@ -229,7 +228,7 @@ export const updateAvatar = async (file: File, uid: number): Promise<void> => {
     const data = new FormData();
     data.append('avatar', file);
 
-    const res = await fetch(`${API_BASE_URL}/user/${uid}/avatar`, {
+    const res = await fetch(`${API_BASE_URL}/upload/avatar/${uid}`, {
         method: 'PUT',
         credentials: 'include',
         body: data
