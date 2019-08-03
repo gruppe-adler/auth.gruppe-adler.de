@@ -1,5 +1,4 @@
 import { AuthChecker } from 'type-graphql';
-import { Response } from 'express';
 import { Context } from '../@types/Context';
 
 export const customAuthChecker: AuthChecker<Context> = (

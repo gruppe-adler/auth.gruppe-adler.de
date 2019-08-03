@@ -1,5 +1,4 @@
 import {  Field, InputType, Int } from 'type-graphql';
-import { UserSchema } from '../../../schemas';
 import UserGroupsInput from './userGroup.input';
 
 @InputType('UserWhereInput')

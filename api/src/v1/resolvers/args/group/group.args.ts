@@ -1,4 +1,4 @@
-import {  Field, ArgsType, Int, InputType } from 'type-graphql';
+import {  Field, ArgsType } from 'type-graphql';
 import GroupWhereInput from '../inputs/groupWhere.input';
 
 @ArgsType()

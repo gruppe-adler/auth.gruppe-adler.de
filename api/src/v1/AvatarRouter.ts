@@ -1,6 +1,6 @@
 import * as multer from 'multer';
 
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { wrapAsync } from '../utils/wrapAsync';
 import { GradRequest } from '../@types/GradRequest';
 import { JwtService } from '../utils/JwtService';

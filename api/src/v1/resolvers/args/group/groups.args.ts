@@ -1,4 +1,4 @@
-import {  Field, ArgsType, Int, InputType } from 'type-graphql';
+import {  Field, ArgsType, Int } from 'type-graphql';
 import { Min } from 'class-validator';
 import GroupWhereInput from '../inputs/groupWhere.input';
 

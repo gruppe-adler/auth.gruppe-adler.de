@@ -1,7 +1,5 @@
 import { ObjectType, Field, Int } from 'type-graphql';
 
-import UserSchema from './user.schema';
-
 @ObjectType('Group')
 export default class GroupSchema {
     @Field(type => Int)

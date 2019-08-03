@@ -1,4 +1,4 @@
-import { Field, ArgsType, Int, InputType } from 'type-graphql';
+import { Field, ArgsType, InputType } from 'type-graphql';
 
 @InputType()
 class CreateGroupInput {

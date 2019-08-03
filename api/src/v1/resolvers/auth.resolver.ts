@@ -1,9 +1,6 @@
 import { Resolver, Query, Args, Mutation, Ctx } from 'type-graphql';
-import { GroupSchema, UserSchema } from '../schemas';
-import { Group, User } from '../../models';
-import DeleteGroupArgs from './args/group/deleteGroup.args';
-import { Response } from 'express';
-import { GradRequest } from '../../@types/GradRequest';
+import { UserSchema } from '../schemas';
+import { User } from '../../models';
 import CookieService from '../../utils/CookieService';
 import { JwtService } from '../../utils/JwtService';
 import LoginArgs from './args/auth/login.args';
