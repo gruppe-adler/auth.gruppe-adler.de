@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { Resolver, Query, Args, Mutation } from 'type-graphql';
+import { Resolver, Query, Args, Mutation, Authorized, Ctx } from 'type-graphql';
 
 import { UserSchema } from '../schemas';
 import { User, Group } from '../../models';
@@ -11,6 +11,8 @@ import DeleteUserArgs from './args/user/deleteUser.args';
 
 import UserWhereInput from './args/inputs/userWhere.input';
 import { GraphQLError } from 'graphql';
+
+import { Context } from '../../@types/Context';
 
 const parseWhere = (uwi: UserWhereInput) => {
     if (!uwi) return undefined;
@@ -45,8 +47,9 @@ export default class UserResolver {
     }
 
     // Edit user
+    @Authorized('ADMIN', 'SELF')
     @Mutation(returns => UserSchema, { nullable: true })
-    public async editUser(@Args() { id, data }: EditUserArgs): Promise<UserSchema> {
+    public async editUser(@Args() { id, data }: EditUserArgs, @Ctx() context: Context): Promise<UserSchema> {
 
         if (data.username) {
             const userWithSameUsername: User|null = await User.findOne({
@@ -61,6 +64,13 @@ export default class UserResolver {
         const user: User|null = await User.findByPk(id);
 
         if (!user) return null;
+
+        // make sure non admins cannot edit fields: admin, groups and primaryGroup
+        if (!context.request.gradUser.admin) {
+            if (data.admin !== undefined) delete data.admin;
+            if (data.groups !== undefined) delete data.groups;
+            if (data.primaryGroup !== undefined) delete data.primaryGroup;
+        }
 
         if (data.primaryGroup) {
             const primaryGroup = await Group.findByPk(data.primaryGroup.id);
@@ -79,6 +89,7 @@ export default class UserResolver {
     }
 
     // Delete user
+    @Authorized('ADMIN', 'SELF')
     @Mutation(returns => UserSchema, { nullable: true })
     public async deleteUser(@Args() { id }: DeleteUserArgs): Promise<UserSchema> {
         const user: User|null = await User.findByPk(id);

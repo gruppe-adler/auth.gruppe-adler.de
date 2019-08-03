@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Mutation } from 'type-graphql';
+import { Resolver, Query, Args, Mutation, Authorized } from 'type-graphql';
 import { GroupSchema } from '../schemas';
 import { Group } from '../../models';
 
@@ -30,6 +30,7 @@ export default class GroupResolver {
     }
 
     // Create new group
+    @Authorized('ADMIN')
     @Mutation(returns => GroupSchema)
     public async createGroup(@Args() { data }: CreateGroupArgs): Promise<GroupSchema> {
 
@@ -45,6 +46,7 @@ export default class GroupResolver {
     }
 
     // Edit group
+    @Authorized('ADMIN')
     @Mutation(returns => GroupSchema, { nullable: true })
     public async editGroup(@Args() { id, data }: EditGroupArgs): Promise<GroupSchema> {
 
@@ -66,6 +68,7 @@ export default class GroupResolver {
     }
 
     // Delete group
+    @Authorized('ADMIN')
     @Mutation(returns => GroupSchema, { nullable: true })
     public async deleteGroup(@Args() { id }: DeleteGroupArgs): Promise<GroupSchema> {
         const group: Group|null = await Group.findByPk(id);

@@ -12,12 +12,7 @@ import * as rp from 'request-promise-native';
 import { Response as RpResponse } from 'request';
 import { AvatarService } from '../../utils/AvatarService';
 import { GraphQLError } from 'graphql';
-
-
-interface Context {
-    request: GradRequest;
-    response: Response;
-}
+import { Context } from '../../@types/Context';
 
 @Resolver()
 export default class AuthResolver {
