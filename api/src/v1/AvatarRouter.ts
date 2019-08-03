@@ -19,7 +19,9 @@ interface AvatarRequest extends GradRequest {
 AvatarRouter.put('/upload/avatar/:id', [
     multer({ storage: multer.memoryStorage() }).single('avatar')
 ], wrapAsync(async (req: AvatarRequest, res: Response) => {
-    const id = req.params.id;
+    const id = Number.parseInt(req.params.id, 10);
+
+    if (Number.isNaN(id)) throw { status: 422, message: 'id is not a number' };
 
     JwtService.checkSelfOrAdmin(id)(req, res, async () => {
 
