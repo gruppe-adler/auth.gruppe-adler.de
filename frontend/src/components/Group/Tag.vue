@@ -12,7 +12,7 @@
         <span>{{group.label}}</span>
         <i v-if="star && !disabled" class="material-icons" style="color: #2F80ED;">star</i>
         <template v-if="!disabled">
-            <i v-if="!star" class="material-icons grad-group-tag__star" @click="$emit('select', group)">star_border'</i>
+            <i v-if="!star" class="material-icons grad-group-tag__star" @click="$emit('select', group)">star_border</i>
             <i class="material-icons grad-group-tag__delete" @click="$emit('delete', group)">delete</i>
         </template>
     </div>
@@ -48,11 +48,12 @@ export default class GroupTag extends Vue {
     position: relative;
     cursor: pointer;
     transition: all .2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    user-select: none;
 
     i {
         color: #999999;
         margin: 0px 5px;
-        cursor: pointer;
+        cursor: inherit;
         height: 24px;
         width: 24px;
         overflow: hidden;
@@ -103,6 +104,7 @@ export default class GroupTag extends Vue {
 
     &#{&}--disabled:hover {
         background-color: transparent;
+        cursor: default;
     }
 }
 </style>
