@@ -12,13 +12,15 @@
                     <img src="~@/assets/steam.svg" />
                 </a>
             </div>
-            <span v-if="errorMessages.username" class="grad-label-error">{{ errorMessages.username }}</span>
             <Groups
                 v-model="user.groups"
                 :primaryGroup="user.primaryGroup"
                 :disabled="!$root.$data.user.admin"
                 @select="selectGroup"
             />
+            <template v-if="errorMessages.length > 0">
+                <span v-for="err in errorMessages" class="grad-label-error" :key="err">{{ err }}</span>
+            </template>
             <button
                 v-if="canEdit"
                 :disabled="originalUser === JSON.stringify(user)"
@@ -66,9 +68,7 @@ import AvatarVue from '@/components/User/Avatar.vue';
 export default class ProfileVue extends Vue {
     @Prop({ default: '' }) private uid!: string;
 
-    private errorMessages: { [index: string]: string } =  {
-        username: ''
-    };
+    private errorMessages: string[] = [];
     private error: any = null;
     private deleteModal: boolean = false;
     private loading: boolean = false;
@@ -144,27 +144,13 @@ export default class ProfileVue extends Vue {
         this.user!.primaryGroup = group;
     }
 
-    private async extractErrors(res: Response) {
+    private async extractErrors(errors: Array<{ message: string }>) {
+        if (! Array.isArray(errors)) return;
 
-        // we wont handle errors other than 422 any special
-        if (res.status !== 422) return this.error = res;
+        this.errorMessages = [];
 
-        // get body
-        const body: Array<{ param: string, msg: string }> = await res.json();
-
-        // collect all erros of the same field in an array
-        const errors: { [index: string]: string[] } = {};
-        body.forEach(err => {
-            if (!errors.hasOwnProperty(err.param)) errors[err.param] = [];
-
-            errors[err.param].push(err.msg);
-        });
-
-        // join all errors of each field
-        for (const key in errors) {
-            if (errors.hasOwnProperty(key)) {
-                this.errorMessages[key] = errors[key].join(', ');
-            }
+        for (const err of errors) {
+            if (err.message) this.errorMessages.push(err.message);
         }
     }
 
@@ -184,7 +170,7 @@ export default class ProfileVue extends Vue {
                 await updateAvatar(this.avatar, this.user!.id);
             } catch (err) {
                 errorOccured = true;
-                this.extractErrors(err as Response);
+                this.extractErrors(err);
             }
         }
 
@@ -193,7 +179,7 @@ export default class ProfileVue extends Vue {
             await userProm;
         } catch (err) {
             errorOccured = true;
-            this.extractErrors(err as Response);
+            this.extractErrors(err);
         }
 
         this.loading = false;

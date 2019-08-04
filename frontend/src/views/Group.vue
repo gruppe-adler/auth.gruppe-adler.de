@@ -22,12 +22,13 @@
                 <i class="material-icons">label</i>
                 <input type="text" v-model="group.label" />
             </div>
-            <span v-if="errorMessages.label" class="grad-label-error">{{ errorMessages.label }}</span>
             <div class="grad-icon-input">
                 <i class="material-icons">vpn_key</i>
                 <input type="text" v-model="group.tag" />
             </div>
-            <span v-if="errorMessages.tag" class="grad-label-error">{{ errorMessages.tag }}</span>
+            <template v-if="errorMessages.length > 0">
+                <span v-for="err in errorMessages" class="grad-label-error" :key="err">{{ err }}</span>
+            </template>
             <button class="grad-group__save" :disabled="originalGroup === JSON.stringify(group)" @click="onClickSave">Speichern</button>
             <button v-if="group.id !== -1" class="grad-group__delete" @click="onClickDelete">Löschen</button>
             <Modal v-model="deleteModal" @submit="deleteGroup" type="warn">
@@ -70,9 +71,7 @@ export default class GroupVue extends Vue {
 
     private error: any = null;
     private group?: Group|null = null;
-    private errorMessages: { [index: string]: string } =  {
-        tag: ''
-    };
+    private errorMessages: string[] = [];
 
     private created() {
         this.fetchGroup();
@@ -134,27 +133,13 @@ export default class GroupVue extends Vue {
         this.deleteModal = true;
     }
 
-    private async extractErrors(res: Response) {
+    private async extractErrors(errors: Array<{ message: string }>) {
+        if (! Array.isArray(errors)) return;
 
-        // we wont handle errors other than 422 any special
-        if (res.status !== 422) return this.error = res;
+        this.errorMessages = [];
 
-        // get body
-        const body: Array<{ param: string, msg: string }> = await res.json();
-
-        // collect all erros of the same field in an array
-        const errors: { [index: string]: string[] } = {};
-        body.forEach(err => {
-            if (!errors.hasOwnProperty(err.param)) errors[err.param] = [];
-
-            errors[err.param].push(err.msg);
-        });
-
-        // join all errors of each field
-        for (const key in errors) {
-            if (errors.hasOwnProperty(key)) {
-                this.errorMessages[key] = errors[key].join(', ');
-            }
+        for (const err of errors) {
+            if (err.message) this.errorMessages.push(err.message);
         }
     }
 
@@ -169,7 +154,7 @@ export default class GroupVue extends Vue {
 
             this.$router.push('/groups');
         } catch (err) {
-            this.extractErrors(err as Response);
+            this.extractErrors(err);
         }
         this.loading = false;
     }
@@ -185,7 +170,7 @@ export default class GroupVue extends Vue {
 
             this.$router.push('/groups');
         } catch (err) {
-            this.extractErrors(err as Response);
+            this.extractErrors(err);
         }
         this.loading = false;
     }
@@ -201,7 +186,7 @@ export default class GroupVue extends Vue {
 
             this.$router.push('/groups');
         } catch (err) {
-            this.extractErrors(err as Response);
+            this.extractErrors(err);
         }
         this.loading = false;
     }
