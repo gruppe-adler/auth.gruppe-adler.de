@@ -12,7 +12,7 @@ import { globalErrorHandler } from '../utils/globalErrorHandler';
 export const AvatarRouter = Router();
 
 interface AvatarRequest extends GradRequest {
-    file?: { buffer: Buffer, mimetype: string };
+    file?: { buffer: Buffer, mimetype: string, size: number };
 }
 
 // PUT update a user avatar
@@ -26,6 +26,8 @@ AvatarRouter.put('/upload/avatar/:id', [
     JwtService.checkSelfOrAdmin(id)(req, res, async () => {
 
         if (!req.file) throw { status: 400, message: 'no file given' };
+
+        if (req.file.size > 1000001) throw { status: 422, message: 'File size mustn\'t exceed 1MB' };
 
         // find user to update
         let user: User|null = await User.findByPk(id);

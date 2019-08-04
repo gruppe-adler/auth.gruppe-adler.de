@@ -225,6 +225,8 @@ export const deleteGroup = async (id: number): Promise<void> => {
  * @returns { Promise<void> } Promise resolves if successful
  */
 export const updateAvatar = async (file: File, uid: number): Promise<void> => {
+    if (file.size > 1000001) throw [{ message: 'Der Avatar darf nicht größer als 1MB sein.' }];
+
     const data = new FormData();
     data.append('avatar', file);
 
