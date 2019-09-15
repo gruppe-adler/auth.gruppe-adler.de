@@ -8,7 +8,7 @@ export default class CookieService {
 
     private static maxAge = 5.184e+9; // 60 days
     private static httpOnly = true;
-    private static secure = false;
+    private static secure = true;
 
     /**
      * @description Attaches cookie to response
