@@ -7,7 +7,7 @@ A docker image is available on [Docker Hub](https://hub.docker.com/r/gruppeadler
 - The container obviously should be reachable via Port 80/443.  
 - There are two volumes:
     - `/usr/src/app/data`: Holds the database `database.sqlite` as well as a directory containing all avatars
-    - `/usr/src/app/config`: Holds config.json as well as the keys for signing / decrypting the JWTs
+    - `/usr/src/app/config`: Holds `config.json` as well as the keys for signing / decrypting the JWTs
 
 ## Configuration
 Configuration can be done within the [config volume](#Setup). After configuration the config directory should look like this:
