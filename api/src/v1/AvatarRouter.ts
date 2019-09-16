@@ -24,25 +24,30 @@ AvatarRouter.put('/upload/avatar/:id', [
     if (Number.isNaN(id)) throw { status: 422, message: 'id is not a number' };
 
     JwtService.checkSelfOrAdmin(id)(req, res, async () => {
+        try {
 
-        if (!req.file) throw { status: 400, message: 'no file given' };
+            if (!req.file) throw { status: 400, message: 'no file given' };
 
-        if (req.file.size > 1000001) throw { status: 422, message: 'File size mustn\'t exceed 1MB' };
+            if (req.file.size > 1000001) throw { status: 422, message: 'File size mustn\'t exceed 1MB' };
 
-        // find user to update
-        let user: User|null = await User.findByPk(id);
+            // find user to update
+            let user: User|null = await User.findByPk(id);
 
-        // exit if user does not exist
-        if (user === null) throw { status: 404, message: `User with id '${id}' not found`};
+            // exit if user does not exist
+            if (user === null) throw { status: 404, message: `User with id '${id}' not found`};
 
-        // delete old avatar
-        AvatarService.removeImage(user.avatar);
+            // delete old avatar
+            AvatarService.removeImage(user.avatar);
 
-        const avatar = AvatarService.saveImage(req.file.buffer as Buffer, req.file.mimetype);
+            const avatar = AvatarService.saveImage(req.file.buffer as Buffer, req.file.mimetype);
 
-        user = await user.update({ avatar });
+            user = await user.update({ avatar });
 
-        res.status(200).json({ avatar });
+            res.status(200).json({ avatar });
+        } catch (err) {
+            globalErrorHandler(err, req, res);
+        }
+
     });
 }));
 
