@@ -45,7 +45,7 @@ AvatarRouter.put('/upload/avatar/:id', [
 
             res.status(200).json({ avatar });
         } catch (err) {
-            globalErrorHandler(err, req, res);
+            globalErrorHandler(err, req, res, undefined);
         }
 
     });
