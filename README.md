@@ -1,6 +1,6 @@
 # sso.gruppe-adler.de
 
-This is the sso (Single Sign-on) service of Gruppe Adler. It enables central group / user management. Although you can't manage the permissions of these groups and users directly, other services like our blog, can use this service to authenticate users as a specific group. Login works directly via steam.
+This is the sso (Single Sign-on) service of Gruppe Adler. It enables central group / user management. Although you can't manage the permissions of these groups and users directly, other services like our blog, can use this service to authenticate users as a specific user or member of a specific group. Login works directly via steam.
 
 ## Setup
 A docker image is available on [Docker Hub](https://hub.docker.com/r/gruppeadler/sso).  
