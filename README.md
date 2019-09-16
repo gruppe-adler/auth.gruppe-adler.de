@@ -48,24 +48,23 @@ The keys have to each start with `-----BEGIN RSA PRIVATE KEY-----` / `-----BEGIN
 ## v1 API
 
 ### GraphQL API
-There is a graphql api available with the endpoint being [`/api/v1/graphql`](https://sso.gruppe-adler.de/api/v1/graphql).
+There is a graphql api available at the endpoint [`/api/v1/graphql`](https://sso.gruppe-adler.de/api/v1/graphql).
 Just use the [GraphiQL web interface](https://sso.gruppe-adler.de/api/v1/graphql) located in the same endpoint for further reference.
+Some queries/mutations require [proper authentication](#authentication) and access rights (being admin / only working for own user).
 
 ### PUT `/api/v1/upload/avatar/:id`
 This endpoint is used to upload new avatars.
-- The request works only with proper authentication (as admin or the user, which is being updated)
+- The request works only with [proper authentication](#authentication) (as admin or the user, which is being updated)
 - The `:id` param has to be the id the of the user for which to update the avatar.  
 - The request body has to be for data with the `avatar` field containing the file.
 - The maximum allowed file size is 1MB.  
 
 ### Authentication
-You can authenticate yourself either by setting the `Authorization` HTTP Header to `Bearer <YOUR_JWT_TOKEN_HERE`. Or sending a cookie with the configured name (see [`config.json`](#config.json)) alongside your reqest.
+You can authenticate yourself by either setting the `Authorization` HTTP Header to `Bearer <YOUR_JWT_TOKEN_HERE>` or sending a cookie - containing the JWT - with the configured name (see [`config.json`](#config.json)) alongside your request.
+A JWT can be obtained with the `login` mutation.
 
 ## Avatars
-Avatars are available at `/avatars/<AVATAR_FILE_NAME>`. So if the avatar for the user is `lg77opahotl4g7n63kydh.gif` the file is served at [`https://sso.gruppe-adler.de/avatars/lg77opahotl4g7n63kydh.gif`](https://sso.gruppe-adler.de/avatars/lg77opahotl4g7n63kydh.gif)
+Avatars are available at `/avatars/<AVATAR_FILE_NAME>`. So if the avatar for the user is `meh.jpg` the file is served at [`https://sso.gruppe-adler.de/avatars/meh.jpg`](https://sso.gruppe-adler.de/avatars/lg77opahotl4g7n63kydh.gif)
 
 ## Cookie
 When the user authenticates against the SSO service, the SSO replies with a cookie, which holds the JWT token. The name and the domain of the cookie can be configured in your [`config.json`](#config.json). The cookie is configured to work HTTPS only.
-
-## Standard Authentication workflow for third parties
-tba
