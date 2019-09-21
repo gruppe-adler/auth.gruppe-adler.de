@@ -56,7 +56,7 @@ Some queries/mutations require [proper authentication](#authentication) and acce
 This endpoint is used to upload new avatars.
 - The request works only with [proper authentication](#authentication) (as admin or the user, which is being updated)
 - The `:id` param has to be the id the of the user for which to update the avatar.  
-- The request body has to be for data with the `avatar` field containing the file.
+- The request body has to be form data with the `avatar` field containing the file.
 - The maximum allowed file size is 1MB.  
 
 ### Authentication
