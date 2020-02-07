@@ -21,7 +21,8 @@ export default class CookieService {
             domain: config.cookie.domain,
             httpOnly: this.httpOnly,
             secure: this.secure,
-            maxAge: this.maxAge
+            maxAge: this.maxAge,
+            sameSite: 'none'
         });
     }
 
