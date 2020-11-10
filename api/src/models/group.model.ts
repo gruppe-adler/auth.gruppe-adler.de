@@ -23,12 +23,14 @@ export default class Group extends Model<Group> {
     @Unique
     @Column({
         type: DataType.TEXT,
+        // @ts-ignore
         set(val: string) { this.setDataValue('tag', val.toLowerCase()); }
     })
     public tag: string;
 
     @Column({
         type: DataType.TEXT,
+        // @ts-ignore
         set(val: string) { this.setDataValue('color', val.toUpperCase()); }
     })
     public color: string;
