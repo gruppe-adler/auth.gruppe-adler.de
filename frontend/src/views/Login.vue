@@ -11,7 +11,7 @@
         </button>
     </a>
 
-    <p class="cookie-disclaimer">Wir verwenden Cookies. Durch die weitere Nutzung der Webseite stimmst Du der Verwendung von Cookies zu. Weitere Informationen zu Cookies erhältst Du in unserer <a href="https://dev.gruppe-adler.de/datenschutzerklaerung">Datenschutzerklärung.</a></p>
+    <p class="cookie-disclaimer">Wir verwenden Cookies. Durch die weitere Nutzung der Webseite stimmst Du der Verwendung von Cookies zu. Weitere Informationen zu Cookies erhältst Du in unserer <a href="https://gruppe-adler.de/datenschutzerklaerung">Datenschutzerklärung.</a></p>
 </div>
 </template>
 
